@@ -1,0 +1,3242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>История России — Тренажёр EnnuI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   RESET & CSS VARS
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* palette */
+  --bg0:        #080c14;
+  --bg1:        #0d1220;
+  --bg2:        #111828;
+  --glass:      rgba(16, 22, 42, 0.65);
+  --glass2:     rgba(20, 28, 52, 0.80);
+  --border:     rgba(195, 160, 80, 0.28);
+  --border2:    rgba(215, 178, 85, 0.46);
+  --gold:       #c9a84c;
+  --gold2:      #e8c97a;
+  --gold-glow:  rgba(201, 168, 76, 0.16);
+  --text:       #f6f2e8;
+  --text2:      #d8d0bf;
+  --muted:      #b8b09e;
+  --green:      #5fd87c;
+  --red:        #f07070;
+  --orange:     #f0b84a;
+  --accent:     #8bb2fa;
+  --accent2:    #c58dfa;
+  /* theme accent colors */
+  --t-rurik:   #8cb4ff;
+  --t-razdro:  #f5b658;
+  --t-mongol:  #f57474;
+  --t-moscow:  #be92fc;
+  --t-culture: #5be0ca;
+  /* term theme colors */
+  --t-soc:     #7bb5fc;
+  --t-gov:     #fbbf24;
+  --t-econ:    #4ade80;
+  --t-cult:    #2dd4bf;
+  --t-mil:     #fb7185;
+  /* misc */
+  --radius:    14px;
+  --radius-lg: 20px;
+  --blur:      blur(18px);
+  --shadow-gold: 0 0 40px rgba(201,168,76,.08), 0 4px 32px rgba(0,0,0,.55);
+  --ff-serif:  'Cormorant Garamond', Georgia, serif;
+  --ff-sans:   'Manrope', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* =========================================================
+   PROGRESS BAR
+   ========================================================= */
+#progress-bar {
+  position: fixed; top: 0; left: 0; z-index: 999;
+  height: 3px; width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--accent2), var(--gold2));
+  transition: width .4s ease;
+  box-shadow: 0 0 10px var(--gold2);
+}
+
+/* =========================================================
+   BACKGROUND  — SVG ornament + radial glow
+   ========================================================= */
+body {
+  font-family: var(--ff-sans);
+  background-color: var(--bg0);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Layered background — controlled by JS divs below */
+body::before { display: none; }
+
+/* Inline SVG ornament tile — moved to #bg-ornament-layer */
+body::after  { display: none; }
+
+.app {
+  position: relative; z-index: 1;
+  max-width: 860px; margin: 0 auto;
+  padding: 24px 16px 72px;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+header {
+  text-align: center;
+  padding: 36px 0 28px;
+}
+
+.header-emblem {
+  font-size: 2.4rem;
+  display: block;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 12px rgba(201,168,76,.5));
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+header h1 {
+  font-family: var(--ff-serif);
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  background: linear-gradient(135deg, var(--gold2) 0%, var(--gold) 40%, var(--accent2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 6px;
+  text-shadow: none;
+}
+
+header p {
+  color: #d8d0bf;
+  font-size: .94rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* decorative rule */
+.header-rule {
+  display: flex; align-items: center; gap: 12px;
+  margin: 18px auto 0; max-width: 340px;
+}
+.header-rule span { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+.header-rule i { color: var(--gold); font-style: normal; font-size: .9rem; }
+
+/* =========================================================
+   GLASSMORPHISM HELPER
+   ========================================================= */
+.glass {
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-gold);
+}
+
+/* =========================================================
+   SCORE BAR
+   ========================================================= */
+.score-bar {
+  display: flex; gap: 8px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 22px;
+}
+.score-pill {
+  background: var(--glass2);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .03em;
+  display: flex; align-items: center; gap: 6px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.score-pill:hover { border-color: var(--border2); box-shadow: 0 0 12px var(--gold-glow); }
+.score-pill .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dot-correct { background: var(--green);  box-shadow: 0 0 6px var(--green); }
+.dot-wrong   { background: var(--red);    box-shadow: 0 0 6px var(--red); }
+.dot-streak  { background: var(--orange); box-shadow: 0 0 6px var(--orange); }
+.dot-total   { background: var(--gold2);  box-shadow: 0 0 6px var(--gold2); }
+.score-pill strong { font-family: var(--ff-serif); font-size: 1rem; color: var(--text); }
+
+/* =========================================================
+   EPOCH & MODE NAVIGATION
+   ========================================================= */
+.epoch-bar {
+  display: flex; gap: 7px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 14px;
+}
+.epoch-btn {
+  background: rgba(18, 26, 48, 0.75);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  color: #ded7c8;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .84rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  transition: all .22s;
+}
+.epoch-btn:hover {
+  color: #ffffff;
+  border-color: var(--gold);
+  box-shadow: 0 0 16px var(--gold-glow);
+  transform: translateY(-1px);
+}
+.epoch-btn.active {
+  background: linear-gradient(135deg, rgba(201,168,76,.35), rgba(123,164,245,.22));
+  border-color: var(--gold2);
+  color: var(--gold2);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+.epoch-btn.is-empty {
+  opacity: .80;
+  color: #b8b09e;
+  border-color: var(--border);
+}
+.epoch-btn.is-empty.active {
+  opacity: 1;
+  color: var(--gold2);
+  border-color: var(--gold2);
+}
+
+.mode-bar {
+  display: inline-flex; gap: 4px;
+  background: rgba(20, 28, 52, 0.85);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  border-radius: 99px;
+  padding: 4px;
+  margin: 0 auto 18px;
+}
+.mode-bar-wrap {
+  display: flex; justify-content: center;
+}
+.mode-btn {
+  background: transparent;
+  border: none;
+  color: #d6cfbf;
+  padding: 8px 24px;
+  border-radius: 99px;
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .90rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  transition: all .22s;
+}
+.mode-btn:hover {
+  color: #ffffff;
+}
+.mode-btn.active {
+  background: linear-gradient(135deg, rgba(201,168,76,.32), rgba(123,164,245,.24));
+  color: var(--gold2);
+  box-shadow: 0 0 16px var(--gold-glow);
+}
+
+/* Empty section placeholder */
+.empty-placeholder {
+  display: none;
+  max-width: 680px;
+  margin: 12px auto 0;
+  padding: 56px 32px;
+  text-align: center;
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-gold);
+  animation: fadeUp .35s ease;
+}
+.empty-placeholder.show { display: block; }
+.empty-placeholder .ep-icon {
+  font-size: 2.6rem;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 10px rgba(201,168,76,.35));
+}
+.empty-placeholder .ep-title {
+  font-family: var(--ff-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--gold2);
+  margin-bottom: 8px;
+}
+.empty-placeholder .ep-sub {
+  color: var(--text2);
+  font-size: .92rem;
+}
+
+/* =========================================================
+   TABS
+   ========================================================= */
+.tabs {
+  display: flex; gap: 6px; justify-content: center;
+  margin-bottom: 18px; flex-wrap: wrap;
+}
+.tab-btn {
+  background: rgba(18, 26, 48, 0.75);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  color: #ded7c8;
+  padding: 9px 20px;
+  border-radius: 99px;
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .84rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  transition: all .25s;
+}
+.tab-btn:hover {
+  color: #ffffff;
+  border-color: var(--gold);
+  box-shadow: 0 0 16px var(--gold-glow);
+  transform: translateY(-1px);
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, rgba(201,168,76,.28), rgba(123,164,245,.22));
+  border-color: var(--gold2);
+  color: var(--gold2);
+  box-shadow: 0 0 22px var(--gold-glow);
+}
+
+.section { display: none; }
+.section.active { display: block; animation: fadeUp .35s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   THEME FILTERS
+   ========================================================= */
+.theme-bar {
+  display: flex; gap: 6px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 20px;
+}
+.theme-btn {
+  padding: 8px 18px;
+  border-radius: 99px;
+  border: 1.5px solid currentColor;
+  background: rgba(16, 24, 46, 0.65);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .88rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  transition: all .22s;
+  opacity: .95;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.theme-btn:hover { opacity: 1; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+.theme-btn.active { opacity: 1; color: #fff !important; box-shadow: 0 4px 20px rgba(0,0,0,.45); }
+
+.theme-btn[data-theme="all"]     { color: var(--gold2); }
+.theme-btn[data-theme="all"].active { background: linear-gradient(135deg,var(--gold),var(--gold2)); border-color: var(--gold2); }
+.theme-btn[data-theme="rurik"]   { color: var(--t-rurik); }
+.theme-btn[data-theme="rurik"].active  { background: var(--t-rurik); border-color: var(--t-rurik); }
+.theme-btn[data-theme="razdro"]  { color: var(--t-razdro); }
+.theme-btn[data-theme="razdro"].active { background: var(--t-razdro); border-color: var(--t-razdro); }
+.theme-btn[data-theme="mongol"]  { color: var(--t-mongol); }
+.theme-btn[data-theme="mongol"].active { background: var(--t-mongol); border-color: var(--t-mongol); }
+.theme-btn[data-theme="moscow"]  { color: var(--t-moscow); }
+.theme-btn[data-theme="moscow"].active { background: var(--t-moscow); border-color: var(--t-moscow); }
+.theme-btn[data-theme="culture"] { color: var(--t-culture); }
+.theme-btn[data-theme="culture"].active{ background: var(--t-culture); border-color: var(--t-culture); }
+.theme-btn[data-theme="soc"]     { color: var(--t-soc); }
+.theme-btn[data-theme="soc"].active    { background: var(--t-soc); border-color: var(--t-soc); }
+.theme-btn[data-theme="gov"]     { color: var(--t-gov); }
+.theme-btn[data-theme="gov"].active    { background: var(--t-gov); border-color: var(--t-gov); }
+.theme-btn[data-theme="econ"]    { color: var(--t-econ); }
+.theme-btn[data-theme="econ"].active   { background: var(--t-econ); border-color: var(--t-econ); }
+.theme-btn[data-theme="cult"]    { color: var(--t-cult); }
+.theme-btn[data-theme="cult"].active   { background: var(--t-cult); border-color: var(--t-cult); }
+.theme-btn[data-theme="mil"]     { color: var(--t-mil); }
+.theme-btn[data-theme="mil"].active    { background: var(--t-mil); border-color: var(--t-mil); }
+
+.theme-badge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 99px;
+  font-family: var(--ff-sans);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  border: 1px solid currentColor;
+}
+.theme-badge.rurik   { color: var(--t-rurik);   background: rgba(123,164,245,.12); }
+.theme-badge.razdro  { color: var(--t-razdro);  background: rgba(232,169,74,.12); }
+.theme-badge.mongol  { color: var(--t-mongol);  background: rgba(232,96,96,.12); }
+.theme-badge.moscow  { color: var(--t-moscow);  background: rgba(176,128,240,.12); }
+.theme-badge.culture { color: var(--t-culture); background: rgba(72,196,176,.12); }
+.theme-badge.soc     { color: var(--t-soc);     background: rgba(96,165,250,.12); }
+.theme-badge.gov     { color: var(--t-gov);     background: rgba(245,158,11,.12); }
+.theme-badge.econ    { color: var(--t-econ);    background: rgba(52,211,153,.12); }
+.theme-badge.cult    { color: var(--t-cult);    background: rgba(20,184,166,.12); }
+.theme-badge.mil     { color: var(--t-mil);     background: rgba(248,113,113,.12); }
+
+.event-count {
+  text-align: center;
+  color: var(--muted);
+  font-size: .75rem;
+  letter-spacing: .05em;
+  margin-bottom: 20px;
+}
+
+/* =========================================================
+   FLASHCARDS  — 3-D FLIP
+   ========================================================= */
+.card-hint {
+  color: #d6cebf;
+  font-size: .84rem;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.card-container {
+  perspective: 1100px;
+  width: 100%; max-width: 680px;
+  height: 340px;
+  margin: 0 auto 24px;
+  cursor: pointer;
+}
+
+.card-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .6s cubic-bezier(.4,.0,.2,1);
+}
+.card-container.flipped .card-inner { transform: rotateY(180deg); }
+
+.card-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-gold), inset 0 1px 0 rgba(255,255,255,.04);
+
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 28px 32px;
+  text-align: center;
+  overflow-y: auto;
+
+  /* hover glow — applies on the wrapper */
+  transition: box-shadow .3s;
+}
+.card-container:hover .card-face {
+  box-shadow: var(--shadow-gold), 0 0 32px rgba(201,168,76,.14), inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+/* subtle top-gold line */
+.card-face::before {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold2), transparent);
+  opacity: .5; border-radius: 99px;
+}
+
+.card-back { transform: rotateY(180deg); }
+
+.card-face .fc-title {
+  font-family: var(--ff-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #f4efe6;
+  margin-bottom: 8px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0,0,0,.6);
+}
+.card-face .event {
+  font-family: var(--ff-serif);
+  font-size: 1.85rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+.card-face .year {
+  font-family: var(--ff-serif);
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--gold2), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+  letter-spacing: .02em;
+}
+.card-face .detail {
+  font-size: 1rem;
+  color: var(--text2);
+  margin-top: 10px;
+  line-height: 1.5;
+}
+/* card known badge overlay */
+.card-known-stamp {
+  position: absolute; top: 14px; right: 16px;
+  font-size: .7rem; font-weight: 700; letter-spacing: .06em;
+  color: var(--green); border: 1.5px solid var(--green);
+  border-radius: 99px; padding: 2px 10px;
+  background: rgba(95,216,124,.1);
+  display: none;
+}
+.card-known-stamp.show { display: block; }
+
+.card-nav {
+  display: flex; gap: 10px; justify-content: center; align-items: center;
+}
+.card-nav button {
+  background: rgba(18, 26, 48, 0.75);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  color: #ded7c8;
+  padding: 9px 22px;
+  border-radius: 99px;
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .84rem;
+  font-weight: 600;
+  transition: all .22s;
+}
+.card-nav button:hover {
+  color: #ffffff;
+  border-color: var(--gold);
+  box-shadow: 0 0 16px var(--gold-glow);
+  transform: translateY(-2px);
+}
+.card-counter {
+  color: #f2ede4;
+  font-family: var(--ff-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  min-width: 80px;
+  text-align: center;
+  letter-spacing: .03em;
+}
+
+/* =========================================================
+   QUIZ
+   ========================================================= */
+.quiz-question {
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-gold);
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.quiz-question::before {
+  content: '';
+  position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold2), transparent);
+  opacity: .5;
+}
+.quiz-question .q-label {
+  color: var(--muted);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.quiz-question .q-text {
+  font-family: var(--ff-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.quiz-options {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; max-width: 680px; margin: 0 auto 20px;
+}
+.quiz-options.single-col {
+  grid-template-columns: 1fr;
+}
+.quiz-opt.def-opt {
+  font-family: var(--ff-sans);
+  font-size: .95rem;
+  font-weight: 500;
+  text-align: left;
+  padding: 14px 18px;
+  line-height: 1.45;
+}
+.quiz-opt {
+  background: var(--glass2);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 14px;
+  cursor: pointer;
+  text-align: center;
+  font-family: var(--ff-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text);
+  transition: all .22s;
+  position: relative; overflow: hidden;
+}
+.quiz-opt::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 60%, rgba(201,168,76,.05));
+  opacity: 0; transition: opacity .22s;
+}
+.quiz-opt:hover {
+  border-color: var(--border2);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,.35), 0 0 18px var(--gold-glow);
+}
+.quiz-opt:hover::after { opacity: 1; }
+.quiz-opt.correct {
+  border-color: var(--green);
+  background: rgba(95,216,124,.12);
+  box-shadow: 0 0 20px rgba(95,216,124,.2);
+}
+.quiz-opt.wrong {
+  border-color: var(--red);
+  background: rgba(240,112,112,.12);
+  box-shadow: 0 0 20px rgba(240,112,112,.2);
+}
+.quiz-opt.disabled { pointer-events: none; }
+
+.quiz-feedback {
+  max-width: 680px; margin: 0 auto 18px;
+  padding: 14px 20px; border-radius: var(--radius);
+  font-size: .88rem; display: none; line-height: 1.5;
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+}
+.quiz-feedback.show { display: block; animation: fadeUp .3s ease; }
+.quiz-feedback.ok  {
+  background: rgba(95,216,124,.08);
+  border: 1px solid rgba(95,216,124,.35);
+}
+.quiz-feedback.err {
+  background: rgba(240,112,112,.08);
+  border: 1px solid rgba(240,112,112,.35);
+}
+
+.quiz-next {
+  display: block; margin: 0 auto;
+  background: linear-gradient(135deg, rgba(201,168,76,.22), rgba(123,164,245,.18));
+  border: 1px solid var(--gold);
+  color: var(--gold2);
+  padding: 11px 30px; border-radius: 99px;
+  font-family: var(--ff-sans); font-size: .85rem; font-weight: 600;
+  cursor: pointer; transition: all .22s; letter-spacing: .03em;
+}
+.quiz-next:hover {
+  background: linear-gradient(135deg, rgba(201,168,76,.35), rgba(123,164,245,.28));
+  box-shadow: 0 0 24px var(--gold-glow);
+  transform: translateY(-2px);
+}
+.quiz-next.hidden { display: none; }
+
+/* =========================================================
+   SORT
+   ========================================================= */
+.sort-instructions {
+  text-align: center; color: var(--text2);
+  margin-bottom: 16px; font-size: .85rem;
+  letter-spacing: .02em;
+}
+.sort-pool {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+  margin-bottom: 22px; min-height: 44px;
+}
+.sort-chip {
+  background: var(--glass2);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 7px 15px; border-radius: 99px;
+  cursor: pointer; font-size: .8rem; font-weight: 500;
+  transition: all .22s; user-select: none;
+}
+.sort-chip:hover {
+  border-color: var(--border2);
+  color: var(--gold2);
+  box-shadow: 0 0 12px var(--gold-glow);
+  transform: translateY(-1px);
+}
+.sort-chip.placed { opacity: .25; pointer-events: none; }
+
+.sort-timeline {
+  max-width: 680px; margin: 0 auto 18px;
+  display: flex; flex-direction: column; gap: 6px;
+  min-height: 72px;
+  background: rgba(10,15,28,.4);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-lg); padding: 14px;
+}
+.sort-timeline .sort-item {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  padding: 9px 15px; border-radius: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: .83rem;
+  transition: background .2s;
+}
+.sort-item:hover { background: var(--glass2); }
+.sort-item .remove-btn {
+  background: none; border: none; color: var(--red);
+  cursor: pointer; font-size: .95rem; padding: 0 4px;
+  opacity: .7; transition: opacity .2s;
+}
+.sort-item .remove-btn:hover { opacity: 1; }
+
+.sort-actions { display: flex; gap: 10px; justify-content: center; margin-top: 14px; flex-wrap: wrap; }
+.sort-actions button {
+  padding: 9px 24px; border-radius: 99px;
+  font-family: var(--ff-sans); font-size: .82rem; font-weight: 600;
+  cursor: pointer; transition: all .22s; letter-spacing: .03em; border: none;
+}
+.btn-check {
+  background: linear-gradient(135deg, #3a9e56, var(--green));
+  color: #0a1a0d;
+  box-shadow: 0 4px 16px rgba(95,216,124,.2);
+}
+.btn-check:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(95,216,124,.35); }
+.btn-reset {
+  background: var(--glass2);
+  color: var(--text2);
+  border: 1px solid var(--border) !important;
+  backdrop-filter: var(--blur);
+}
+.btn-reset:hover { border-color: var(--border2) !important; color: var(--text); transform: translateY(-2px); }
+.btn-new {
+  background: linear-gradient(135deg, rgba(201,168,76,.22), rgba(123,164,245,.18));
+  border: 1px solid var(--gold) !important;
+  color: var(--gold2);
+}
+.btn-new:hover { box-shadow: 0 0 20px var(--gold-glow); transform: translateY(-2px); }
+
+.sort-result {
+  max-width: 680px; margin: 14px auto 0;
+  padding: 14px 20px; border-radius: var(--radius);
+  display: none; font-size: .88rem; line-height: 1.5;
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+}
+.sort-result.show { display: block; animation: fadeUp .3s ease; }
+.sort-result.ok  { background: rgba(95,216,124,.08);  border: 1px solid rgba(95,216,124,.35); }
+.sort-result.err { background: rgba(240,112,112,.08); border: 1px solid rgba(240,112,112,.35); }
+.sort-result .correction { margin-top: 10px; }
+.sort-result .correction div { padding: 4px 0; display: flex; gap: 8px; font-size: .82rem; flex-wrap: wrap; align-items: baseline; }
+.sort-result .correction .pos { color: var(--muted); min-width: 22px; }
+.sort-result .correction .wrong-item { color: var(--red); text-decoration: line-through; opacity: .8; }
+.sort-result .correction .right-item { color: var(--green); font-weight: 600; }
+
+/* =========================================================
+   MATCHING (TERMS)
+   ========================================================= */
+.match-grid {
+  display: grid; grid-template-columns: 1fr 1.6fr;
+  gap: 14px; max-width: 820px; margin: 0 auto 20px;
+}
+.match-col {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.match-col-title {
+  color: var(--muted); font-size: .72rem; letter-spacing: .08em;
+  text-transform: uppercase; text-align: center; margin-bottom: 2px;
+}
+.match-card {
+  background: var(--glass2);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 16px;
+  cursor: pointer;
+  color: var(--text);
+  transition: all .22s;
+  min-height: 62px;
+  display: flex; align-items: center;
+  user-select: none;
+}
+.match-card.term-side {
+  font-family: var(--ff-serif); font-size: 1.2rem; font-weight: 600;
+  justify-content: center; text-align: center;
+}
+.match-card.def-side {
+  font-family: var(--ff-sans); font-size: .86rem; line-height: 1.45;
+}
+.match-card:hover:not(.matched) {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.3), 0 0 14px var(--gold-glow);
+}
+.match-card.selected {
+  border-color: var(--gold2);
+  background: linear-gradient(135deg, rgba(201,168,76,.22), rgba(123,164,245,.14));
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+.match-card.matched {
+  border-color: rgba(95,216,124,.5);
+  background: rgba(95,216,124,.1);
+  color: var(--green);
+  opacity: .72;
+  pointer-events: none;
+}
+.match-card.wrong-flash {
+  border-color: var(--red);
+  background: rgba(240,112,112,.16);
+  animation: matchShake .35s ease;
+}
+@keyframes matchShake {
+  0%,100% { transform: translateX(0); }
+  25%     { transform: translateX(-6px); }
+  75%     { transform: translateX(6px); }
+}
+@media (max-width: 640px) {
+  .match-grid { grid-template-columns: 1fr; }
+}
+
+/* =========================================================
+   WRITTEN INPUT
+   ========================================================= */
+.input-card {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 34px 38px;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  position: relative;
+}
+.input-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.input-counter {
+  color: #d6cebf;
+  font-family: var(--ff-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+.input-prompt-label {
+  font-family: var(--ff-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #eae3d5;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 12px;
+  text-shadow: 0 1px 4px rgba(0,0,0,.6);
+}
+.input-prompt-text {
+  color: var(--text);
+  margin-bottom: 26px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input-form {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  max-width: 580px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+.input-field {
+  flex: 1;
+  background: rgba(18, 26, 48, 0.85);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1.5px solid var(--border2);
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-family: var(--ff-sans);
+  font-size: 1.05rem;
+  color: #ffffff;
+  outline: none;
+  transition: all .2s;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.3);
+}
+.input-field:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 18px var(--gold-glow), inset 0 2px 4px rgba(0,0,0,.3);
+  background: rgba(24, 34, 64, 0.95);
+}
+.input-field::placeholder {
+  color: #9f9786;
+  font-size: .92rem;
+}
+.input-field:disabled {
+  opacity: .8;
+  cursor: not-allowed;
+}
+.btn-check-input {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border: none;
+  border-radius: 12px;
+  padding: 12px 26px;
+  color: #080c14;
+  font-family: var(--ff-sans);
+  font-size: .95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.btn-check-input:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(201,168,76,.35);
+}
+.btn-check-input:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.input-feedback {
+  border-radius: var(--radius);
+  padding: 14px 22px;
+  font-size: .98rem;
+  line-height: 1.55;
+  margin-top: 18px;
+  display: none;
+  animation: fadeUp .25s ease;
+  text-align: left;
+}
+.input-feedback.show { display: block; }
+.input-feedback.ok {
+  background: rgba(95,216,124,.15);
+  border: 1px solid rgba(95,216,124,.45);
+  color: #c6f6d5;
+}
+.input-feedback.err {
+  background: rgba(240,112,112,.15);
+  border: 1px solid rgba(240,112,112,.45);
+  color: #fed7d7;
+}
+
+/* =========================================================
+   REVIEW
+   ========================================================= */
+.review-empty { text-align: center; color: var(--muted); padding: 48px 0; font-size: .9rem; }
+.review-list { display: flex; flex-direction: column; gap: 10px; }
+.review-card {
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 22px;
+  transition: border-color .2s;
+}
+.review-card:hover { border-color: var(--border2); }
+.review-card .rv-q  { font-family: var(--ff-serif); font-size: 1.0rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+.review-card .rv-your { color: var(--red);   font-size: .83rem; margin-bottom: 2px; }
+.review-card .rv-ans  { color: var(--green); font-size: .83rem; }
+
+.review-clear {
+  display: block; margin: 20px auto 0;
+  background: var(--glass2);
+  backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  color: var(--text2); padding: 9px 24px; border-radius: 99px;
+  cursor: pointer; font-family: var(--ff-sans); font-size: .82rem; font-weight: 500;
+  transition: all .22s;
+}
+.review-clear:hover { border-color: var(--border2); color: var(--text); transform: translateY(-1px); }
+
+/* =========================================================
+   CARD CONTROLS BAR
+   ========================================================= */
+.card-controls {
+  display: flex; gap: 8px; justify-content: center; align-items: center;
+  flex-wrap: wrap; margin-bottom: 16px;
+}
+.ctrl-btn {
+  background: rgba(18, 26, 48, 0.75);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  color: #ded7c8;
+  padding: 7px 16px; border-radius: 99px;
+  cursor: pointer; font-family: var(--ff-sans);
+  font-size: .82rem; font-weight: 600;
+  transition: all .22s; white-space: nowrap;
+}
+.ctrl-btn:hover {
+  color: #ffffff; border-color: var(--gold);
+  box-shadow: 0 0 14px var(--gold-glow); transform: translateY(-1px);
+}
+.ctrl-btn.active-mode {
+  background: linear-gradient(135deg, rgba(201,168,76,.28), rgba(123,164,245,.20));
+  border-color: var(--gold); color: var(--gold2);
+}
+.ctrl-label {
+  display: flex; align-items: center; gap: 7px;
+  color: #ded7c8; font-size: .82rem; font-weight: 500; cursor: pointer;
+  padding: 7px 14px;
+  background: rgba(18, 26, 48, 0.75); border: 1px solid var(--border2);
+  border-radius: 99px; transition: all .22s;
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  user-select: none;
+}
+.ctrl-label:hover { border-color: var(--gold); color: #ffffff; }
+.ctrl-label input[type="checkbox"] {
+  accent-color: var(--green); width: 14px; height: 14px; cursor: pointer;
+}
+/* Known row below card nav */
+.card-known-row {
+  display: flex; gap: 10px; justify-content: center; margin-top: 14px;
+}
+.btn-known, .btn-unlearn {
+  padding: 8px 22px; border-radius: 99px; border: none;
+  font-family: var(--ff-sans); font-size: .82rem; font-weight: 600;
+  cursor: pointer; transition: all .22s; letter-spacing: .02em;
+}
+.btn-known {
+  background: rgba(95,216,124,.12);
+  border: 1.5px solid var(--green) !important;
+  color: var(--green);
+}
+.btn-known:hover { background: rgba(95,216,124,.22); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(95,216,124,.2); }
+.btn-known.is-known {
+  background: rgba(95,216,124,.22); font-weight: 700;
+}
+.btn-unlearn {
+  background: rgba(240,112,112,.1);
+  border: 1.5px solid var(--red) !important;
+  color: var(--red); display: none;
+}
+.btn-unlearn:hover { background: rgba(240,112,112,.2); transform: translateY(-2px); }
+.btn-unlearn.show { display: block; }
+
+/* =========================================================
+   DYNAMIC BG LAYERS  (replace body::before / body::after)
+   ========================================================= */
+.bg-layer {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+}
+#bg-preset-layer  { transition: background .5s ease; }
+#bg-ornament-layer {
+  opacity: .045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='none' stroke='%23c9a84c' stroke-width='0.8'%3E%3Crect x='10' y='10' width='100' height='100' rx='8'/%3E%3Ccircle cx='60' cy='60' r='28'/%3E%3Ccircle cx='60' cy='60' r='14'/%3E%3Cpath d='M60 10 L60 32 M60 88 L60 110 M10 60 L32 60 M88 60 L110 60'/%3E%3Cpath d='M60 46 L74 60 L60 74 L46 60 Z'/%3E%3Ccircle cx='10' cy='10' r='3'/%3E%3Ccircle cx='110' cy='10' r='3'/%3E%3Ccircle cx='10' cy='110' r='3'/%3E%3Ccircle cx='110' cy='110' r='3'/%3E%3Cpath d='M22 10 Q30 22 22 34 M98 10 Q90 22 98 34 M22 110 Q30 98 22 86 M98 110 Q90 98 98 86'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 120px;
+}
+#bg-image-layer {
+  background-size: cover; background-position: center;
+  display: none; transition: opacity .4s;
+}
+#bg-dim-layer {
+  display: none;
+  background: rgba(0,0,0,.55);
+  transition: background .3s;
+}
+
+/* =========================================================
+   BG SETTINGS PANEL
+   ========================================================= */
+#bg-panel-wrap {
+  position: fixed; top: 14px; right: 14px; z-index: 1000;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+}
+#bg-toggle-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--glass2);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  color: var(--text2); font-size: 1rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .22s; box-shadow: var(--shadow-gold);
+  flex-shrink: 0;
+}
+#bg-toggle-btn:hover { border-color: var(--border2); color: var(--gold2); box-shadow: 0 0 14px var(--gold-glow); }
+
+#bg-panel {
+  background: var(--glass2);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-gold);
+  display: none;
+  flex-direction: column; gap: 12px;
+  min-width: 230px;
+  animation: fadeUp .2s ease;
+}
+#bg-panel.open { display: flex; }
+
+.bg-panel-label {
+  color: var(--muted); font-size: .68rem; letter-spacing: .08em;
+  text-transform: uppercase; margin-bottom: 2px;
+}
+
+/* preset circles */
+.bg-presets { display: flex; gap: 8px; align-items: center; }
+.bg-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  cursor: pointer; border: 2px solid transparent;
+  transition: all .2s; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+.bg-dot:hover { transform: scale(1.15); }
+.bg-dot.active { border-color: var(--gold2); box-shadow: 0 0 10px var(--gold-glow); transform: scale(1.1); }
+
+/* custom image upload */
+.bg-upload-row { display: flex; align-items: center; gap: 8px; }
+.bg-upload-btn {
+  flex: 1;
+  background: var(--glass);
+  border: 1px dashed var(--border2);
+  color: var(--text2); font-size: .78rem; font-family: var(--ff-sans); font-weight: 500;
+  padding: 7px 12px; border-radius: 8px;
+  cursor: pointer; transition: all .2s; text-align: center;
+}
+.bg-upload-btn:hover { border-color: var(--gold); color: var(--gold2); }
+#bg-file-input { display: none; }
+.bg-clear-btn {
+  background: rgba(240,112,112,.1); border: 1px solid rgba(240,112,112,.3);
+  color: var(--red); font-size: .72rem; padding: 5px 10px;
+  border-radius: 8px; cursor: pointer; transition: all .2s; white-space: nowrap;
+  display: none;
+}
+.bg-clear-btn:hover { background: rgba(240,112,112,.2); }
+.bg-clear-btn.show { display: block; }
+
+/* dim slider */
+.bg-slider-row { display: flex; flex-direction: column; gap: 6px; }
+.bg-slider-top  { display: flex; justify-content: space-between; align-items: center; }
+.bg-slider-top span { color: var(--muted); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; }
+.bg-dim-val { color: var(--gold2) !important; font-weight: 600; }
+input[type=range]#bg-dim-slider {
+  width: 100%; -webkit-appearance: none; appearance: none;
+  height: 4px; border-radius: 99px;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--accent2) 100%);
+  outline: none; cursor: pointer;
+}
+input[type=range]#bg-dim-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--gold2); border: 2px solid #fff;
+  box-shadow: 0 0 6px rgba(201,168,76,.5);
+  cursor: pointer;
+}
+
+/* =========================================================
+   RESPONSIVE (MOBILE & TABLET ADAPTATION <= 768px)
+   ========================================================= */
+@media (max-width: 768px) {
+  /* 1. App container & layout */
+  .app {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px 14px 64px;
+    box-sizing: border-box;
+  }
+
+  /* 2. Header & background button clearance */
+  header {
+    padding: 44px 8px 18px;
+  }
+  .header-emblem {
+    font-size: 2rem;
+    margin-bottom: 6px;
+  }
+  header h1 {
+    font-size: 1.65rem;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+  header p {
+    font-size: .80rem;
+    letter-spacing: .04em;
+  }
+  .header-rule {
+    margin: 12px auto 0;
+    max-width: 220px;
+  }
+
+  /* Background manager on mobile */
+  #bg-panel-wrap {
+    top: 10px;
+    right: 10px;
+  }
+  #bg-toggle-btn {
+    width: 34px;
+    height: 34px;
+    font-size: .92rem;
+  }
+  #bg-panel {
+    min-width: unset;
+    width: calc(100vw - 20px);
+    max-width: 300px;
+    right: 0;
+    padding: 12px 14px;
+    box-sizing: border-box;
+  }
+
+  /* 3. Score bar */
+  .score-bar {
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .score-pill {
+    padding: 5px 10px;
+    font-size: .72rem;
+  }
+  .score-pill strong {
+    font-size: .88rem;
+  }
+
+  /* 4. Epochs & Modes navigation */
+  .epoch-bar {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .epoch-btn {
+    padding: 8px 12px;
+    font-size: .78rem;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+  }
+
+  .mode-bar-wrap {
+    margin-bottom: 14px;
+  }
+  .mode-bar {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 8px 14px;
+    font-size: .84rem;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* 5. Tabs */
+  .tabs {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .tab-btn {
+    padding: 8px 12px;
+    font-size: .78rem;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+  }
+
+  /* 6. Theme filter bar */
+  .theme-bar {
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .theme-btn {
+    padding: 7px 12px;
+    font-size: .78rem;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .event-count {
+    font-size: .76rem;
+    margin-bottom: 16px;
+    padding: 0 4px;
+  }
+
+  /* 7. Flashcards */
+  .card-container {
+    width: 100%;
+    max-width: 100%;
+    height: 310px;
+    margin: 0 auto 18px;
+    touch-action: pan-y;
+  }
+  .card-face {
+    padding: 22px 18px;
+    box-sizing: border-box;
+  }
+  .card-face .fc-title {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+  }
+  .card-face .event {
+    font-size: 1.45rem;
+    line-height: 1.35;
+  }
+  .card-face .year {
+    font-size: 2.35rem;
+  }
+  .card-face .detail {
+    font-size: .92rem;
+    margin-top: 8px;
+  }
+  .card-controls {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .ctrl-btn, .ctrl-label {
+    padding: 7px 12px;
+    font-size: .76rem;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-nav {
+    gap: 8px;
+  }
+  .card-nav button {
+    padding: 9px 18px;
+    font-size: .82rem;
+    min-height: 40px;
+  }
+  .card-counter {
+    font-size: 1.1rem;
+    min-width: 68px;
+  }
+  .card-known-row {
+    margin-top: 12px;
+    gap: 8px;
+  }
+  .btn-known, .btn-unlearn {
+    padding: 9px 22px;
+    font-size: .84rem;
+    min-height: 40px;
+  }
+
+  /* 8. Quiz mode */
+  .quiz-question {
+    padding: 20px 16px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .quiz-question .q-text {
+    font-size: 1.35rem;
+  }
+  .quiz-options {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+  .quiz-opt {
+    padding: 13px 16px;
+    font-size: .94rem;
+    min-height: 44px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .quiz-feedback {
+    padding: 12px 16px;
+    font-size: .90rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .quiz-next {
+    width: 100%;
+    padding: 12px;
+    font-size: .92rem;
+    min-height: 44px;
+    box-sizing: border-box;
+  }
+
+  /* 9. Sorting & Timeline */
+  .sort-instructions {
+    font-size: .86rem;
+    margin-bottom: 16px;
+    padding: 0 4px;
+  }
+  .sort-pool, .sort-timeline {
+    padding: 14px 12px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .sort-chip {
+    padding: 9px 14px;
+    font-size: .86rem;
+  }
+  .sort-actions {
+    gap: 6px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .sort-actions button {
+    flex: 1 1 calc(50% - 6px);
+    padding: 10px;
+    font-size: .82rem;
+    min-height: 40px;
+  }
+
+  /* 10. Matching mode */
+  .match-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    width: 100%;
+  }
+  .match-card {
+    padding: 12px 14px;
+    font-size: .88rem;
+    min-height: 42px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  /* 11. Written Input mode */
+  .input-card {
+    padding: 22px 14px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+  }
+  .input-meta {
+    margin-bottom: 14px;
+  }
+  .input-prompt-label {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  .input-prompt-text {
+    font-size: 1.45rem;
+    margin-bottom: 18px;
+    min-height: unset;
+  }
+  .input-form {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .input-field {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: .96rem;
+    min-height: 44px;
+    box-sizing: border-box;
+  }
+  .btn-check-input {
+    width: 100%;
+    padding: 12px;
+    font-size: .95rem;
+    min-height: 44px;
+    box-sizing: border-box;
+  }
+  .input-feedback {
+    padding: 12px 14px;
+    font-size: .90rem;
+    margin-top: 14px;
+    box-sizing: border-box;
+  }
+
+  /* 12. Review & Placeholder */
+  .empty-placeholder {
+    width: 100%;
+    max-width: 100%;
+    padding: 36px 16px;
+    box-sizing: border-box;
+  }
+  .review-card {
+    padding: 14px 14px;
+    box-sizing: border-box;
+    width: 100%;
+  }
+  .review-clear {
+    width: 100%;
+    min-height: 42px;
+  }
+}
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg0); }
+::-webkit-scrollbar-thumb { background: rgba(201,168,76,.25); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,.45); }
+</style>
+</head>
+<body>
+
+<!-- Dynamic background layers -->
+<div id="bg-preset-layer"   class="bg-layer"></div>
+<div id="bg-ornament-layer" class="bg-layer"></div>
+<div id="bg-image-layer"    class="bg-layer"></div>
+<div id="bg-dim-layer"      class="bg-layer"></div>
+
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+
+<!-- BG settings panel -->
+<div id="bg-panel-wrap">
+  <button id="bg-toggle-btn" onclick="toggleBgPanel()" title="Настройки фона">🎨</button>
+  <div id="bg-panel">
+    <div>
+      <div class="bg-panel-label">Пресет фона</div>
+      <div class="bg-presets" id="bg-presets-row"></div>
+    </div>
+    <div>
+      <div class="bg-panel-label">Свой фон</div>
+      <div class="bg-upload-row">
+        <label class="bg-upload-btn" for="bg-file-input">📂 Выбрать фото…</label>
+        <input type="file" id="bg-file-input" accept="image/jpeg,image/png,image/webp,image/gif" onchange="handleBgUpload(event)">
+        <button class="bg-clear-btn" id="bg-clear-btn" onclick="clearCustomBg()">✕ Убрать</button>
+      </div>
+    </div>
+    <div class="bg-slider-row">
+      <div class="bg-slider-top">
+        <span>Затемнение</span>
+        <span class="bg-dim-val" id="bg-dim-val">55%</span>
+      </div>
+      <input type="range" id="bg-dim-slider" min="10" max="90" value="55" oninput="updateDim(this.value)">
+    </div>
+  </div>
+</div>
+
+<div class="app">
+
+  <header>
+    <span class="header-emblem">⚔</span>
+    <h1>История России: Тренажёр EnnuI</h1>
+    <p>Полный курс истории &nbsp;·&nbsp; IX–XX вв.</p>
+    <div class="header-rule">
+      <span></span><i>✦</i><span></span>
+    </div>
+  </header>
+
+  <!-- Score Bar -->
+  <div class="score-bar">
+    <div class="score-pill"><span class="dot dot-correct"></span>Верно:&nbsp;<strong id="s-correct">0</strong></div>
+    <div class="score-pill"><span class="dot dot-wrong"></span>Ошибки:&nbsp;<strong id="s-wrong">0</strong></div>
+    <div class="score-pill"><span class="dot dot-streak"></span>Серия:&nbsp;<strong id="s-streak">0</strong></div>
+    <div class="score-pill"><span class="dot dot-total"></span>Очки:&nbsp;<strong id="s-total">0</strong></div>
+  </div>
+
+  <!-- Top-level navigation: Epochs -->
+  <div class="epoch-bar" id="epoch-bar">
+    <button class="epoch-btn" data-epoch="ancient">Древняя Русь</button>
+    <button class="epoch-btn" data-epoch="razdro">Раздробленность</button>
+    <button class="epoch-btn" data-epoch="moscow">Московское княжество</button>
+    <button class="epoch-btn is-empty" data-epoch="tsardom">Русское царство</button>
+    <button class="epoch-btn is-empty" data-epoch="empire">Российская империя</button>
+    <button class="epoch-btn is-empty" data-epoch="soviet">Советский период</button>
+    <button class="epoch-btn active" data-epoch="all">✦ Все эпохи</button>
+  </div>
+
+  <!-- Second-level navigation: Dates / Terms -->
+  <div class="mode-bar-wrap">
+    <div class="mode-bar" id="mode-bar">
+      <button class="mode-btn active" data-mode="dates">📅 Даты</button>
+      <button class="mode-btn" data-mode="terms">📖 Термины</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="cards">📇 Карточки</button>
+    <button class="tab-btn" data-tab="quiz">❓ Тест</button>
+    <button class="tab-btn" data-tab="sort">📜 Хронология</button>
+    <button class="tab-btn" data-tab="match" style="display:none">🔗 Сопоставление</button>
+    <button class="tab-btn" data-tab="input">✍️ Письменный ввод</button>
+    <button class="tab-btn" data-tab="review">📋 Ошибки</button>
+  </div>
+
+  <!-- Theme filter -->
+  <div class="theme-bar" id="theme-bar">
+    <button class="theme-btn active" data-theme="all">✦ Все темы</button>
+    <button class="theme-btn" data-theme="rurik">👑 Первые Рюриковичи</button>
+    <button class="theme-btn" data-theme="razdro">🏰 Раздробленность</button>
+    <button class="theme-btn" data-theme="mongol">🏹 Монгольское нашествие</button>
+    <button class="theme-btn" data-theme="moscow">🦅 Возвышение Москвы</button>
+    <button class="theme-btn" data-theme="culture">📖 Культура</button>
+    <button class="theme-btn" data-theme="soc" style="display:none">👥 Общество и сословия</button>
+    <button class="theme-btn" data-theme="gov" style="display:none">⚖ Управление и право</button>
+    <button class="theme-btn" data-theme="econ" style="display:none">🌾 Экономика и быт</button>
+    <button class="theme-btn" data-theme="cult" style="display:none">⛪ Культура и религия</button>
+    <button class="theme-btn" data-theme="mil" style="display:none">🛡 Орда и военное дело</button>
+  </div>
+  <div class="event-count" id="event-count"></div>
+
+  <!-- Empty section placeholder -->
+  <div class="empty-placeholder" id="empty-placeholder">
+    <div class="ep-icon">📜</div>
+    <div class="ep-title">Раздел готов к наполнению</div>
+    <div class="ep-sub" id="ep-sub">Материалы для выбранного раздела будут добавлены позже.</div>
+  </div>
+
+  <!-- ========== FLASHCARDS ========== -->
+  <div class="section active" id="sec-cards">
+    <div class="card-hint">Нажмите на карточку, чтобы перевернуть &nbsp;|&nbsp; ← → пробел</div>
+
+    <!-- Controls bar -->
+    <div class="card-controls">
+      <button class="ctrl-btn" id="btn-flip-mode" onclick="toggleFlipMode()" title="Поменять стороны карточки">
+        📖 Событие → Дата
+      </button>
+      <button class="ctrl-btn" id="btn-shuffle" onclick="shuffleCards()" title="Перемешать колоду">
+        🔀 Перемешать
+      </button>
+      <label class="ctrl-label" title="Скрывать карточки с отметкой «Знаю»">
+        <input type="checkbox" id="chk-hide-learned" onchange="toggleHideLearned()">
+        Скрывать выученные (<span id="learned-count">0</span>)
+      </label>
+    </div>
+
+    <div class="card-container" id="flashcard" onclick="flipCard()">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="card-known-stamp" id="fc-stamp">✓ ЗНАЮ</div>
+          <div class="theme-badge" id="fc-badge"></div>
+          <div class="fc-title" id="fc-front-title">Событие</div>
+          <div class="event" id="fc-event"></div>
+        </div>
+        <div class="card-face card-back">
+          <div class="theme-badge" id="fc-badge2"></div>
+          <div class="fc-title" id="fc-back-title">Дата</div>
+          <div class="year" id="fc-year"></div>
+          <div class="detail" id="fc-detail"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-nav">
+      <button onclick="prevCard()">← Назад</button>
+      <span class="card-counter" id="fc-counter"></span>
+      <button onclick="nextCard()">Далее →</button>
+    </div>
+
+    <div class="card-known-row">
+      <button class="btn-known" id="btn-known" onclick="toggleKnown()">✓ Знаю</button>
+      <button class="btn-unlearn" id="btn-unlearn" onclick="toggleKnown()">↩ Забыл</button>
+    </div>
+  </div>
+
+  <!-- ========== QUIZ ========== -->
+  <div class="section" id="sec-quiz">
+    <div class="quiz-question">
+      <div class="q-label" id="qz-label"></div>
+      <div class="q-text" id="qz-text"></div>
+    </div>
+    <div class="quiz-options" id="qz-options"></div>
+    <div class="quiz-feedback" id="qz-feedback"></div>
+    <button class="quiz-next hidden" id="qz-next" onclick="nextQuiz()">Следующий вопрос →</button>
+  </div>
+
+  <!-- ========== SORT ========== -->
+  <div class="section" id="sec-sort">
+    <div class="sort-instructions">Расставьте события в хронологическом порядке — от раннего к позднему</div>
+    <div class="sort-pool" id="sort-pool"></div>
+    <div class="sort-timeline" id="sort-timeline"></div>
+    <div class="sort-actions">
+      <button class="btn-check" id="sort-check" onclick="checkSort()">✓ Проверить</button>
+      <button class="btn-reset" onclick="resetSort()">↺ Сброс</button>
+      <button class="btn-new" onclick="newSort()">✦ Новый набор</button>
+    </div>
+    <div class="sort-result" id="sort-result"></div>
+  </div>
+
+  <!-- ========== MATCH (TERMS) ========== -->
+  <div class="section" id="sec-match">
+    <div class="sort-instructions">Соедините 5 терминов с их определениями — выберите пару слева и справа</div>
+    <div class="match-grid">
+      <div class="match-col">
+        <div class="match-col-title">Термин</div>
+        <div id="match-terms" class="match-col"></div>
+      </div>
+      <div class="match-col">
+        <div class="match-col-title">Определение</div>
+        <div id="match-defs" class="match-col"></div>
+      </div>
+    </div>
+    <div class="sort-actions">
+      <button class="btn-new" onclick="newMatch()">✦ Новый набор</button>
+    </div>
+    <div class="sort-result" id="match-result"></div>
+  </div>
+
+  <!-- ========== WRITTEN INPUT ========== -->
+  <div class="section" id="sec-input">
+    <div class="input-card glass">
+      <div class="input-meta">
+        <span class="theme-badge" id="inp-badge"></span>
+        <span class="input-counter" id="inp-counter"></span>
+      </div>
+      <div class="input-prompt-label" id="inp-prompt-label">Историческое событие:</div>
+      <div class="input-prompt-text" id="inp-prompt-text"></div>
+      
+      <div class="input-form">
+        <input type="text" id="inp-answer" class="input-field" placeholder="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button class="btn-check-input" id="inp-btn-check" onclick="checkInputAnswer()">✓ Проверить</button>
+      </div>
+
+      <div class="input-feedback" id="inp-feedback"></div>
+      
+      <button class="quiz-next hidden" id="inp-btn-next" onclick="nextInputQuestion()">Следующий вопрос →</button>
+    </div>
+  </div>
+
+  <!-- ========== REVIEW ========== -->
+  <div class="section" id="sec-review">
+    <div id="review-content"></div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// =====================================================================
+//  DATA — полный курс истории России по эпохам
+// =====================================================================
+const DATA_DATES = {
+  // ── 1. ДРЕВНЯЯ РУСЬ ──
+  ancient: [
+    // Первые Рюриковичи (860–1132 гг.)
+    { year:"860 г.", sortYear:860, event:"Поход руси на Константинополь", detail:"Первый известный крупный морской поход руси на столицу Византии", theme:"rurik" },
+    { year:"862 г.", sortYear:862, event:"Призвание варягов на Русь", detail:"Начало правления Рюрика в Новгороде", theme:"rurik" },
+    { year:"862–879 гг.", sortYear:862.1, event:"Княжение Рюрика", detail:"Правление основателя династии Рюриковичей", theme:"rurik" },
+    { year:"IX в. (863 г.)", sortYear:863, event:"Создание письменности Кириллом и Мефодием", detail:"Создание славянской азбуки (глаголицы / кириллицы) солунскими братьями", theme:"culture" },
+    { year:"879 г.", sortYear:879, event:"Смерть Рюрика, начало княжения Олега в Новгороде", detail:"Олег стал правителем (регентом при малолетнем Игоре)", theme:"rurik" },
+    { year:"879–912 гг.", sortYear:879.1, event:"Правление князя Олега Вещего", detail:"Укрепление власти Рюриковичей, расширение границ Руси", theme:"rurik" },
+    { year:"882 г.", sortYear:882, event:"Объединение Новгорода и Киева князем Олегом", detail:"Убийство Аскольда и Дира, образование Древнерусского государства", theme:"rurik" },
+    { year:"883–885 гг.", sortYear:883, event:"Подчинение Олегом племён древлян, северян и радимичей", detail:"Включение восточнославянских союзов в состав Киевской Руси", theme:"rurik" },
+    { year:"907 г.", sortYear:907, event:"Поход князя Олега на Константинополь", detail:"Заключение первого (устного) договора с Византией, щит на вратах Царьграда", theme:"rurik" },
+    { year:"911 г.", sortYear:911, event:"Заключение первого письменного мирного договора Руси с Византией", detail:"Подписание выгодного торгового и мирного договора при князе Олеге", theme:"rurik" },
+    { year:"912 г.", sortYear:912, event:"Гибель князя Олега, начало княжения Игоря", detail:"Переход власти к сыну Рюрика Игорю Старому", theme:"rurik" },
+    { year:"912–945 гг.", sortYear:912.1, event:"Княжение Игоря Старого в Киеве", detail:"Правление князя Игоря Рюриковича", theme:"rurik" },
+    { year:"915 г.", sortYear:915, event:"Первое появление печенегов у границ Руси", detail:"Столкновение с кочевниками и заключение мира", theme:"rurik" },
+    { year:"941 г.", sortYear:941, event:"Первый (неудачный) поход князя Игоря на Константинополь", detail:"Сожжение русского флота византийским «греческим огнём»", theme:"rurik" },
+    { year:"944 г.", sortYear:944, event:"Второй поход князя Игоря на Византию", detail:"Заключение нового русско-византийского договора", theme:"rurik" },
+    { year:"945 г.", sortYear:945, event:"Восстание древлян в Искоростене, убийство князя Игоря", detail:"Князь Игорь убит древлянами при повторном сборе дани (полюдья)", theme:"rurik" },
+    { year:"945–946 гг.", sortYear:945.1, event:"Налоговая реформа княгини Ольги", detail:"Введение уроков (точного размера дани) и погостов (мест сбора дани)", theme:"rurik" },
+    { year:"945–964 гг.", sortYear:945.2, event:"Правление (регентство) княгини Ольги", detail:"Управление государством при малолетнем Святославе", theme:"rurik" },
+    { year:"957 г.", sortYear:957, event:"Поездка княгини Ольги в Константинополь, принятие ею христианства", detail:"Крещение княгини Ольги в столице Византии", theme:"rurik" },
+    { year:"964–966 гг.", sortYear:964, event:"Восточные походы князя Святослава Игоревича", detail:"Подчинение вятичей, разгром Волжской Булгарии", theme:"rurik" },
+    { year:"964–972 гг.", sortYear:964.1, event:"Самостоятельное княжение Святослава Игоревича", detail:"Военные походы князя-полководца (номинально княжил с 945 г.)", theme:"rurik" },
+    { year:"965 г.", sortYear:965, event:"Разгром Хазарского каганата Святославом", detail:"Взятие крепостей Саркел (Белая Вежа) и Итиль", theme:"rurik" },
+    { year:"967 (968) г.", sortYear:967, event:"Первый поход князя Святослава в Дунайскую Болгарию", detail:"Захват Переяславца на Дунае", theme:"rurik" },
+    { year:"968 г.", sortYear:968, event:"Осада Киева печенегами", detail:"Защита Киева дружиной Претича и возвращение Святослава", theme:"rurik" },
+    { year:"969 г.", sortYear:969, event:"Смерть княгини Ольги, раздел волостей Святославом", detail:"Святослав разделил земли между сыновьями: Ярополком, Олегом и Владимиром", theme:"rurik" },
+    { year:"970–971 гг.", sortYear:970, event:"Русско-византийская война князя Святослава Игоревича", detail:"Борьба за контроль над Болгарией и Балканами", theme:"rurik" },
+    { year:"971 г.", sortYear:971, event:"Оборона Доростола, мир с Иоанном Цимисхием", detail:"Героическая оборона крепости и подписание мирного договора с Византией", theme:"rurik" },
+    { year:"972 г.", sortYear:971.9, event:"Гибель князя Святослава Игоревича на днепровских порогах", detail:"Погиб в бою с печенегами хана Кури при возвращении на Русь", theme:"rurik" },
+    { year:"972–978 (980) гг.", sortYear:971.95, event:"Киевское княжение Ярополка Святославича", detail:"Правление старшего сына Святослава до победы Владимира в усобице", theme:"rurik" },
+    { year:"972–980 гг.", sortYear:972, event:"Первая усобица на Руси", detail:"Междоусобная война сыновей Святослава (977–980 гг. у Мединского)", theme:"rurik" },
+    { year:"978/980–1015 гг.", sortYear:980, event:"Княжение Владимира Святославича", detail:"Правление великого князя Киевского Владимира I", theme:"rurik" },
+    { year:"980 г.", sortYear:980.1, event:"Языческая реформа", detail:"Попытка Владимира упорядочить языческий пантеон, установление идолов в Киеве", theme:"rurik" },
+    { year:"981 г.", sortYear:981, event:"Владимир отвоевал Червень и Перемышль у Польши", detail:"Поход Владимира на запад, присоединение Червенских городов", theme:"rurik" },
+    { year:"988 г.", sortYear:988, event:"Крещение Руси", detail:"Массовое крещение жителей Киева в Днепре при князе Владимире", theme:"rurik" },
+    { year:"Конец X в.", sortYear:996, event:"Десятинная церковь в Киеве", detail:"Первый каменный храм на Руси, построен при Владимире Святославиче", theme:"culture" },
+    { year:"Конец X — первая треть XI в.", sortYear:1000, event:"Создание «Новгородской псалтири»", detail:"Древнейшая сохранившаяся восточнославянская книга", theme:"culture" },
+    { year:"1015–1019 гг.", sortYear:1015, event:"Вторая усобица на Руси", detail:"Междоусобная борьба сыновей Владимира за киевский престол", theme:"rurik" },
+    { year:"1016 г.", sortYear:1016, event:"Составление «Правды Ярослава»", detail:"Начало составления Русской Правды — древнейшего свода законов", theme:"rurik" },
+    { year:"1019 г.", sortYear:1019, event:"Битва на реке Альте", detail:"Святополк Окаянный разбит Ярославом Мудрым на р. Альте", theme:"rurik" },
+    { year:"1019–1054 гг.", sortYear:1019.1, event:"Княжение Ярослава Мудрого", detail:"Расцвет Древнерусского государства, строительство, кодификация права", theme:"rurik" },
+    { year:"1030 г.", sortYear:1030, event:"Основание города Юрьев, покорение племени Чудь", detail:"Ярослав Мудрый основал город Юрьев (совр. Тарту) и покорил чудь", theme:"rurik" },
+    { year:"1036 г.", sortYear:1036, event:"Разгром печенегов под Киевом", detail:"Решающая победа Ярослава Мудрого, конец печенежской угрозы", theme:"rurik" },
+    { year:"1037 г.", sortYear:1037, event:"Заложена церковь Святой Софии в Киеве", detail:"Строительство Софийского собора в честь победы над печенегами", theme:"rurik" },
+    { year:"1043 г.", sortYear:1043, event:"Военное столкновение с Византией", detail:"Последний морской поход Руси на Константинополь (поход Владимира Ярославича)", theme:"rurik" },
+    { year:"1046 г.", sortYear:1046, event:"Мирный договор с Византией", detail:"Заключение мира между Русью и Византией после конфликта", theme:"rurik" },
+    { year:"XI в.", sortYear:1050, event:"Архитектура XI века", detail:"Собор Святой Софии в Киеве и Новгороде, Золотые ворота в Киеве, Киево-Печерский монастырь", theme:"culture" },
+    { year:"XI в.", sortYear:1051, event:"Литература XI века", detail:"«Слово о законе и благодати» Илариона, основание Киево-Печерского монастыря, Остромирово Евангелие", theme:"culture" },
+    { year:"1054–1093 гг.", sortYear:1054, event:"Правление Ярославичей", detail:"Совместное правление Изяслава, Святослава и Всеволода Ярославичей", theme:"rurik" },
+    { year:"1068 г.", sortYear:1068, event:"Сражение на реке Альте против половцев. Восстание в Киеве", detail:"Поражение Ярославичей от половцев, народное восстание в Киеве", theme:"rurik" },
+    { year:"1072 г.", sortYear:1072, event:"Издание «Правды Ярославичей»", detail:"Дополнение Русской Правды сыновьями Ярослава Мудрого", theme:"rurik" },
+    { year:"1093 г.", sortYear:1093, event:"Поражение Руси от половцев", detail:"Святополк Изяславич и Владимир Мономах потерпели поражение", theme:"rurik" },
+    { year:"1097 г.", sortYear:1097, event:"Любечский съезд", detail:"«Каждый да держит отчину свою» — узаконена удельная система", theme:"rurik" },
+    { year:"1100 г.", sortYear:1100, event:"Съезд в Уветичах", detail:"Очередной княжеский съезд для урегулирования усобиц", theme:"rurik" },
+    { year:"Начало XII в.", sortYear:1110, event:"«Повесть временных лет» и «Поучение детям»", detail:"Написание ПВЛ монахом Нестором; «Поучение» Владимира Мономаха", theme:"culture" },
+    { year:"1111 г.", sortYear:1111, event:"Крестовый поход против половцев", detail:"Владимир Мономах организовал поход, победа при Салнице", theme:"rurik" },
+    { year:"1113 г.", sortYear:1113, event:"Восстание в Киеве. Приглашение Мономаха", detail:"Восстание против ростовщиков. Принятие Устава о резах и закупах", theme:"rurik" },
+    { year:"1113–1125 гг.", sortYear:1113.1, event:"Правление в Киеве Владимира Мономаха", detail:"Период стабилизации, борьба с половцами, законодательная деятельность", theme:"rurik" },
+    { year:"1125–1132 гг.", sortYear:1125, event:"Правление в Киеве Мстислава Великого", detail:"Последний период единства Древнерусского государства", theme:"rurik" },
+    { year:"1132 г.", sortYear:1132, event:"Начало политической раздробленности", detail:"После смерти Мстислава Великого Русь окончательно распалась на уделы", theme:"rurik" },
+  ],
+
+  // ── 2. РАЗДРОБЛЕННОСТЬ ──
+  razdro: [
+    { year:"1125–1157 гг.", sortYear:1125.1, event:"Княжение Юрия Долгорукого", detail:"Князь Ростово-Суздальской земли, основатель многих городов", theme:"razdro" },
+    { year:"1136 г.", sortYear:1136, event:"Изгнание Всеволода Мстиславича из Новгорода", detail:"Новгородцы изгнали князя — начало Новгородской республики", theme:"razdro" },
+    { year:"1136–1478 гг.", sortYear:1136.1, event:"Существование Новгородской республики", detail:"Период самоуправления Новгорода с вечевым строем", theme:"razdro" },
+    { year:"1140-е — 1392 гг.", sortYear:1140, event:"Существование Галицко-Волынского княжества", detail:"До 1199 г. Галицкое и Волынское были отдельными княжествами", theme:"razdro" },
+    { year:"1147 г.", sortYear:1147, event:"Первое летописное упоминание о Москве", detail:"Юрий Долгорукий: «Приди ко мне, брате, в Москов»", theme:"razdro" },
+    { year:"1149, 1155 гг.", sortYear:1149, event:"Походы Юрия Долгорукого на Киев", detail:"Борьба Юрия Долгорукого за киевский престол", theme:"razdro" },
+    { year:"XII в.", sortYear:1150, event:"Литература XII века", detail:"«Поучение детям», «Повесть временных лет», «Слово о полку Игореве», «Моление Даниила Заточника» (по Артасову XIII в.)", theme:"culture" },
+    { year:"1157–1174 гг.", sortYear:1157, event:"Княжение Андрея Боголюбского", detail:"Великий князь Владимирский, усиление Северо-Восточной Руси", theme:"razdro" },
+    { year:"1157 г.", sortYear:1157.1, event:"Перенос столицы из Суздаля во Владимир", detail:"Андрей Боголюбский перенёс столицу княжества во Владимир-на-Клязьме", theme:"razdro" },
+    { year:"XII в.", sortYear:1160, event:"Архитектура XII века", detail:"Церковь Спаса на Нередице, Георгиевский собор Юрьева монастыря в Новгороде, Церковь Святого Георгия в Ладоге", theme:"culture" },
+    { year:"1169 г.", sortYear:1169, event:"Поход на Киев Андрея Боголюбского", detail:"Войска Боголюбского взяли и разграбили Киев, перенос столицы государства во Владимир", theme:"razdro" },
+    { year:"1170 г.", sortYear:1170, event:"Война против Новгорода", detail:"Поход владимиро-суздальских войск на Новгород", theme:"razdro" },
+    { year:"1174 г.", sortYear:1174, event:"Убийство Андрея Боголюбского", detail:"Убит боярами Кучковичами в своей резиденции в Боголюбове", theme:"razdro" },
+    { year:"1176–1212 гг.", sortYear:1176, event:"Княжение Всеволода Большое Гнездо", detail:"Расцвет Владимиро-Суздальского княжества, рост могущества", theme:"razdro" },
+    { year:"1205–1206, 1221–1264 гг.", sortYear:1205, event:"Княжение Даниила Галицкого", detail:"Князь Галицко-Волынской земли, получил королевский титул от Папы", theme:"razdro" },
+    { year:"1206 г.", sortYear:1206, event:"Основание Монгольского государства", detail:"Избрание великим ханом Темучина (Чингисхан) на курултае", theme:"mongol" },
+    { year:"К 1215 г.", sortYear:1215, event:"Завоевание Северного Китая Чингисханом", detail:"Монголы захватили столицу Цзинь — Чжунду (Пекин)", theme:"mongol" },
+    { year:"1216 г.", sortYear:1216, event:"Сражение на реке Липице", detail:"Битва между сыновьями Всеволода Большое Гнездо за владимирский престол", theme:"razdro" },
+    { year:"1219–1221 гг.", sortYear:1219, event:"Покорение Средней Азии Чингисханом", detail:"Разгром Хорезмшаха, завоевание городов Бухара, Самарканд, Ургенч", theme:"mongol" },
+    { year:"1220–1222 гг.", sortYear:1220, event:"Завоевание Закавказья Чингисханом", detail:"Поход монголов через Закавказье и Северный Кавказ", theme:"mongol" },
+    { year:"1223 г.", sortYear:1223, event:"Битва на реке Калке", detail:"Первое столкновение русских и половцев с монголами — тяжёлое поражение", theme:"mongol" },
+    { year:"1230-е гг.", sortYear:1230, event:"Основание Великого княжества Литовского", detail:"Формирование литовского государства в первой половине XIII в.", theme:"razdro" },
+    { year:"1236 г.", sortYear:1236, event:"Разгром Волжской Булгарии", detail:"Монгольское войско Батыя уничтожило Волжскую Булгарию", theme:"mongol" },
+    { year:"1237–1238 гг.", sortYear:1237, event:"Поход на Северо-Восточную Русь", detail:"Батыево нашествие на княжества Северо-Восточной Руси", theme:"mongol" },
+    { year:"Декабрь 1237 г.", sortYear:1237.9, event:"Разорение Рязани", detail:"Первый русский город, разорённый монголами. 5 дней осады", theme:"mongol" },
+    { year:"Январь–февраль 1238 г.", sortYear:1238, event:"Разгромлены Коломна, Москва, Суздаль, Владимир", detail:"Последовательное уничтожение крупнейших городов Северо-Востока", theme:"mongol" },
+    { year:"Март 1238 г.", sortYear:1238.3, event:"Битва на реке Сить (Сити)", detail:"Гибель великого князя Юрия Всеволодовича. Захвачены Тверь, Торжок", theme:"mongol" },
+    { year:"Конец марта 1238 г.", sortYear:1238.4, event:"Оборона Козельска", detail:"«Злой город» — Козельск оборонялся 7 недель", theme:"mongol" },
+    { year:"1239–1241 гг.", sortYear:1239, event:"Поход на Юго-Западную Русь и в Центральную Европу", detail:"Монголы двинулись на южнорусские земли и далее в Европу", theme:"mongol" },
+    { year:"1239 г.", sortYear:1239.1, event:"Разорение Переяславля и Чернигова", detail:"Монголы уничтожили ключевые города Южной Руси", theme:"mongol" },
+    { year:"Сентябрь–декабрь 1240 г.", sortYear:1240, event:"Осада и взятие Киева", detail:"Батый осадил и разрушил Киев — конец эпохи «матери городов русских»", theme:"mongol" },
+    { year:"15 июля 1240 г.", sortYear:1240.5, event:"Невская битва", detail:"Князь Александр разбил шведов на Неве, получив прозвище «Невский»", theme:"mongol" },
+    { year:"Весна 1241 г.", sortYear:1241, event:"Разорены Галич и Владимир-Волынский", detail:"Монголы разорили столицы Галицко-Волынской земли", theme:"mongol" },
+    { year:"1242 г.", sortYear:1242, event:"Батый закончил поход на Европу", detail:"Монголы повернули назад из Центральной Европы", theme:"mongol" },
+    { year:"5 апреля 1242 г.", sortYear:1242.3, event:"Ледовое побоище", detail:"Александр Невский разгромил крестоносцев Ливонского ордена на Чудском озере", theme:"mongol" },
+    { year:"1242–1243 гг.", sortYear:1242.5, event:"Образование Золотой Орды", detail:"Батый основал государство Золотая Орда со столицей в Сарае", theme:"mongol" },
+    { year:"1243 г.", sortYear:1243, event:"Получение ярлыка Ярославом Всеволодовичем", detail:"Первый русский князь, получивший ярлык от монгольского хана", theme:"mongol" },
+    { year:"1247 г.", sortYear:1247, event:"Ярлык на великое киевское княжение Александру Невскому", detail:"Александр Невский получил ярлык на киевское княжение", theme:"mongol" },
+    { year:"1252 г.", sortYear:1252, event:"Неврюева рать. Ярлык на владимирское княжение Невскому", detail:"Карательный поход Неврюя; Александр Невский стал великим князем Владимирским", theme:"mongol" },
+    { year:"1257, 1259 гг.", sortYear:1257, event:"Восстание новгородцев против ордынской переписи", detail:"Новгород отказался от переписи населения для ордынского налогообложения", theme:"mongol" },
+    { year:"1262 г.", sortYear:1262, event:"Восстание в городах против баскаков", detail:"Восстания в Ростове, Суздале, Ярославле, Владимире из-за злоупотреблений при сборе дани", theme:"mongol" },
+    { year:"1263 г.", sortYear:1263, event:"Смерть Александра Невского", detail:"Александр Невский скончался в Городце, возвращаясь из Орды", theme:"mongol" },
+  ],
+
+  // ── 3. МОСКОВСКОЕ КНЯЖЕСТВО ──
+  moscow: [
+    { year:"1276–1303 гг.", sortYear:1276, event:"Княжение Даниила Московского", detail:"Основатель династии московских князей, сын Александра Невского", theme:"moscow" },
+    { year:"1276 г.", sortYear:1276.1, event:"Основание Московского княжества", detail:"Даниил Александрович стал первым самостоятельным московским князем", theme:"moscow" },
+    { year:"1293 г.", sortYear:1293, event:"Дюденева рать", detail:"Карательный поход ордынского полководца Дюденя (Тудана), разорение 14 городов", theme:"mongol" },
+    { year:"1299 г.", sortYear:1299, event:"Перенос митрополичьей кафедры из Киева во Владимир", detail:"Митрополит Максим перенёс резиденцию из разорённого Киева во Владимир", theme:"moscow" },
+    { year:"1300 (1301) г.", sortYear:1300, event:"Присоединение Коломны к Московскому княжеству", detail:"Даниил Московский отвоевал Коломну у Рязанского княжества", theme:"moscow" },
+    { year:"1302 г.", sortYear:1302, event:"Присоединение Переяславля-Залесского", detail:"Переяславль-Залесский завещан Даниилу Московскому", theme:"moscow" },
+    { year:"1303–1325 гг.", sortYear:1303, event:"Княжение Юрия Даниловича", detail:"Борьба Москвы с Тверью за великое владимирское княжение", theme:"moscow" },
+    { year:"1303 г.", sortYear:1303.1, event:"Присоединение Можайска", detail:"Можайск присоединён к Московскому княжеству", theme:"moscow" },
+    { year:"1325–1340 гг.", sortYear:1325, event:"Правление Ивана Калиты", detail:"«Собиратель земель русских», укрепление Москвы, сбор дани для Орды", theme:"moscow" },
+    { year:"1327 г.", sortYear:1327, event:"Антиордынское восстание в Твери", detail:"Тверичи убили ордынского баскака Чолхана (Щелкана)", theme:"moscow" },
+    { year:"1328 г.", sortYear:1328, event:"Перенос митрополичьей кафедры в Москву", detail:"Митрополит Феогност перенёс резиденцию из Владимира в Москву", theme:"moscow" },
+    { year:"1340–1353 гг.", sortYear:1340, event:"Княжение Симеона Гордого", detail:"Продолжение политики Ивана Калиты по усилению Москвы", theme:"moscow" },
+    { year:"1353–1359 гг.", sortYear:1353, event:"Княжение Ивана II Красного", detail:"Тихое правление, сохранение московских позиций", theme:"moscow" },
+    { year:"1359–1389 гг.", sortYear:1359, event:"Правление Дмитрия Донского", detail:"Великий князь Московский и Владимирский, победитель на Куликовом поле", theme:"moscow" },
+    { year:"1359–1380 гг.", sortYear:1359.1, event:"«Великая замятня» в Орде", detail:"Период смут и частой смены ханов в Золотой Орде", theme:"moscow" },
+    { year:"1366–1367 (1368) гг.", sortYear:1366, event:"Строительство Белокаменного Кремля в Москве", detail:"Дмитрий Иванович возвёл каменные стены Московского Кремля", theme:"moscow" },
+    { year:"1368, 1370, 1372 гг.", sortYear:1368, event:"Походы литовского князя Ольгерда на Москву", detail:"Три похода Ольгерда на Московское княжество — «литовщина»", theme:"moscow" },
+    { year:"XIV в.", sortYear:1370, event:"Архитектура XIV века", detail:"Церковь Федора Стратилата на Ручью, Церковь Спаса на Ильине улице (Новгород)", theme:"culture" },
+    { year:"1374 г.", sortYear:1374, event:"Отказ Дмитрия Ивановича выплачивать дань Орде", detail:"Открытый вызов ордынскому владычеству", theme:"moscow" },
+    { year:"1375 г.", sortYear:1375, event:"Попытка присоединения Тверского княжества", detail:"Поход Дмитрия на Тверь, Михаил Тверской признал себя «братом молодшим»", theme:"moscow" },
+    { year:"1377 г.", sortYear:1377, event:"Битва на реке Пьяне", detail:"Поражение русских войск от ордынцев из-за беспечности", theme:"moscow" },
+    { year:"1378 г.", sortYear:1378, event:"Битва на реке Воже", detail:"Первая крупная победа русских над ордынским войском", theme:"moscow" },
+    { year:"8 сентября 1380 г.", sortYear:1380, event:"Куликовская битва", detail:"Дмитрий Донской разбил войско Мамая на Куликовом поле", theme:"moscow" },
+    { year:"1382 г.", sortYear:1382, event:"Поход Тохтамыша на Москву", detail:"Хан Тохтамыш обманом захватил и сжёг Москву, восстановление выплаты дани", theme:"moscow" },
+    { year:"1389–1425 гг.", sortYear:1389, event:"Правление Василия I", detail:"Сын Дмитрия Донского, продолжение собирания земель", theme:"moscow" },
+    { year:"1395 г.", sortYear:1395, event:"Нашествие Тамерлана (Тимура) на Русь", detail:"Тамерлан дошёл до Ельца, но повернул назад. Чудо от Владимирской иконы", theme:"moscow" },
+    { year:"1408 г.", sortYear:1408, event:"Нашествие Едигея на Москву", detail:"Ордынский полководец Едигей осаждал Москву, разорил окрестности", theme:"moscow" },
+    { year:"1410 г.", sortYear:1410, event:"Грюнвальдская битва", detail:"Объединённые польско-литовско-русские войска разгромили Тевтонский орден", theme:"moscow" },
+  ],
+
+  // ── 4. РУССКОЕ ЦАРСТВО ──
+  tsardom: [],
+
+  // ── 5. РОССИЙСКАЯ ИМПЕРИЯ ──
+  empire: [],
+
+  // ── 6. СОВЕТСКИЙ ПЕРИОД ──
+  soviet: [],
+};
+
+// Исторические термины по эпохам и темам (65 уникальных понятий)
+const DATA_TERMS = {
+  // ── 1. ДРЕВНЯЯ РУСЬ ──
+  ancient: [
+    { term:"Бортничество", def:"Промысловое занятие восточных славян, связанное со сбором мёда", theme:"econ" },
+    { term:"Варяги", def:"Выходцы из Скандинавии (викинги, норманны) на Руси, наёмные дружинники в IX–XI вв. и купцы, занимавшиеся торговлей на пути «из варяг в греки»", theme:"soc" },
+    { term:"Вервь", def:"Название территориальной (соседской) общины в Древней Руси", theme:"soc" },
+    { term:"Вече", def:"Народное собрание в русских землях IX–XV вв. для обсуждения общих дел и важных вопросов", theme:"gov" },
+    { term:"Волхвы", def:"Служители славянских языческих культов, осуществляющие богослужения и жертвоприношения", theme:"cult" },
+    { term:"Дань", def:"Натуральный или денежный побор с покорённых или добровольно присоединившихся племён или народов, название государственного налога на Руси в IX–XII вв.", theme:"econ" },
+    { term:"Дружина", def:"Вооружённый отряд воинов при князе в Древней Руси, участвовавший в войнах и управлении княжеством", theme:"mil" },
+    { term:"Князь", def:"Племенной вождь, предводитель племени у восточных славян, занимавшийся их защитой от нападения врагов, сбором дани и осуществлением высшего суда (позднее — наследственный титул потомков великих и удельных князей на Руси)", theme:"gov" },
+    { term:"Переложное земледелие", def:"Система земледелия, заключающаяся в использовании участков в течение нескольких лет до полного истощения почвы, после чего осуществлялся переход на новый участок", theme:"econ" },
+    { term:"Подсечно-огневое земледелие", def:"Одна из примитивных древних систем земледелия лесной зоны, основанная на выжигании леса и посадке на этом месте культурных растений", theme:"econ" },
+    { term:"Путь «Из варяг в греки»", def:"Торговый путь от Балтийского моря через Днепр до Чёрного моря, по которому Русь вела торговлю с другими странами", theme:"econ" },
+    { term:"Традиционные верования", def:"Древние верования, для которых характерно, как правило, почитание многих богов", theme:"cult" },
+    { term:"Трёхполье", def:"Система земледелия, при которой треть полей засевали весной (яровые хлеба), треть — осенью (озимые хлеба), а треть оставляли под пар (отдыхать)", theme:"econ" },
+    { term:"Язычество", def:"Система традиционных верований, отличающаяся тем, что у каждого племени, народа было множество собственных богов", theme:"cult" },
+    { term:"Бояре", def:"Высшее сословие (потомки родоплеменной знати, старшие дружинники, крупные землевладельцы) на Руси, играющее ведущую роль после великого князя в управлении государством", theme:"soc" },
+    { term:"Вира", def:"Крупный штраф в пользу князя, присуждаемый по законам «Русской правды» за совершённое преступление", theme:"gov" },
+    { term:"Вотчина", def:"Земельный надел, которым владелец мог распоряжаться на праве полной собственности (дарить, продавать, передавать по наследству), вплоть до начала XVIII в.", theme:"gov" },
+    { term:"Десятина", def:"Десятая часть княжеских доходов, выделяемая в пользу Церкви на Руси", theme:"cult" },
+    { term:"Династический брак", def:"Брак между представителями правящих династий разных государств", theme:"gov" },
+    { term:"Закуп", def:"Человек на Руси, получивший от землевладельца ссуду (купу) и из-за этого попавший к нему в зависимость", theme:"soc" },
+    { term:"Крестово-купольный храм", def:"Основной тип восточнохристианского храма, сложившийся в Византии и унаследованный архитектурой Древней Руси", theme:"cult" },
+    { term:"Митрополит", def:"Глава Русской православной церкви до 1589 г.", theme:"cult" },
+    { term:"Русская Правда", def:"Первый письменный свод законов на Руси", theme:"gov" },
+    { term:"Рядович", def:"Человек, заключивший договор (ряд), согласившись работать у господина на определённых условиях", theme:"soc" },
+    { term:"Смерды", def:"Сельские жители на Руси, несущие повинности в пользу князя", theme:"soc" },
+    { term:"Усобица", def:"Вражда, борьба, война между связанными друг с другом людьми или группами людей (родственниками, представителями одного народа, жителями одной области)", theme:"gov" },
+    { term:"Христианство", def:"Одна из мировых монотеистических религий, основанная на жизни и учении Иисуса Христа, описанных в Новом Завете", theme:"cult" },
+    { term:"Холопы", def:"Зависимая категория населения по Русской Правде, по положению близкая к рабам, на Руси", theme:"soc" },
+    { term:"Печенеги", def:"Древний народ тюркской языковой группы, кочевавший на юго-востоке Европы (в южнорусских степях) во второй половине IX — первой половине XI вв.", theme:"mil" },
+    { term:"Летопись", def:"Вид повествовательной литературы, исторического источника на Руси, представляющий собой погодную запись исторических событий, возникающий первоначально в монастырях", theme:"cult" },
+    { term:"Половцы", def:"Тюркоязычный народ, кочевавший на юго-востоке Европы (в южнорусских степях) в конце XI — начале XIII в.", theme:"mil" },
+    { term:"Поучение", def:"Жанр древнерусской литературы, представляющий из себя проповедь, наставления о жизни и носящий нравоучительный характер", theme:"cult" },
+    { term:"Ростовщичество", def:"Предоставление денежных займов, в результате выплаты процентов по которым кредиторы получают большое, несоразмерное количество средств", theme:"econ" },
+    { term:"«Правда Ярославичей»", def:"Законодательный акт, являющийся второй частью сборника законов — «Русской Правды», который был издан не позднее 1072 г. сыновьями Ярослава Мудрого", theme:"gov" },
+    { term:"«Устав о резах и закупах»", def:"Законодательный акт, являющийся третьей частью сборника законов — «Русской Правды», который был издан в 1113 году Владимиром Мономахом", theme:"gov" },
+    { term:"Повесть временных лет", def:"Летопись, созданная монахом Киево-Печерского монастыря Нестором в XII веке и содержащая описание становления Древнерусского государства, его первых князей и отношений с другими народами", theme:"cult" },
+    { term:"Былины", def:"Вид устного народного творчества на Руси, представляющий из себя песни-сказания о героических событиях прошлого", theme:"cult" },
+    { term:"Граффити", def:"Рисунки, надписи на стенах и других поверхностях, нарисованные или написанные краской или чернилами", theme:"cult" },
+    { term:"Житие", def:"Жанр церковной литературы, произведение, в котором описывается жизнь (биографии) духовных и светских лиц, канонизированных церковью — жизнь святых", theme:"cult" },
+    { term:"Мозаика", def:"Картина, узор, выполненные соединёнными между собой мелкими разноцветными кусочками стекла, мрамора, цветных камней, один из способов украшения стен храмов", theme:"cult" },
+    { term:"Фреска", def:"Техника живописи водяными красками по сырой штукатурке, один из способов украшения стен храмов", theme:"cult" },
+    { term:"Монастырь", def:"Религиозная община, имеющая единый устав, а также единый комплекс богослужебных, жилых, хозяйственных построек, ей принадлежащих", theme:"cult" },
+  ],
+
+  // ── 2. РАЗДРОБЛЕННОСТЬ ──
+  razdro: [
+    { term:"Удел", def:"Территория, выделенная во владение одному из младших членов княжеского рода", theme:"gov" },
+    { term:"Раздробленность", def:"Период в истории Руси, в ходе которого она распадается на ряд самостоятельных княжеств и земель, при этом великокняжеская власть сохраняется, но имеет лишь номинальное значение", theme:"gov" },
+    { term:"Берестяные грамоты", def:"Письма и документы XI–XV вв., процарапанные на берёзовой коре (бересте)", theme:"cult" },
+    { term:"Архиепископ", def:"Глава новгородской церкви, избираемый на вече и утверждаемый после этого митрополитом", theme:"cult" },
+    { term:"Посад", def:"В русских городах торгово-ремесленное поселение вне городских стен, ставшее позднее частью города, в русских княжествах в X–XV вв.", theme:"econ" },
+    { term:"Посадник", def:"Высшая государственная должность в Новгородской (в XII–XV вв.) и Псковской (в XIV — начале XVI в.) республиках", theme:"gov" },
+    { term:"Тысяцкий", def:"Помощник посадника в системе управления Новгородом, который контролировал налоговую систему, управлял торговым судом, возглавлял в походах ополчение", theme:"gov" },
+    { term:"Курултай", def:"Съезд знати во главе с членами правящей династии для решения важнейших вопросов в тюркских и монгольских государствах", theme:"gov" },
+    { term:"Тумен", def:"Наиболее крупная тактическая единица в монгольском войске, составляющая 10 000 воинов. Туменом осуществлял командование тёмник (монгольский военачальник)", theme:"mil" },
+    { term:"Великая Яса", def:"Сборник монгольского права, составленный Чингисханом после избрания его великим ханом", theme:"gov" },
+    { term:"Золотая Орда", def:"Государство, основанное ханом Батыем в начале 1240-х гг. на основе разросшегося в ходе европейских завоеваний Батыя улуса Джучи", theme:"mil" },
+    { term:"Ордынское владычество", def:"Система политической и даннической зависимости русских княжеств от Монгольской империи до 60-х гг. XIII в. и от Золотой Орды до конца XV в.", theme:"mil" },
+    { term:"Неврюева рать", def:"Карательный поход ордынских войск под командованием военачальника Неврюя против брата Александра Невского великого князя Андрея Ярославича", theme:"mil" },
+    { term:"Крестоносцы", def:"Участники крестовых походов, нашивавшие на одежду крест — символ данного ими обета участвовать в походе", theme:"mil" },
+    { term:"Темник", def:"Монгольский военачальник, командующий туменом, составляющим 10 тысяч воинов (начальник над «тьмою»)", theme:"mil" },
+  ],
+
+  // ── 3. МОСКОВСКОЕ КНЯЖЕСТВО ──
+  moscow: [
+    { term:"Ордынский выход", def:"Дань, регулярно выплачиваемая русским населением Орде в период зависимости в XIII–XV вв.", theme:"econ" },
+    { term:"Баскак", def:"Представитель хана Золотой Орды, ведавший сбором дани, учётом населения и контролем над действиями местных властей на Руси в XIII — первой трети XIV в.", theme:"mil" },
+    { term:"Ярлык", def:"Грамота, выдававшаяся великим ханом Золотой Орды подвластным русским князьям на великое или удельное княжение", theme:"gov" },
+    { term:"Дюденева рать", def:"Название похода ордынского полководца Тудана (Дюденя) на Северо-Восточную Русь в 1293 году", theme:"mil" },
+    { term:"«Великая тишина»", def:"Период в истории Руси с 1328 по 1367 гг., когда на русские земли не осуществлялись ордынские набеги, за счёт чего князьям удавалось заниматься восстановлением экономики и культурной жизни", theme:"econ" },
+    { term:"Кремль", def:"Укреплённое ядро исторического русского города, центральная и наиболее древняя его часть, являющаяся, в основном, политическим и духовным центром города", theme:"mil" },
+    { term:"«Великая замятня»", def:"Междоусобица в Золотой Орде 1359–1380 гг., начавшаяся со смертью последнего законного правителя из рода Чингисхана — Бердибека, в ходе которой на золотоордынском престоле активно сменялись ханы, а многие части Орды пытались стать независимыми", theme:"mil" },
+    { term:"Засадный полк", def:"Часть войска русской армии, предназначавшаяся для внезапного удара по противнику, располагавшаяся обычно в укрытии и вводившаяся в кульминационный момент сражения", theme:"mil" },
+  ],
+
+  tsardom: [],
+  empire:  [],
+  soviet:  [],
+};
+
+const ALL_EVENTS = Object.entries(DATA_DATES).flatMap(([epoch, arr]) =>
+  arr.map(item => ({ ...item, epoch }))
+);
+const ALL_TERMS = Object.entries(DATA_TERMS).flatMap(([epoch, arr]) =>
+  arr.map(item => ({ ...item, epoch }))
+);
+
+// =====================================================================
+//  STATE
+// =====================================================================
+let currentEpoch = 'all';
+let currentMode  = 'dates';   // 'dates' | 'terms'
+let currentTheme = 'all';
+let filteredEvents = [...ALL_EVENTS];   // base filtered by epoch + mode + theme
+let displayEvents  = [...ALL_EVENTS];   // what actually shows (may be shuffled / with learned hidden)
+let score = { correct:0, wrong:0, streak:0, total:0 };
+let errors = [];
+let cardIdx = 0;
+let quizQuestion = null, quizAnswered = false, quizCount = 0;
+let sortEvents = [], sortTimeline = [];
+
+// New feature state
+let flipMode     = false;   // false = event-front/date-back; true = date-front/event-back
+let isShuffled   = false;
+let hideLearned  = false;
+
+// Learned cards (persisted)
+const LS_KEY = 'rus-trainer-learned-v1';
+let learnedKeys = new Set(JSON.parse(localStorage.getItem(LS_KEY) || '[]'));
+
+function saveLearnedLS() {
+  localStorage.setItem(LS_KEY, JSON.stringify([...learnedKeys]));
+}
+function getEventKey(e) {
+  return e.term !== undefined ? `term::${e.term}` : `${e.sortYear}::${e.event}`;
+}
+
+const EPOCH_NAMES = {
+  all:     'Все эпохи',
+  ancient: 'Древняя Русь',
+  razdro:  'Раздробленность',
+  moscow:  'Московское княжество',
+  tsardom: 'Русское царство',
+  empire:  'Российская империя',
+  soviet:  'Советский период',
+};
+
+const DATE_THEMES = new Set(['rurik', 'razdro', 'mongol', 'moscow', 'culture']);
+const TERM_THEMES = new Set(['soc', 'gov', 'econ', 'cult', 'mil']);
+
+const THEME_NAMES = {
+  all: 'Все темы',
+  rurik: 'Первые Рюриковичи',
+  razdro: 'Раздробленность',
+  mongol: 'Монгольское нашествие',
+  moscow: 'Возвышение Москвы',
+  culture: 'Культура',
+  soc: 'Общество и сословия',
+  gov: 'Управление и право',
+  econ: 'Экономика и быт',
+  cult: 'Культура и религия',
+  mil: 'Орда и военное дело',
+};
+
+// =====================================================================
+//  PROGRESS BAR
+// =====================================================================
+function setProgress(pct) {
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+function flashProgress() {
+  setProgress(0);
+  setTimeout(() => setProgress(30), 50);
+  setTimeout(() => setProgress(70), 200);
+  setTimeout(() => setProgress(100), 500);
+  setTimeout(() => setProgress(0), 900);
+}
+
+// =====================================================================
+//  HELPERS
+// =====================================================================
+function shuffle(a){ const b=[...a]; for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];} return b; }
+
+function updateScoreUI(){
+  document.getElementById('s-correct').textContent=score.correct;
+  document.getElementById('s-wrong').textContent=score.wrong;
+  document.getElementById('s-streak').textContent=score.streak;
+  document.getElementById('s-total').textContent=score.total;
+}
+
+function addCorrect(){ score.correct++; score.streak++; score.total+=10+score.streak*2; updateScoreUI(); }
+
+function addWrong(question, yourAnswer, correctAnswer){
+  score.wrong++; score.streak=0; updateScoreUI();
+  errors.push({question, yourAnswer, correctAnswer});
+}
+
+function getEpochSource() {
+  if (currentMode === 'terms') {
+    return currentEpoch === 'all' ? ALL_TERMS : (DATA_TERMS[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+  }
+  return currentEpoch === 'all' ? ALL_EVENTS : (DATA_DATES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+}
+
+function updateThemeButtonsVisibility(epochItems) {
+  const allowedThemes = currentMode === 'terms' ? TERM_THEMES : DATE_THEMES;
+  const presentThemes = new Set(epochItems.map(e => e.theme));
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    const t = btn.dataset.theme;
+    if (t === 'all') {
+      btn.style.display = epochItems.length > 0 ? '' : 'none';
+    } else {
+      btn.style.display = (allowedThemes.has(t) && presentThemes.has(t)) ? '' : 'none';
+    }
+  });
+  if (currentTheme !== 'all' && (!allowedThemes.has(currentTheme) || !presentThemes.has(currentTheme))) {
+    currentTheme = 'all';
+  }
+}
+
+function syncWorkspaceVisibility(epochItems) {
+  const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+  const isEmpty = epochItems.length === 0;
+  const placeholder = document.getElementById('empty-placeholder');
+  const themeBar = document.getElementById('theme-bar');
+  const eventCountEl = document.getElementById('event-count');
+
+  if (isEmpty && activeTab !== 'review') {
+    themeBar.style.display = 'none';
+    eventCountEl.style.display = 'none';
+    document.querySelectorAll('.section').forEach(s => {
+      if (s.id !== 'sec-review') s.style.display = 'none';
+    });
+    const modeLabel = currentMode === 'terms' ? 'Термины' : 'Даты';
+    document.getElementById('ep-sub').textContent =
+      `Раздел «${EPOCH_NAMES[currentEpoch]}» (${modeLabel}) пока пуст и готов к наполнению.`;
+    placeholder.classList.add('show');
+    setProgress(0);
+    return false;
+  }
+
+  placeholder.classList.remove('show');
+  themeBar.style.display = isEmpty ? 'none' : '';
+  eventCountEl.style.display = isEmpty ? 'none' : '';
+  document.querySelectorAll('.section').forEach(s => {
+    s.style.display = '';
+  });
+  return !isEmpty;
+}
+
+function applyEpoch(epoch) {
+  currentEpoch = epoch;
+  document.querySelectorAll('.epoch-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.epoch === epoch);
+  });
+  refreshFilterState();
+}
+
+function updateFlipModeBtn() {
+  const btn = document.getElementById('btn-flip-mode');
+  if (currentMode === 'terms') {
+    btn.textContent = flipMode ? '📝 Определение → Термин' : '📖 Термин → Определение';
+  } else {
+    btn.textContent = flipMode ? '📅 Дата → Событие' : '📖 Событие → Дата';
+  }
+  btn.classList.toggle('active-mode', flipMode);
+}
+
+function applyMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  const sortTabBtn  = document.querySelector('.tab-btn[data-tab="sort"]');
+  const matchTabBtn = document.querySelector('.tab-btn[data-tab="match"]');
+  if (sortTabBtn && matchTabBtn) {
+    sortTabBtn.style.display  = mode === 'terms' ? 'none' : '';
+    matchTabBtn.style.display = mode === 'terms' ? '' : 'none';
+    if (mode === 'terms' && sortTabBtn.classList.contains('active')) {
+      matchTabBtn.click();
+    } else if (mode === 'dates' && matchTabBtn.classList.contains('active')) {
+      sortTabBtn.click();
+    }
+  }
+  updateFlipModeBtn();
+  refreshFilterState();
+}
+
+function refreshFilterState() {
+  const epochItems = getEpochSource();
+  updateThemeButtonsVisibility(epochItems);
+  const hasItems = syncWorkspaceVisibility(epochItems);
+  if (hasItems) {
+    applyTheme(currentTheme);
+  }
+}
+
+function applyTheme(theme){
+  currentTheme = theme;
+  const epochItems = getEpochSource();
+  filteredEvents = theme === 'all' ? [...epochItems] : epochItems.filter(e => e.theme === theme);
+  if (currentMode === 'terms') {
+    filteredEvents.sort((a,b) => a.term.localeCompare(b.term, 'ru'));
+  } else {
+    filteredEvents.sort((a,b) => a.sortYear - b.sortYear);
+  }
+  isShuffled = false;
+  document.getElementById('btn-shuffle').textContent = '🔀 Перемешать';
+  document.getElementById('btn-shuffle').classList.remove('active-mode');
+  buildDisplayEvents();
+
+  document.querySelectorAll('.theme-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.theme === theme);
+  });
+  updateEventCount();
+
+  cardIdx = 0;
+  renderCard();
+
+  const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+  if (activeTab === 'quiz') generateQuiz();
+  if (activeTab === 'sort') newSort();
+  if (activeTab === 'match') newMatch();
+  if (activeTab === 'input') initInputQuestion(true);
+}
+
+function buildDisplayEvents() {
+  let list = [...filteredEvents];
+  if (hideLearned) list = list.filter(e => !learnedKeys.has(getEventKey(e)));
+  displayEvents = list;
+  updateEventCount();
+}
+
+function updateEventCount() {
+  const total = filteredEvents.length;
+  const hidden = hideLearned ? filteredEvents.filter(e => learnedKeys.has(getEventKey(e))).length : 0;
+  const showing = total - hidden;
+  const lc = learnedKeys.size;
+  const prefix = currentEpoch === 'all' ? THEME_NAMES[currentTheme] : `${EPOCH_NAMES[currentEpoch]} · ${THEME_NAMES[currentTheme]}`;
+  document.getElementById('event-count').textContent =
+    `${prefix} — ${showing} карточек` +
+    (hidden > 0 ? ` (скрыто выученных: ${hidden})` : '') +
+    (lc > 0 && !hideLearned ? ` · Выучено: ${lc}` : '');
+  document.getElementById('learned-count').textContent = learnedKeys.size;
+}
+
+// =====================================================================
+//  TABS & TOP NAV
+// =====================================================================
+document.querySelectorAll('.epoch-btn').forEach(btn => {
+  btn.addEventListener('click', () => applyEpoch(btn.dataset.epoch));
+});
+
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => applyMode(btn.dataset.mode));
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('sec-'+btn.dataset.tab).classList.add('active');
+    const epochItems = getEpochSource();
+    const hasItems = syncWorkspaceVisibility(epochItems);
+    if (btn.dataset.tab==='review') {
+      renderReview();
+    } else if (hasItems) {
+      if (btn.dataset.tab==='quiz') generateQuiz();
+      if (btn.dataset.tab==='sort' && sortEvents.length===0) newSort();
+      if (btn.dataset.tab==='match') newMatch();
+      if (btn.dataset.tab==='input') initInputQuestion(false);
+    }
+    flashProgress();
+  });
+});
+
+// =====================================================================
+//  THEME BUTTONS
+// =====================================================================
+document.querySelectorAll('.theme-btn').forEach(btn => {
+  btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
+});
+
+// =====================================================================
+//  FLASHCARDS — render, flip, navigate, shuffle, known
+// =====================================================================
+function renderCard(){
+  if(displayEvents.length === 0){
+    // All hidden — show message
+    document.getElementById('fc-event').textContent = 'Все карточки выучены!';
+    document.getElementById('fc-year').textContent = '🎉';
+    document.getElementById('fc-detail').textContent = 'Снимите флажок «Скрывать выученные», чтобы повторить.';
+    document.getElementById('fc-counter').textContent = '0 / 0';
+    document.getElementById('flashcard').classList.remove('flipped');
+    return;
+  }
+  if(cardIdx >= displayEvents.length) cardIdx = 0;
+  const e = displayEvents[cardIdx];
+  const known = learnedKeys.has(getEventKey(e));
+
+  // Flip mode determines which face shows what
+  if(currentMode === 'terms') {
+    if(flipMode) {
+      // Front: DEF, Back: TERM
+      document.getElementById('fc-front-title').textContent = 'Определение';
+      document.getElementById('fc-event').textContent = e.def;
+      document.getElementById('fc-event').style.cssText =
+        'font-family:var(--ff-sans);font-size:1.12rem;font-weight:500;color:var(--text);line-height:1.55';
+      document.getElementById('fc-back-title').textContent = 'Термин';
+      document.getElementById('fc-year').textContent = e.term;
+      document.getElementById('fc-year').style.cssText = 'font-size:2.3rem';
+      document.getElementById('fc-detail').textContent = '';
+    } else {
+      // Front: TERM, Back: DEF
+      document.getElementById('fc-front-title').textContent = 'Термин';
+      document.getElementById('fc-event').textContent = e.term;
+      document.getElementById('fc-event').style.cssText = 'font-size:2.2rem';
+      document.getElementById('fc-back-title').textContent = 'Определение';
+      document.getElementById('fc-year').textContent = e.def;
+      document.getElementById('fc-year').style.cssText =
+        'font-family:var(--ff-sans);font-size:1.1rem;font-weight:500;color:var(--text);background:none;-webkit-text-fill-color:var(--text);line-height:1.55;margin-bottom:0';
+      document.getElementById('fc-detail').textContent = '';
+    }
+  } else if(flipMode) {
+    // Front: DATE, Back: EVENT + DETAIL
+    document.getElementById('fc-front-title').textContent = 'Дата';
+    document.getElementById('fc-event').textContent = e.year;
+    document.getElementById('fc-back-title').textContent = 'Событие';
+    document.getElementById('fc-year').textContent = e.event;
+    document.getElementById('fc-detail').textContent = e.detail;
+    // override year gradient style → plain text for event on back
+    document.getElementById('fc-year').style.cssText =
+      'font-family:var(--ff-serif);font-size:1.6rem;font-weight:600;color:var(--text);background:none;-webkit-text-fill-color:var(--text);margin-bottom:4px';
+    // front: year looks like a year
+    document.getElementById('fc-event').style.cssText =
+      'font-family:var(--ff-serif);font-size:2.6rem;font-weight:700;' +
+      'background:linear-gradient(135deg,var(--gold2),var(--gold));' +
+      '-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.3';
+  } else {
+    // Front: EVENT, Back: DATE + DETAIL (default)
+    document.getElementById('fc-front-title').textContent = 'Событие';
+    document.getElementById('fc-event').textContent = e.event;
+    document.getElementById('fc-back-title').textContent = 'Дата';
+    document.getElementById('fc-year').textContent = e.year;
+    document.getElementById('fc-detail').textContent = e.detail;
+    // restore normal styles
+    document.getElementById('fc-event').style.cssText = '';
+    document.getElementById('fc-year').style.cssText = '';
+  }
+
+  document.getElementById('fc-counter').textContent = `${cardIdx+1} / ${displayEvents.length}`;
+
+  ['fc-badge','fc-badge2'].forEach(id => {
+    const b = document.getElementById(id);
+    b.className = 'theme-badge ' + e.theme;
+    b.textContent = THEME_NAMES[e.theme];
+  });
+
+  // Known stamp
+  const stamp = document.getElementById('fc-stamp');
+  stamp.classList.toggle('show', known);
+
+  // Known / Unlearn buttons
+  document.getElementById('btn-known').classList.toggle('is-known', known);
+  document.getElementById('btn-known').textContent = known ? '✓ Знаю' : '✓ Знаю';
+  document.getElementById('btn-unlearn').classList.toggle('show', known);
+
+  document.getElementById('flashcard').classList.remove('flipped');
+
+  const pct = Math.round(((cardIdx+1)/displayEvents.length)*100);
+  setProgress(pct);
+}
+
+let cardJustSwiped = false;
+function flipCard(){
+  if (cardJustSwiped) return;
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+function nextCard(){ if(!displayEvents.length) return; cardIdx=(cardIdx+1)%displayEvents.length; renderCard(); }
+function prevCard(){ if(!displayEvents.length) return; cardIdx=(cardIdx-1+displayEvents.length)%displayEvents.length; renderCard(); }
+
+function initCardSwipe() {
+  const card = document.getElementById('flashcard');
+  if (!card) return;
+
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartTime = 0;
+
+  card.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
+  }, { passive: true });
+
+  card.addEventListener('touchend', e => {
+    if (!e.changedTouches || e.changedTouches.length === 0) return;
+    const endX = e.changedTouches[0].clientX;
+    const endY = e.changedTouches[0].clientY;
+    const dx = endX - touchStartX;
+    const dy = endY - touchStartY;
+    const dt = Date.now() - touchStartTime;
+
+    // Minimum horizontal distance 40px, predominantly horizontal (|dx| > |dy| * 1.2), within 800ms
+    if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy) * 1.2 && dt < 800) {
+      cardJustSwiped = true;
+      setTimeout(() => { cardJustSwiped = false; }, 320);
+
+      if (dx < 0) {
+        // Swiped left -> next card
+        nextCard();
+      } else {
+        // Swiped right -> prev card
+        prevCard();
+      }
+    }
+  }, { passive: true });
+}
+
+function toggleFlipMode(){
+  flipMode = !flipMode;
+  updateFlipModeBtn();
+  renderCard();
+}
+
+function shuffleCards(){
+  const btn = document.getElementById('btn-shuffle');
+  if(!isShuffled){
+    // Shuffle display copy
+    const list = hideLearned
+      ? filteredEvents.filter(e => !learnedKeys.has(getEventKey(e)))
+      : [...filteredEvents];
+    // Fisher-Yates
+    for(let i=list.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[list[i],list[j]]=[list[j],list[i]];}
+    displayEvents = list;
+    isShuffled = true;
+    btn.textContent = '🔀 По порядку';
+    btn.classList.add('active-mode');
+  } else {
+    buildDisplayEvents();   // restore sorted order
+    isShuffled = false;
+    btn.textContent = '🔀 Перемешать';
+    btn.classList.remove('active-mode');
+  }
+  cardIdx = 0;
+  renderCard();
+}
+
+function toggleHideLearned(){
+  hideLearned = document.getElementById('chk-hide-learned').checked;
+  buildDisplayEvents();
+  if(isShuffled){
+    // re-shuffle with new list
+    isShuffled = false;
+    shuffleCards();
+  } else {
+    cardIdx = 0;
+    renderCard();
+  }
+}
+
+function toggleKnown(){
+  if(displayEvents.length === 0) return;
+  const e = displayEvents[cardIdx];
+  const key = getEventKey(e);
+  if(learnedKeys.has(key)){
+    learnedKeys.delete(key);
+  } else {
+    learnedKeys.add(key);
+  }
+  saveLearnedLS();
+  // If hiding and just un-learned: rebuild, card stays
+  if(hideLearned && learnedKeys.has(key)){
+    buildDisplayEvents();
+    if(cardIdx >= displayEvents.length) cardIdx = Math.max(0, displayEvents.length-1);
+  }
+  updateEventCount();
+  renderCard();
+}
+
+// =====================================================================
+//  QUIZ
+// =====================================================================
+function generateQuiz(){
+  const pool = filteredEvents.length >= 4 ? filteredEvents : getEpochSource();
+  if(pool.length < 4){
+    document.getElementById('qz-label').textContent = '';
+    document.getElementById('qz-text').textContent = 'Нужно минимум 4 карточки для теста. Выберите «Все темы».';
+    document.getElementById('qz-options').innerHTML = '';
+    return;
+  }
+  quizAnswered=false; quizCount++;
+  const fb=document.getElementById('qz-feedback');
+  fb.className='quiz-feedback';
+  document.getElementById('qz-next').classList.add('hidden');
+  setProgress(0);
+
+  const target = pool[Math.floor(Math.random()*pool.length)];
+  const qContext = currentEpoch === 'all' ? THEME_NAMES[currentTheme] : `${EPOCH_NAMES[currentEpoch]} · ${THEME_NAMES[currentTheme]}`;
+  let options = [];
+  let isDefOpts = false;
+
+  if (currentMode === 'terms') {
+    const type = Math.random() < 0.5 ? 'term' : 'def';
+    if (type === 'term') {
+      document.getElementById('qz-label').textContent = `Вопрос ${quizCount} · ${qContext}`;
+      document.getElementById('qz-text').textContent  = `Какой термин означает: «${target.def}»?`;
+      const wrong = [...new Set(pool.filter(e => e.term !== target.term).map(e => e.term))];
+      options = shuffle([...shuffle(wrong).slice(0,3), target.term]);
+      quizQuestion = { correct:target.term, questionText:`Термин: ${target.def}`, detail:`<strong>${target.term}</strong> — ${target.def}` };
+    } else {
+      isDefOpts = true;
+      document.getElementById('qz-label').textContent = `Вопрос ${quizCount} · ${qContext}`;
+      document.getElementById('qz-text').textContent  = `Что означает термин «${target.term}»?`;
+      const wrong = [...new Set(pool.filter(e => e.term !== target.term).map(e => e.def))];
+      options = shuffle([...shuffle(wrong).slice(0,3), target.def]);
+      quizQuestion = { correct:target.def, questionText:`Значение термина «${target.term}»`, detail:`<strong>${target.term}</strong> — ${target.def}` };
+    }
+  } else {
+    const type = Math.random()<0.5 ? 'date' : 'event';
+    if(type==='date'){
+      document.getElementById('qz-label').textContent=`Вопрос ${quizCount} · ${qContext}`;
+      document.getElementById('qz-text').textContent=`В каком году (период): ${target.event}?`;
+      const wrong = [...new Set(pool.filter(e=>e.year!==target.year).map(e=>e.year))];
+      const picked = shuffle(wrong).slice(0,3);
+      options = shuffle([...picked, target.year]);
+      quizQuestion = { correct:target.year, questionText:`В каком году: ${target.event}?`, detail:target.detail };
+    } else {
+      document.getElementById('qz-label').textContent=`Вопрос ${quizCount} · ${qContext}`;
+      document.getElementById('qz-text').textContent=`Что произошло: ${target.year}?`;
+      const wrong = [...new Set(pool.filter(e=>e.year!==target.year).map(e=>e.event))];
+      const picked = shuffle(wrong).slice(0,3);
+      options = shuffle([...picked, target.event]);
+      quizQuestion = { correct:target.event, questionText:`Что произошло: ${target.year}?`, detail:target.detail };
+    }
+  }
+
+  const container = document.getElementById('qz-options');
+  container.className = isDefOpts ? 'quiz-options single-col' : 'quiz-options';
+  container.innerHTML='';
+  options.forEach(opt => {
+    const div = document.createElement('div');
+    div.className = isDefOpts ? 'quiz-opt def-opt' : 'quiz-opt';
+    div.textContent=String(opt);
+    div.addEventListener('click', ()=>answerQuiz(div, String(opt)));
+    container.appendChild(div);
+  });
+}
+
+function answerQuiz(el, answer){
+  if(quizAnswered) return;
+  quizAnswered=true;
+  document.querySelectorAll('.quiz-opt').forEach(o => {
+    o.classList.add('disabled');
+    if(o.textContent===String(quizQuestion.correct)) o.classList.add('correct');
+  });
+  const fb=document.getElementById('qz-feedback');
+  if(answer===String(quizQuestion.correct)){
+    el.classList.add('correct');
+    fb.className='quiz-feedback show ok';
+    fb.innerHTML=`✅ <strong>Верно!</strong> ${quizQuestion.detail}`;
+    addCorrect();
+    setProgress(100);
+  } else {
+    el.classList.add('wrong');
+    fb.className='quiz-feedback show err';
+    fb.innerHTML=`❌ <strong>Неверно.</strong> Правильный ответ: <strong>${quizQuestion.correct}</strong><br>${quizQuestion.detail}`;
+    addWrong(quizQuestion.questionText, answer, String(quizQuestion.correct));
+    setProgress(30);
+  }
+  document.getElementById('qz-next').classList.remove('hidden');
+}
+
+function nextQuiz(){ generateQuiz(); }
+
+// =====================================================================
+//  SORT
+// =====================================================================
+function newSort(){
+  const epochPool = getEpochSource();
+  const pool = filteredEvents.length >= 5 ? filteredEvents : (epochPool.length >= 5 ? epochPool : ALL_EVENTS);
+  const count = Math.min(5 + Math.floor(Math.random()*2), pool.length);
+  sortEvents = shuffle(pool).slice(0, count);
+  sortTimeline = [];
+  document.getElementById('sort-result').className='sort-result';
+  document.getElementById('sort-check').disabled=false;
+  setProgress(0);
+  renderSortPool(); renderSortTimeline();
+}
+
+function renderSortPool(){
+  const p=document.getElementById('sort-pool'); p.innerHTML='';
+  shuffle(sortEvents).forEach(ev => {
+    const c=document.createElement('div');
+    c.className='sort-chip';
+    if(sortTimeline.find(t=>t.sortYear===ev.sortYear && t.event===ev.event)) c.classList.add('placed');
+    c.textContent=ev.event;
+    c.addEventListener('click', ()=>placeEvent(ev));
+    p.appendChild(c);
+  });
+}
+
+function renderSortTimeline(){
+  const tl=document.getElementById('sort-timeline'); tl.innerHTML='';
+  if(!sortTimeline.length){
+    tl.innerHTML='<div style="color:var(--muted);text-align:center;padding:20px;font-size:.85rem">Нажимайте на события, чтобы расположить их по порядку</div>';
+    return;
+  }
+  sortTimeline.forEach((ev,i) => {
+    const item=document.createElement('div');
+    item.className='sort-item';
+    item.innerHTML=`<span>${i+1}. ${ev.event}</span><button class="remove-btn" onclick="removeFromTimeline(${i})">✕</button>`;
+    tl.appendChild(item);
+  });
+  // show fill progress
+  setProgress(Math.round((sortTimeline.length/sortEvents.length)*80));
+}
+
+function placeEvent(ev){
+  if(sortTimeline.find(t=>t.sortYear===ev.sortYear && t.event===ev.event)) return;
+  sortTimeline.push(ev);
+  renderSortPool(); renderSortTimeline();
+}
+
+function removeFromTimeline(i){ sortTimeline.splice(i,1); renderSortPool(); renderSortTimeline(); }
+
+function resetSort(){
+  sortTimeline=[]; document.getElementById('sort-result').className='sort-result';
+  document.getElementById('sort-check').disabled=false;
+  setProgress(0);
+  renderSortPool(); renderSortTimeline();
+}
+
+function checkSort(){
+  if(sortTimeline.length!==sortEvents.length){ alert('Расположите все события!'); return; }
+  const correct=[...sortEvents].sort((a,b)=>a.sortYear-b.sortYear);
+  let allCorrect=true;
+  for(let i=0;i<correct.length;i++){
+    if(sortTimeline[i].sortYear!==correct[i].sortYear||sortTimeline[i].event!==correct[i].event){ allCorrect=false; break; }
+  }
+  const res=document.getElementById('sort-result');
+  if(allCorrect){
+    res.className='sort-result show ok';
+    res.innerHTML='✅ <strong>Отлично!</strong> Все события расположены верно!';
+    addCorrect(); addCorrect();
+    setProgress(100);
+  } else {
+    res.className='sort-result show err';
+    let h='<div class="correction">';
+    correct.forEach((ev,i)=>{
+      const yours=sortTimeline[i];
+      const ok=(yours.sortYear===ev.sortYear && yours.event===ev.event);
+      h+=`<div><span class="pos">${i+1}.</span>${!ok?`<span class="wrong-item">${yours.event} (${yours.year})</span> → `:''}<span class="right-item">${ev.event} (${ev.year})</span></div>`;
+    });
+    h+='</div>';
+    res.innerHTML=`❌ <strong>Есть ошибки.</strong> Правильный порядок:${h}`;
+    addWrong('Хронологическая сортировка',
+      sortTimeline.map(e=>e.event).join(' → '),
+      correct.map(e=>`${e.event} (${e.year})`).join(' → ')
+    );
+    setProgress(40);
+  }
+  document.getElementById('sort-check').disabled=true;
+}
+
+// =====================================================================
+//  MATCH (TERMS)
+// =====================================================================
+let matchPairs = [], matchLeft = [], matchRight = [];
+let matchSelLeft = null, matchSelRight = null, matchMatched = new Set();
+
+function newMatch() {
+  const epochPool = getEpochSource();
+  const pool = filteredEvents.length >= 5 ? filteredEvents : (epochPool.length >= 5 ? epochPool : ALL_TERMS);
+  if (pool.length === 0) return;
+  const count = Math.min(5, pool.length);
+  matchPairs = shuffle(pool).slice(0, count);
+  matchLeft  = shuffle(matchPairs);
+  matchRight = shuffle(matchPairs);
+  matchSelLeft = null;
+  matchSelRight = null;
+  matchMatched = new Set();
+  const res = document.getElementById('match-result');
+  res.className = 'sort-result';
+  res.innerHTML = '';
+  setProgress(0);
+  renderMatch();
+}
+
+function renderMatch() {
+  const termsCol = document.getElementById('match-terms');
+  const defsCol  = document.getElementById('match-defs');
+  termsCol.innerHTML = '';
+  defsCol.innerHTML  = '';
+
+  matchLeft.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'match-card term-side';
+    if (matchMatched.has(item.term)) card.classList.add('matched');
+    else if (matchSelLeft === item.term) card.classList.add('selected');
+    card.textContent = matchMatched.has(item.term) ? `✓ ${item.term}` : item.term;
+    card.addEventListener('click', () => selectMatchSide('left', item.term, card));
+    termsCol.appendChild(card);
+  });
+
+  matchRight.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'match-card def-side';
+    if (matchMatched.has(item.term)) card.classList.add('matched');
+    else if (matchSelRight === item.term) card.classList.add('selected');
+    card.textContent = item.def;
+    card.addEventListener('click', () => selectMatchSide('right', item.term, card));
+    defsCol.appendChild(card);
+  });
+}
+
+function selectMatchSide(side, termKey, el) {
+  if (matchMatched.has(termKey)) return;
+  if (side === 'left') {
+    matchSelLeft = (matchSelLeft === termKey) ? null : termKey;
+  } else {
+    matchSelRight = (matchSelRight === termKey) ? null : termKey;
+  }
+
+  if (matchSelLeft && matchSelRight) {
+    if (matchSelLeft === matchSelRight) {
+      matchMatched.add(matchSelLeft);
+      matchSelLeft = null;
+      matchSelRight = null;
+      addCorrect();
+      const pct = Math.round((matchMatched.size / matchPairs.length) * 100);
+      setProgress(pct);
+      renderMatch();
+      if (matchMatched.size === matchPairs.length) {
+        const res = document.getElementById('match-result');
+        res.className = 'sort-result show ok';
+        res.innerHTML = '✅ <strong>Отлично!</strong> Все термины успешно сопоставлены!';
+      }
+    } else {
+      const leftItem  = matchPairs.find(p => p.term === matchSelLeft);
+      const rightItem = matchPairs.find(p => p.term === matchSelRight);
+      addWrong(
+        `Сопоставление: «${leftItem.term}»`,
+        rightItem.def,
+        leftItem.def
+      );
+      matchSelLeft = null;
+      matchSelRight = null;
+      renderMatch();
+      // Briefly highlight wrong cards
+      document.querySelectorAll('.match-card:not(.matched)').forEach(c => {
+        if (c.textContent === leftItem.term || c.textContent === rightItem.def) {
+          c.classList.add('wrong-flash');
+          setTimeout(() => c.classList.remove('wrong-flash'), 400);
+        }
+      });
+    }
+  } else {
+    renderMatch();
+  }
+}
+
+// =====================================================================
+//  WRITTEN INPUT
+// =====================================================================
+let inputQuestion = null;
+let inputAnswered = false;
+let inputCount = 0;
+let lastInputTarget = null;
+
+function normalizeInputBasic(s) {
+  if (!s) return '';
+  return s
+    .toLowerCase()
+    .replace(/ё/g, 'е')
+    .replace(/[«»""''„“]/g, '')
+    .replace(/[–—−]/g, '-')
+    .replace(/(\d+)\s*(гг?\.?)(?!\p{L})/gu, '$1')
+    .replace(/(^|[^\p{L}])гг?\.?(?!\p{L})/gu, '$1')
+    .replace(/\bвека?\b/gu, 'в')
+    .replace(/[()\[\]]/g, ' ')
+    .replace(/[\.\,\;\:\!\?]/g, ' ')
+    .replace(/\s*-\s*/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getAcceptableDateVariants(rawYear) {
+  const variants = new Set();
+  const base = normalizeInputBasic(rawYear);
+  if (base) variants.add(base);
+
+  const parenMatches = [...rawYear.matchAll(/\(([^)]+)\)/g)];
+  for (const pm of parenMatches) {
+    const inside = normalizeInputBasic(pm[1]);
+    if (inside) variants.add(inside);
+  }
+  const withoutParens = normalizeInputBasic(rawYear.replace(/\([^)]+\)/g, ''));
+  if (withoutParens) variants.add(withoutParens);
+
+  if (/(\d+)[–-](\d+)\s*\((?:(\d+))\)/.test(rawYear)) {
+    const m = rawYear.match(/(\d+)[–-](\d+)\s*\((?:(\d+))\)/);
+    variants.add(`${m[1]}-${m[3]}`);
+  }
+
+  if (rawYear.includes('/')) {
+    variants.add(normalizeInputBasic(rawYear.replace(/(\d+)\/(\d+)/, '$1')));
+    variants.add(normalizeInputBasic(rawYear.replace(/(\d+)\/(\d+)/, '$2')));
+  }
+
+  if (/январ|феврал|март|апрел|ма[йя]|июн|июл|август|сентябр|октябр|ноябр|декабр|весн|к \d/i.test(rawYear)) {
+    const y = rawYear.match(/\b(\d{3,4})\b/);
+    if (y) variants.add(y[1]);
+  }
+
+  const romanPairs = [
+    [/\bix\s*в\b/g, '9 в'],
+    [/\bx\s*в\b/g, '10 в'],
+    [/\bxi\s*в\b/g, '11 в'],
+    [/\bxii\s*в\b/g, '12 в'],
+    [/\bxiii\s*в\b/g, '13 в'],
+    [/\bxiv\s*в\b/g, '14 в'],
+    [/\bxv\s*в\b/g, '15 в']
+  ];
+  for (const v of [...variants]) {
+    for (const [re, rep] of romanPairs) {
+      if (re.test(v)) variants.add(v.replace(re, rep));
+    }
+  }
+
+  return [...variants];
+}
+
+function normalizeInputTerm(s) {
+  if (!s) return '';
+  return s
+    .toLowerCase()
+    .replace(/ё/g, 'е')
+    .replace(/[«»""''„“]/g, '')
+    .replace(/[–—−]/g, '-')
+    .replace(/[()\[\]\.\,\;\:\!\?]/g, ' ')
+    .replace(/\s*-\s*/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getAcceptableTermVariants(rawTerm) {
+  const variants = new Set();
+  const base = normalizeInputTerm(rawTerm);
+  if (base) variants.add(base);
+
+  const parenMatches = [...rawTerm.matchAll(/\(([^)]+)\)/g)];
+  for (const pm of parenMatches) {
+    const inside = normalizeInputTerm(pm[1]);
+    if (inside) variants.add(inside);
+  }
+  const withoutParens = normalizeInputTerm(rawTerm.replace(/\([^)]+\)/g, ''));
+  if (withoutParens) variants.add(withoutParens);
+
+  if (/^путь\s+/i.test(base)) {
+    variants.add(base.replace(/^путь\s+/i, ''));
+  }
+
+  return [...variants];
+}
+
+function initInputQuestion(forceNew = false) {
+  const pool = filteredEvents.length > 0 ? filteredEvents : getEpochSource();
+  if (pool.length === 0) return;
+  if (!inputQuestion || forceNew) {
+    generateInputQuestion();
+  } else {
+    const inputEl = document.getElementById('inp-answer');
+    if (inputEl && !inputAnswered) setTimeout(() => inputEl.focus(), 60);
+  }
+}
+
+function generateInputQuestion() {
+  const pool = filteredEvents.length > 0 ? filteredEvents : getEpochSource();
+  if (pool.length === 0) return;
+
+  inputAnswered = false;
+  inputCount++;
+  setProgress(0);
+
+  let target = pool[Math.floor(Math.random() * pool.length)];
+  if (pool.length > 1 && lastInputTarget && target === lastInputTarget) {
+    target = pool[Math.floor(Math.random() * pool.length)];
+  }
+  lastInputTarget = target;
+
+  const qContext = currentEpoch === 'all' ? THEME_NAMES[currentTheme] : `${EPOCH_NAMES[currentEpoch]} · ${THEME_NAMES[currentTheme]}`;
+  const badgeEl = document.getElementById('inp-badge');
+  badgeEl.className = 'theme-badge ' + target.theme;
+  badgeEl.textContent = THEME_NAMES[target.theme];
+  document.getElementById('inp-counter').textContent = `Вопрос ${inputCount} · ${qContext}`;
+
+  const promptLabel = document.getElementById('inp-prompt-label');
+  const promptText  = document.getElementById('inp-prompt-text');
+  const inputEl     = document.getElementById('inp-answer');
+  const checkBtn    = document.getElementById('inp-btn-check');
+  const nextBtn     = document.getElementById('inp-btn-next');
+  const fb          = document.getElementById('inp-feedback');
+
+  fb.className = 'input-feedback';
+  fb.innerHTML = '';
+  nextBtn.classList.add('hidden');
+  inputEl.disabled = false;
+  inputEl.value = '';
+  checkBtn.disabled = false;
+
+  if (currentMode === 'terms') {
+    promptLabel.textContent = 'Определение термина:';
+    promptText.textContent = target.def;
+    promptText.style.fontFamily = 'var(--ff-sans)';
+    promptText.style.fontSize = '1.18rem';
+    promptText.style.fontWeight = '500';
+    promptText.style.lineHeight = '1.6';
+    inputEl.placeholder = 'Введите исторический термин (например: бортничество)...';
+    inputQuestion = {
+      type: 'term',
+      target,
+      canonical: target.term,
+      questionText: `Определение: ${target.def}`,
+      detail: `<strong>${target.term}</strong> — ${target.def}`
+    };
+  } else {
+    promptLabel.textContent = 'Историческое событие:';
+    promptText.textContent = target.event;
+    promptText.style.fontFamily = 'var(--ff-serif)';
+    promptText.style.fontSize = '1.85rem';
+    promptText.style.fontWeight = '600';
+    promptText.style.lineHeight = '1.35';
+    inputEl.placeholder = 'Введите дату или период (например: 907 или 862–879)...';
+    inputQuestion = {
+      type: 'date',
+      target,
+      canonical: target.year,
+      questionText: `Событие: ${target.event}`,
+      detail: target.detail ? `${target.year} — ${target.detail}` : target.year
+    };
+  }
+
+  setTimeout(() => inputEl.focus(), 60);
+}
+
+function checkInputAnswer() {
+  if (inputAnswered || !inputQuestion) return;
+  const inputEl = document.getElementById('inp-answer');
+  const rawValue = inputEl.value.trim();
+  if (!rawValue) {
+    inputEl.focus();
+    return;
+  }
+
+  inputAnswered = true;
+  inputEl.disabled = true;
+  document.getElementById('inp-btn-check').disabled = true;
+
+  const isTerm = inputQuestion.type === 'term';
+  let isCorrect = false;
+
+  if (isTerm) {
+    const userNorm = normalizeInputTerm(rawValue);
+    const variants = getAcceptableTermVariants(inputQuestion.target.term);
+    isCorrect = variants.includes(userNorm);
+  } else {
+    const userNorm = normalizeInputBasic(rawValue);
+    const variants = getAcceptableDateVariants(inputQuestion.target.year);
+    isCorrect = variants.includes(userNorm);
+  }
+
+  const fb = document.getElementById('inp-feedback');
+  if (isCorrect) {
+    fb.className = 'input-feedback show ok';
+    fb.innerHTML = `✅ <strong>Верно!</strong> Эталонный ответ: <strong>${inputQuestion.canonical}</strong><br><span style="opacity:.9">${inputQuestion.detail}</span>`;
+    addCorrect();
+    setProgress(100);
+  } else {
+    fb.className = 'input-feedback show err';
+    fb.innerHTML = `❌ <strong>Неверно.</strong> Правильный ответ: <strong>${inputQuestion.canonical}</strong><br><span style="opacity:.9">${inputQuestion.detail}</span>`;
+    addWrong(inputQuestion.questionText, rawValue, inputQuestion.canonical);
+    setProgress(30);
+  }
+
+  document.getElementById('inp-btn-next').classList.remove('hidden');
+}
+
+function nextInputQuestion() {
+  generateInputQuestion();
+}
+
+// =====================================================================
+//  REVIEW
+// =====================================================================
+function renderReview(){
+  const c=document.getElementById('review-content');
+  if(!errors.length){ c.innerHTML='<div class="review-empty">🎉 Ошибок пока нет. Продолжайте тренироваться!</div>'; return; }
+  let h='<div class="review-list">';
+  errors.slice().reverse().forEach(e=>{
+    h+=`<div class="review-card"><div class="rv-q">📌 ${e.question}</div><div class="rv-your">✗ Ваш ответ: ${e.yourAnswer}</div><div class="rv-ans">✓ Правильно: ${e.correctAnswer}</div></div>`;
+  });
+  h+='</div><button class="review-clear" onclick="clearErrors()">Очистить историю ошибок</button>';
+  c.innerHTML=h;
+}
+function clearErrors(){ errors=[]; renderReview(); }
+
+// =====================================================================
+//  BACKGROUND MANAGER
+// =====================================================================
+const BG_LS_KEY = 'rus-trainer-bg-v1';
+
+const BG_PRESETS = [
+  {
+    id: 'midnight', name: 'Полночь',
+    dot: 'linear-gradient(135deg,#0d1830,#080c14)',
+    bodyBg: '#080c14',
+    gradient:
+      'radial-gradient(ellipse 70% 55% at 50% -5%, rgba(201,168,76,.10) 0%, transparent 65%),' +
+      'radial-gradient(ellipse 50% 40% at 85% 90%, rgba(123,164,245,.07) 0%, transparent 60%),' +
+      'radial-gradient(ellipse 60% 50% at 10% 80%, rgba(192,132,245,.06) 0%, transparent 60%),' +
+      'linear-gradient(170deg,#0a0f1c 0%,#080c14 50%,#060a12 100%)',
+  },
+  {
+    id: 'emerald', name: 'Изумруд',
+    dot: 'linear-gradient(135deg,#061a10,#0a2a18)',
+    bodyBg: '#060f09',
+    gradient:
+      'radial-gradient(ellipse 70% 55% at 50% -5%, rgba(72,196,120,.12) 0%, transparent 65%),' +
+      'radial-gradient(ellipse 50% 40% at 85% 90%, rgba(60,180,100,.08) 0%, transparent 60%),' +
+      'radial-gradient(ellipse 60% 50% at 10% 80%, rgba(80,210,130,.06) 0%, transparent 60%),' +
+      'linear-gradient(170deg,#071510 0%,#050f0a 50%,#040c08 100%)',
+  },
+  {
+    id: 'burgundy', name: 'Бордо',
+    dot: 'linear-gradient(135deg,#1a0508,#280a10)',
+    bodyBg: '#100406',
+    gradient:
+      'radial-gradient(ellipse 70% 55% at 50% -5%, rgba(180,50,70,.14) 0%, transparent 65%),' +
+      'radial-gradient(ellipse 50% 40% at 85% 90%, rgba(201,80,60,.08) 0%, transparent 60%),' +
+      'radial-gradient(ellipse 60% 50% at 10% 80%, rgba(160,40,60,.07) 0%, transparent 60%),' +
+      'linear-gradient(170deg,#160408 0%,#100306 50%,#0c0205 100%)',
+  },
+  {
+    id: 'graphite', name: 'Графит',
+    dot: 'linear-gradient(135deg,#161616,#1e1e1e)',
+    bodyBg: '#0f0f0f',
+    gradient:
+      'radial-gradient(ellipse 70% 55% at 50% -5%, rgba(180,180,180,.07) 0%, transparent 65%),' +
+      'radial-gradient(ellipse 50% 40% at 85% 90%, rgba(150,150,160,.04) 0%, transparent 60%),' +
+      'linear-gradient(170deg,#141414 0%,#0f0f0f 50%,#0c0c0c 100%)',
+  },
+];
+
+let bgState = {
+  type: 'preset',       // 'preset' | 'custom'
+  presetId: 'midnight',
+  imageData: null,      // base64 string
+  dimOpacity: 55,       // 10–90
+};
+
+function loadBgState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(BG_LS_KEY));
+    if (saved) bgState = { ...bgState, ...saved };
+  } catch(e) {}
+}
+
+function saveBgState() {
+  // Don't store image data in state object for saveBgState (stored separately)
+  const toSave = { ...bgState, imageData: null };
+  localStorage.setItem(BG_LS_KEY, JSON.stringify(toSave));
+}
+
+function applyBgState() {
+  const presetEl   = document.getElementById('bg-preset-layer');
+  const imageEl    = document.getElementById('bg-image-layer');
+  const dimEl      = document.getElementById('bg-dim-layer');
+  const clearBtn   = document.getElementById('bg-clear-btn');
+  const dimSlider  = document.getElementById('bg-dim-slider');
+  const dimVal     = document.getElementById('bg-dim-val');
+
+  // Set dim slider
+  dimSlider.value = bgState.dimOpacity;
+  dimVal.textContent = bgState.dimOpacity + '%';
+
+  // Apply preset gradient always (base layer)
+  const preset = BG_PRESETS.find(p => p.id === bgState.presetId) || BG_PRESETS[0];
+  document.body.style.backgroundColor = preset.bodyBg;
+  presetEl.style.background = preset.gradient;
+
+  if (bgState.type === 'custom' && bgState.imageData) {
+    imageEl.style.backgroundImage = `url(${bgState.imageData})`;
+    imageEl.style.display = 'block';
+    dimEl.style.display = 'block';
+    dimEl.style.background = `rgba(0,0,0,${bgState.dimOpacity / 100})`;
+    clearBtn.classList.add('show');
+  } else {
+    imageEl.style.display = 'none';
+    dimEl.style.display = 'none';
+    clearBtn.classList.remove('show');
+  }
+
+  // Update active dot
+  document.querySelectorAll('.bg-dot').forEach(d => {
+    d.classList.toggle('active', d.dataset.pid === bgState.presetId);
+  });
+}
+
+function buildBgPresets() {
+  const row = document.getElementById('bg-presets-row');
+  row.innerHTML = '';
+  BG_PRESETS.forEach(p => {
+    const dot = document.createElement('div');
+    dot.className = 'bg-dot';
+    dot.dataset.pid = p.id;
+    dot.style.background = p.dot;
+    dot.title = p.name;
+    dot.addEventListener('click', () => {
+      bgState.presetId = p.id;
+      bgState.type = bgState.imageData ? 'custom' : 'preset';
+      saveBgState();
+      applyBgState();
+    });
+    row.appendChild(dot);
+  });
+}
+
+function toggleBgPanel() {
+  document.getElementById('bg-panel').classList.toggle('open');
+}
+// Close panel on outside click
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('bg-panel-wrap');
+  if (!wrap.contains(e.target)) {
+    document.getElementById('bg-panel').classList.remove('open');
+  }
+});
+
+function updateDim(val) {
+  bgState.dimOpacity = Number(val);
+  document.getElementById('bg-dim-val').textContent = val + '%';
+  if (bgState.type === 'custom') {
+    document.getElementById('bg-dim-layer').style.background = `rgba(0,0,0,${val/100})`;
+  }
+  saveBgState();
+}
+
+function handleBgUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const MAX_W  = 2560;
+  const QUALITY = 0.82;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      // Calculate output dimensions
+      let w = img.naturalWidth;
+      let h = img.naturalHeight;
+      if (w > MAX_W) { h = Math.round(h * MAX_W / w); w = MAX_W; }
+
+      // Draw to canvas & export as WebP
+      const canvas = document.createElement('canvas');
+      canvas.width  = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+
+      // Prefer WebP; fall back to JPEG if browser doesn't support it
+      let dataUrl = canvas.toDataURL('image/webp', QUALITY);
+      if (!dataUrl.startsWith('data:image/webp')) {
+        dataUrl = canvas.toDataURL('image/jpeg', QUALITY);
+      }
+
+      const kbAfter = Math.round(dataUrl.length * 0.75 / 1024);  // approx KB
+
+      bgState.type      = 'custom';
+      bgState.imageData = dataUrl;
+
+      try {
+        localStorage.setItem('rus-trainer-bg-img-v1', dataUrl);
+      } catch(err) {
+        // QuotaExceededError — apply for session only
+        console.warn('localStorage full, image kept for session only.');
+        alert(`Фото сжато до ~${kbAfter} КБ, но localStorage переполнен и сохранить не удалось. Фон активен только в этой вкладке.`);
+      }
+
+      saveBgState();
+      applyBgState();
+      document.getElementById('bg-panel').classList.remove('open');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';   // allow re-picking same file
+}
+
+function clearCustomBg() {
+  bgState.type = 'preset';
+  bgState.imageData = null;
+  localStorage.removeItem('rus-trainer-bg-img-v1');
+  saveBgState();
+  applyBgState();
+}
+
+// =====================================================================
+//  KEYBOARD
+// =====================================================================
+document.addEventListener('keydown', e => {
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+    return;
+  }
+  const t = document.querySelector('.tab-btn.active')?.dataset.tab;
+  if (t === 'cards') {
+    if (e.key === 'ArrowRight') nextCard();
+    if (e.key === 'ArrowLeft') prevCard();
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+    if (e.key === 'k' || e.key === 'K' || e.key === 'л' || e.key === 'Л') toggleKnown();
+  } else if (t === 'input') {
+    if (e.key === 'Enter' && inputAnswered) {
+      e.preventDefault();
+      nextInputQuestion();
+    }
+  }
+});
+
+const inpField = document.getElementById('inp-answer');
+if (inpField) {
+  inpField.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!inputAnswered) {
+        checkInputAnswer();
+      } else {
+        nextInputQuestion();
+      }
+    }
+  });
+}
+
+// =====================================================================
+//  INIT
+// =====================================================================
+// Load saved BG settings + image
+loadBgState();
+try {
+  const savedImg = localStorage.getItem('rus-trainer-bg-img-v1');
+  if (savedImg) bgState.imageData = savedImg;
+} catch(e) {}
+buildBgPresets();
+applyBgState();
+
+applyEpoch('all');
+initCardSwipe();
+document.getElementById('learned-count').textContent = learnedKeys.size;
+</script>
+</body>
+</html>

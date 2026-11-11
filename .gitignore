@@ -1,0 +1,5 @@
+index_backup*.html
+*.bak
+*.tmp
+.DS_Store
+Thumbs.db
