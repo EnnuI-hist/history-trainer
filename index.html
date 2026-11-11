@@ -1663,12 +1663,111 @@ input[type=range]#bg-dim-slider::-webkit-slider-thumb {
 }
 .ed-ac-item:hover { background: var(--gold-glow); color: var(--gold2); }
 
+/* =========================================================
+   FOCUS / ZEN MODE
+   ========================================================= */
+#zen-toggle-btn {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 99px;
+  background: var(--glass2);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-family: var(--ff-sans);
+  font-size: .84rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .25s ease;
+  box-shadow: var(--shadow-gold);
+  flex-shrink: 0;
+  user-select: none;
+}
+#zen-toggle-btn:hover {
+  border-color: var(--border2);
+  color: var(--gold2);
+  box-shadow: 0 0 14px var(--gold-glow);
+  transform: translateY(-1px);
+}
+#zen-toggle-btn .zen-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+#zen-toggle-btn .zen-label {
+  font-size: .82rem;
+  letter-spacing: .02em;
+}
+
+/* Zen mode active styling for button */
+body.zen-mode #zen-toggle-btn {
+  background: rgba(16, 22, 42, 0.78);
+  border-color: var(--gold);
+  color: var(--gold2);
+  box-shadow: 0 0 18px var(--gold-glow);
+  opacity: 0.82;
+}
+body.zen-mode #zen-toggle-btn:hover {
+  opacity: 1;
+  background: var(--glass2);
+  box-shadow: 0 0 24px rgba(201,168,76,.35);
+  transform: translateY(-1px);
+}
+
+/* Smooth transition when toggling */
+header,
+.score-bar,
+.epoch-bar,
+.mode-bar-wrap,
+.tabs,
+.theme-bar,
+#event-count,
+.app {
+  transition: opacity .3s ease, transform .3s ease, padding .3s ease;
+}
+
+/* Hide non-essential UI in Zen mode */
+body.zen-mode header,
+body.zen-mode .score-bar,
+body.zen-mode .epoch-bar,
+body.zen-mode .mode-bar-wrap,
+body.zen-mode .tabs,
+body.zen-mode .theme-bar,
+body.zen-mode #event-count,
+body.zen-mode #empty-placeholder,
+body.zen-mode #editor-toggle-btn,
+body.zen-mode #bg-toggle-btn,
+body.zen-mode #bg-panel {
+  display: none !important;
+}
+
+/* Center and optimize workspace in Zen mode */
+body.zen-mode .app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px 16px 40px;
+}
+
+body.zen-mode .section.active {
+  width: 100%;
+  animation: fadeUp .3s ease;
+}
+
 @media (max-width: 768px) {
   #editor-toggle-btn { width: 34px; height: 34px; font-size: .92rem; }
   #editor-panel { padding: 18px 14px; max-height: 95vh; }
   .ed-title { font-size: 1.1rem; }
   .ed-row { flex-direction: column; }
   .ed-btn-row { flex-direction: column; }
+  #zen-toggle-btn { height: 34px; padding: 0 8px; font-size: .78rem; }
+  #zen-toggle-btn .zen-label { display: none; }
+  body.zen-mode #zen-toggle-btn { padding: 0 12px; }
+  body.zen-mode #zen-toggle-btn .zen-label { display: inline; }
+  body.zen-mode .app { padding: 56px 12px 32px; }
 }
 </style>
 </head>
@@ -1686,6 +1785,7 @@ input[type=range]#bg-dim-slider::-webkit-slider-thumb {
 <!-- BG settings panel -->
 <div id="bg-panel-wrap">
   <div class="top-btns">
+    <button id="zen-toggle-btn" onclick="toggleZenMode()" title="Режим фокуса / Дзен (F)" aria-label="Режим фокуса"><span class="zen-icon">🧘</span><span class="zen-label">Фокус</span></button>
     <button id="editor-toggle-btn" onclick="openEditor()" title="Редактор карточек">➕</button>
     <button id="bg-toggle-btn" onclick="toggleBgPanel()" title="Настройки фона">🎨</button>
   </div>
@@ -3353,12 +3453,54 @@ function clearCustomBg() {
 }
 
 // =====================================================================
+//  FOCUS / ZEN MODE
+// =====================================================================
+function toggleZenMode(forceState) {
+  const isZen = forceState !== undefined ? Boolean(forceState) : !document.body.classList.contains('zen-mode');
+  document.body.classList.toggle('zen-mode', isZen);
+  
+  const btn = document.getElementById('zen-toggle-btn');
+  if (btn) {
+    if (isZen) {
+      btn.innerHTML = '<span class="zen-icon">✕</span><span class="zen-label">Выйти из фокуса</span>';
+      btn.title = 'Выйти из режима фокуса (F или Esc)';
+      btn.setAttribute('aria-label', 'Выйти из режима фокуса');
+      const bgPanel = document.getElementById('bg-panel');
+      if (bgPanel) bgPanel.classList.remove('open');
+    } else {
+      btn.innerHTML = '<span class="zen-icon">🧘</span><span class="zen-label">Фокус</span>';
+      btn.title = 'Режим фокуса / Дзен (F)';
+      btn.setAttribute('aria-label', 'Включить режим фокуса');
+    }
+  }
+}
+
+// =====================================================================
 //  KEYBOARD
 // =====================================================================
 document.addEventListener('keydown', e => {
-  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+  if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) {
     return;
   }
+
+  // Check if editor modal is open
+  const editorModal = document.getElementById('editor-modal');
+  const isEditorOpen = editorModal && editorModal.classList.contains('open');
+
+  // Zen Mode toggle via 'F' (en/ru) or exit via Escape
+  if (!isEditorOpen && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    if (e.code === 'KeyF' || e.key === 'f' || e.key === 'F' || e.key === 'а' || e.key === 'А') {
+      e.preventDefault();
+      toggleZenMode();
+      return;
+    }
+    if (e.key === 'Escape' && document.body.classList.contains('zen-mode')) {
+      e.preventDefault();
+      toggleZenMode(false);
+      return;
+    }
+  }
+
   const t = document.querySelector('.tab-btn.active')?.dataset.tab;
   if (t === 'cards') {
     if (e.key === 'ArrowRight') nextCard();
