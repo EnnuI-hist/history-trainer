@@ -1508,6 +1508,168 @@ input[type=range]#bg-dim-slider::-webkit-slider-thumb {
 ::-webkit-scrollbar-track { background: var(--bg0); }
 ::-webkit-scrollbar-thumb { background: rgba(201,168,76,.25); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,.45); }
+
+/* =========================================================
+   EDITOR BUTTON & MODAL
+   ========================================================= */
+#editor-toggle-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--glass2);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  color: var(--text2); font-size: 1rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .22s; box-shadow: var(--shadow-gold);
+  flex-shrink: 0;
+}
+#editor-toggle-btn:hover { border-color: var(--border2); color: var(--gold2); box-shadow: 0 0 14px var(--gold-glow); }
+#bg-panel-wrap .top-btns { display: flex; gap: 6px; justify-content: flex-end; align-items: center; }
+
+/* Modal overlay */
+#editor-modal {
+  position: fixed; inset: 0; z-index: 2000;
+  background: rgba(0,0,0,.7);
+  backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+#editor-modal.open { display: flex; }
+#editor-panel {
+  background: var(--glass2);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-gold);
+  padding: 24px;
+  width: 100%; max-width: 580px;
+  max-height: 90vh; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 16px;
+  animation: fadeUp .22s ease;
+  position: relative;
+}
+#editor-close-btn {
+  position: absolute; top: 14px; right: 14px;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 50%; width: 30px; height: 30px;
+  color: var(--muted); font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+#editor-close-btn:hover { border-color: var(--border2); color: var(--text); }
+
+.ed-title { font-family: var(--ff-serif); font-size: 1.3rem; color: var(--gold2); font-weight: 600; }
+
+/* Editor tabs */
+.ed-tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 10px; flex-wrap: wrap; }
+.ed-tab-btn {
+  padding: 6px 14px; border-radius: 8px; cursor: pointer;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text2); font-size: .82rem; font-family: var(--ff-sans);
+  transition: all .18s;
+}
+.ed-tab-btn:hover { border-color: var(--border2); color: var(--text); }
+.ed-tab-btn.active { background: var(--gold-glow); border-color: var(--gold); color: var(--gold2); }
+
+/* Editor panes */
+.ed-pane { display: none; flex-direction: column; gap: 12px; }
+.ed-pane.active { display: flex; }
+
+/* Form controls */
+.ed-label { font-size: .78rem; color: var(--muted); margin-bottom: 4px; }
+.ed-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.ed-row .ed-field { flex: 1; min-width: 120px; }
+.ed-field { display: flex; flex-direction: column; }
+.ed-select, .ed-input, .ed-textarea {
+  background: rgba(10,15,30,.7);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text); font-family: var(--ff-sans); font-size: .88rem;
+  padding: 8px 10px;
+  outline: none; transition: border-color .18s;
+  width: 100%;
+}
+.ed-select:focus, .ed-input:focus, .ed-textarea:focus { border-color: var(--gold); }
+.ed-select option { background: #0d1220; }
+.ed-textarea { min-height: 110px; resize: vertical; line-height: 1.5; }
+
+/* Segment buttons inside editor */
+.ed-segment { display: flex; gap: 6px; }
+.ed-seg-btn {
+  flex: 1; padding: 8px 4px; border-radius: 8px; cursor: pointer;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text2); font-size: .82rem; font-family: var(--ff-sans);
+  transition: all .18s; text-align: center;
+}
+.ed-seg-btn.active { background: var(--gold-glow); border-color: var(--gold); color: var(--gold2); }
+
+/* Buttons in editor */
+.ed-btn {
+  padding: 9px 18px; border-radius: 9px; cursor: pointer;
+  background: rgba(201,168,76,.14); border: 1px solid var(--gold);
+  color: var(--gold2); font-size: .88rem; font-family: var(--ff-sans);
+  font-weight: 600; transition: all .2s; text-align: center;
+}
+.ed-btn:hover { background: rgba(201,168,76,.26); }
+.ed-btn.secondary { background: transparent; border-color: var(--border2); color: var(--text2); }
+.ed-btn.secondary:hover { border-color: var(--gold); color: var(--gold2); }
+.ed-btn.danger { background: rgba(240,112,112,.12); border-color: var(--red); color: var(--red); }
+.ed-btn.danger:hover { background: rgba(240,112,112,.24); }
+.ed-btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.ed-hint { font-size: .76rem; color: var(--muted); line-height: 1.4; }
+.ed-status { font-size: .82rem; padding: 7px 10px; border-radius: 7px; display: none; }
+.ed-status.ok  { background: rgba(95,216,124,.12); border: 1px solid var(--green); color: var(--green); display: block; }
+.ed-status.err { background: rgba(240,112,112,.12); border: 1px solid var(--red);   color: var(--red);   display: block; }
+
+/* My cards list */
+.ed-cards-list { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
+.ed-card-item {
+  background: rgba(10,15,30,.6); border: 1px solid var(--border);
+  border-radius: 9px; padding: 10px 12px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.ed-card-item .ed-ci-body { flex: 1; min-width: 0; }
+.ed-ci-key { font-size: .82rem; color: var(--gold2); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ed-ci-val { font-size: .78rem; color: var(--text2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ed-ci-meta { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+.ed-ci-actions { display: flex; gap: 5px; flex-shrink: 0; }
+.ed-ci-btn {
+  width: 26px; height: 26px; border-radius: 6px; cursor: pointer;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted); font-size: .78rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .18s;
+}
+.ed-ci-btn:hover { border-color: var(--border2); color: var(--text); }
+.ed-ci-btn.del:hover { border-color: var(--red); color: var(--red); }
+.ed-ci-btn.edit:hover { border-color: var(--gold); color: var(--gold2); }
+
+.ed-empty { font-size: .85rem; color: var(--muted); text-align: center; padding: 20px 0; }
+.ed-cards-count { font-size: .78rem; color: var(--muted); }
+
+/* Autocomplete dropdown */
+.ed-autocomplete-wrap { position: relative; }
+.ed-autocomplete-list {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 10;
+  background: #0d1220; border: 1px solid var(--border2);
+  border-radius: 7px; overflow: hidden; display: none;
+  flex-direction: column;
+}
+.ed-autocomplete-list.open { display: flex; }
+.ed-ac-item {
+  padding: 7px 10px; font-size: .82rem; color: var(--text2);
+  cursor: pointer; transition: background .15s;
+}
+.ed-ac-item:hover { background: var(--gold-glow); color: var(--gold2); }
+
+@media (max-width: 768px) {
+  #editor-toggle-btn { width: 34px; height: 34px; font-size: .92rem; }
+  #editor-panel { padding: 18px 14px; max-height: 95vh; }
+  .ed-title { font-size: 1.1rem; }
+  .ed-row { flex-direction: column; }
+  .ed-btn-row { flex-direction: column; }
+}
 </style>
 </head>
 <body>
@@ -1523,7 +1685,10 @@ input[type=range]#bg-dim-slider::-webkit-slider-thumb {
 
 <!-- BG settings panel -->
 <div id="bg-panel-wrap">
-  <button id="bg-toggle-btn" onclick="toggleBgPanel()" title="Настройки фона">🎨</button>
+  <div class="top-btns">
+    <button id="editor-toggle-btn" onclick="openEditor()" title="Редактор карточек">➕</button>
+    <button id="bg-toggle-btn" onclick="toggleBgPanel()" title="Настройки фона">🎨</button>
+  </div>
   <div id="bg-panel">
     <div>
       <div class="bg-panel-label">Пресет фона</div>
@@ -3237,6 +3402,487 @@ applyBgState();
 applyEpoch('all');
 initCardSwipe();
 document.getElementById('learned-count').textContent = learnedKeys.size;
+
+// =====================================================================
+//  CUSTOM CARDS — EDITOR
+// =====================================================================
+const LS_CUSTOM_KEY = 'rus-trainer-custom-v1';
+
+// Runtime store for custom cards (mirrors DATA_DATES / DATA_TERMS structure)
+let CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+let CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+
+/** Load custom cards from localStorage and merge into DATA arrays */
+function loadCustomCards() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LS_CUSTOM_KEY) || '{}');
+    const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
+    epochs.forEach(ep => {
+      CUSTOM_DATES[ep] = (saved.dates && saved.dates[ep]) ? saved.dates[ep] : [];
+      CUSTOM_TERMS[ep] = (saved.terms && saved.terms[ep]) ? saved.terms[ep] : [];
+    });
+  } catch(e) {
+    CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+    CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+  }
+  _mergeCustomIntoData();
+}
+
+function _mergeCustomIntoData() {
+  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
+  epochs.forEach(ep => {
+    // Remove previously merged custom items, keep built-in
+    DATA_DATES[ep] = DATA_DATES[ep].filter(x => !x._custom);
+    DATA_TERMS[ep] = DATA_TERMS[ep].filter(x => !x._custom);
+    // Push custom
+    CUSTOM_DATES[ep].forEach(c => DATA_DATES[ep].push({ ...c, _custom: true }));
+    CUSTOM_TERMS[ep].forEach(c => DATA_TERMS[ep].push({ ...c, _custom: true }));
+  });
+  // Rebuild flat arrays
+  _rebuildAllArrays();
+}
+
+function _rebuildAllArrays() {
+  // ALL_EVENTS and ALL_TERMS are const — we mutate them in place
+  ALL_EVENTS.length = 0;
+  Object.entries(DATA_DATES).forEach(([epoch, arr]) =>
+    arr.forEach(item => ALL_EVENTS.push({ ...item, epoch }))
+  );
+  ALL_TERMS.length = 0;
+  Object.entries(DATA_TERMS).forEach(([epoch, arr]) =>
+    arr.forEach(item => ALL_TERMS.push({ ...item, epoch }))
+  );
+}
+
+function saveCustomCards() {
+  const data = { dates: {}, terms: {} };
+  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
+  epochs.forEach(ep => {
+    data.dates[ep] = CUSTOM_DATES[ep];
+    data.terms[ep] = CUSTOM_TERMS[ep];
+  });
+  localStorage.setItem(LS_CUSTOM_KEY, JSON.stringify(data));
+}
+
+function rebuildAndRefresh() {
+  _mergeCustomIntoData();
+  refreshFilterState();
+}
+
+// ---- UI State ----
+let edMode = 'dates'; // 'dates' | 'terms'
+let edActiveTab = 'add';
+
+function openEditor() {
+  document.getElementById('editor-modal').classList.add('open');
+  switchEditorTab(edActiveTab);
+  updateEdThemeAutocomplete();
+}
+function closeEditor() {
+  document.getElementById('editor-modal').classList.remove('open');
+}
+// Close on overlay click
+document.getElementById('editor-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeEditor();
+});
+// Close on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('editor-modal').classList.contains('open')) closeEditor();
+});
+
+function switchEditorTab(tab) {
+  edActiveTab = tab;
+  document.querySelectorAll('.ed-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.edtab === tab));
+  document.querySelectorAll('.ed-pane').forEach(p => p.classList.toggle('active', p.id === `ed-pane-${tab}`));
+  if (tab === 'mycards') renderMyCards();
+  clearEdStatus();
+}
+
+function setEdMode(mode) {
+  edMode = mode;
+  document.querySelectorAll('.ed-seg-btn').forEach(b => b.classList.toggle('active', b.dataset.edmode === mode));
+  const label = document.getElementById('ed-textarea-label');
+  if (label) label.textContent = mode === 'dates'
+    ? 'Данные (каждая строка: дата — событие)'
+    : 'Данные (каждая строка: термин — определение)';
+  document.getElementById('ed-bulk').placeholder = mode === 'dates'
+    ? '862 — Призвание варягов\n882 — Объединение Новгорода и Киева Олегом'
+    : 'Вотчина — наследственное земельное владение\nПоместье — земля, данная за службу';
+  updateEdThemeAutocomplete();
+}
+
+// ---- Autocomplete for theme ----
+function updateEdThemeAutocomplete() {
+  const themes = edMode === 'dates'
+    ? [...DATE_THEMES].map(k => ({ key: k, name: THEME_NAMES[k] }))
+    : [...TERM_THEMES].map(k => ({ key: k, name: THEME_NAMES[k] }));
+  window._edThemes = themes;
+}
+
+function edThemeInput(val) {
+  const list = document.getElementById('ed-ac-list');
+  if (!list) return;
+  const themes = window._edThemes || [];
+  const q = val.trim().toLowerCase();
+  const matches = q ? themes.filter(t => t.key.includes(q) || t.name.toLowerCase().includes(q)) : themes;
+  if (!matches.length) { list.classList.remove('open'); return; }
+  list.innerHTML = matches.map(t =>
+    `<div class="ed-ac-item" onclick="pickEdTheme('${t.key}','${t.name}')">${t.name} <span style="color:var(--muted);font-size:.72rem">(${t.key})</span></div>`
+  ).join('');
+  list.classList.add('open');
+}
+
+function pickEdTheme(key, name) {
+  document.getElementById('ed-theme').value = key;
+  document.getElementById('ed-ac-list').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.ed-autocomplete-wrap')) {
+    const list = document.getElementById('ed-ac-list');
+    if (list) list.classList.remove('open');
+  }
+});
+
+// ---- Parse sort year ----
+function parseSortYear(yearStr) {
+  const y = yearStr.trim();
+  const m = y.match(/^-?(\d+)/);
+  if (!m) return 99999;
+  let n = parseInt(m[1], 10);
+  if (y.startsWith('-') || /до н/i.test(y)) n = -n;
+  return n;
+}
+
+// ---- Guess theme ----
+function guessTheme(mode, tagInput) {
+  const t = tagInput.trim().toLowerCase();
+  if (!t) return mode === 'dates' ? 'rurik' : 'soc';
+  const allowed = mode === 'dates' ? [...DATE_THEMES] : [...TERM_THEMES];
+  if (allowed.includes(t)) return t;
+  // fuzzy: find first allowed that starts with t
+  const match = allowed.find(k => k.startsWith(t) || t.startsWith(k));
+  return match || allowed[0];
+}
+
+// ---- Parse and add cards ----
+function parseAndAddCards() {
+  const statusEl = document.getElementById('ed-add-status');
+  const raw = document.getElementById('ed-bulk').value.trim();
+  const epoch = document.getElementById('ed-epoch').value;
+  const themeRaw = document.getElementById('ed-theme').value;
+  const theme = guessTheme(edMode, themeRaw);
+
+  if (!raw) { showEdStatus(statusEl, 'err', 'Поле данных пустое.'); return; }
+
+  const editKey = document.getElementById('ed-edit-key').value;
+  if (editKey) {
+    // Single edit mode
+    const lines = raw.split('\n').filter(l => l.trim());
+    const line = lines[0];
+    const sep = line.match(/\s[—–-]\s/);
+    if (!sep) { showEdStatus(statusEl, 'err', 'Не найден разделитель (— – -)'); return; }
+    const idx = line.indexOf(sep[0]);
+    const left  = line.substring(0, idx).trim();
+    const right = line.substring(idx + sep[0].length).trim();
+    if (!left || !right) { showEdStatus(statusEl, 'err', 'Левая или правая часть пустая.'); return; }
+
+    // Remove old card
+    _removeCustomByKey(editKey);
+
+    // Add updated card
+    if (edMode === 'dates') {
+      CUSTOM_DATES[epoch].push({ year: left, sortYear: parseSortYear(left), event: right, theme });
+    } else {
+      CUSTOM_TERMS[epoch].push({ term: left, def: right, theme });
+    }
+    saveCustomCards();
+    rebuildAndRefresh();
+    cancelEditCard();
+    showEdStatus(statusEl, 'ok', 'Карточка обновлена!');
+    return;
+  }
+
+  // Bulk add
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  let added = 0, skipped = 0;
+  lines.forEach(line => {
+    const sep = line.match(/\s[—–-]\s/);
+    if (!sep) { skipped++; return; }
+    const idx = line.indexOf(sep[0]);
+    const left  = line.substring(0, idx).trim();
+    const right = line.substring(idx + sep[0].length).trim();
+    if (!left || !right) { skipped++; return; }
+    if (edMode === 'dates') {
+      CUSTOM_DATES[epoch].push({ year: left, sortYear: parseSortYear(left), event: right, theme });
+    } else {
+      CUSTOM_TERMS[epoch].push({ term: left, def: right, theme });
+    }
+    added++;
+  });
+
+  if (!added) { showEdStatus(statusEl, 'err', `Не удалось распознать ни одну строку. Проверьте разделитель.`); return; }
+  saveCustomCards();
+  rebuildAndRefresh();
+  document.getElementById('ed-bulk').value = '';
+  showEdStatus(statusEl, 'ok', `Добавлено: ${added} карточек${skipped ? `, пропущено: ${skipped}` : ''}.`);
+}
+
+function cancelEditCard() {
+  document.getElementById('ed-edit-key').value = '';
+  document.getElementById('ed-bulk').value = '';
+  document.getElementById('ed-cancel-edit-btn').style.display = 'none';
+}
+
+// ---- Render My Cards ----
+function renderMyCards() {
+  const listEl = document.getElementById('ed-mycards-list');
+  const countEl = document.getElementById('ed-mycards-count');
+  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
+  let items = [];
+  epochs.forEach(ep => {
+    CUSTOM_DATES[ep].forEach((c, i) => items.push({ type:'dates', epoch:ep, idx:i, ...c }));
+    CUSTOM_TERMS[ep].forEach((c, i) => items.push({ type:'terms', epoch:ep, idx:i, ...c }));
+  });
+  countEl.textContent = `${items.length} карточек`;
+  if (!items.length) {
+    listEl.innerHTML = '<div class="ed-empty">Пока нет пользовательских карточек.<br>Добавьте их во вкладке «Добавить».</div>';
+    return;
+  }
+  listEl.innerHTML = items.map(item => {
+    const keyStr = item.type === 'dates'
+      ? `${item.sortYear}::${item.event}::${item.epoch}`
+      : `term::${item.term}::${item.epoch}`;
+    const keyEnc = encodeURIComponent(keyStr);
+    const left  = item.type === 'dates' ? item.year  : item.term;
+    const right = item.type === 'dates' ? item.event : item.def;
+    const meta = `${EPOCH_NAMES[item.epoch] || item.epoch} · ${THEME_NAMES[item.theme] || item.theme}`;
+    return `<div class="ed-card-item">
+      <div class="ed-ci-body">
+        <div class="ed-ci-key">${escHtml(left)}</div>
+        <div class="ed-ci-val">${escHtml(right)}</div>
+        <div class="ed-ci-meta">${meta}</div>
+      </div>
+      <div class="ed-ci-actions">
+        <button class="ed-ci-btn edit" title="Редактировать" onclick="startEditCard('${keyEnc}')">✏</button>
+        <button class="ed-ci-btn del"  title="Удалить"       onclick="deleteCustomCard('${keyEnc}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function _removeCustomByKey(keyEncoded) {
+  const key = decodeURIComponent(keyEncoded);
+  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
+  if (key.startsWith('term::')) {
+    const [, term, epoch] = key.split('::');
+    if (CUSTOM_TERMS[epoch]) CUSTOM_TERMS[epoch] = CUSTOM_TERMS[epoch].filter(c => c.term !== term);
+  } else {
+    const [sortYearStr, event, epoch] = key.split('::');
+    if (CUSTOM_DATES[epoch]) CUSTOM_DATES[epoch] = CUSTOM_DATES[epoch].filter(c => !(String(c.sortYear) === sortYearStr && c.event === event));
+  }
+}
+
+function deleteCustomCard(keyEncoded) {
+  _removeCustomByKey(keyEncoded);
+  saveCustomCards();
+  rebuildAndRefresh();
+  renderMyCards();
+}
+
+function startEditCard(keyEncoded) {
+  const key = decodeURIComponent(keyEncoded);
+  let found = null;
+  if (key.startsWith('term::')) {
+    const [, term, epoch] = key.split('::');
+    const item = (CUSTOM_TERMS[epoch] || []).find(c => c.term === term);
+    if (item) found = { type:'terms', epoch, item };
+  } else {
+    const [sortYearStr, event, epoch] = key.split('::');
+    const item = (CUSTOM_DATES[epoch] || []).find(c => String(c.sortYear) === sortYearStr && c.event === event);
+    if (item) found = { type:'dates', epoch, item };
+  }
+  if (!found) return;
+
+  switchEditorTab('add');
+  setEdMode(found.type);
+  document.getElementById('ed-epoch').value = found.epoch;
+  document.getElementById('ed-theme').value = found.item.theme || '';
+  const left  = found.type === 'dates' ? found.item.year  : found.item.term;
+  const right = found.type === 'dates' ? found.item.event : found.item.def;
+  document.getElementById('ed-bulk').value = `${left} — ${right}`;
+  document.getElementById('ed-edit-key').value = keyEncoded;
+  document.getElementById('ed-cancel-edit-btn').style.display = '';
+  updateEdThemeAutocomplete();
+}
+
+function clearAllCustomCards() {
+  if (!confirm('Удалить все пользовательские карточки?')) return;
+  CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+  CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+  saveCustomCards();
+  rebuildAndRefresh();
+  renderMyCards();
+}
+
+// ---- Export / Import ----
+function exportBackup() {
+  const statusEl = document.getElementById('ed-export-status');
+  const payload = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    custom: JSON.parse(localStorage.getItem(LS_CUSTOM_KEY) || '{}'),
+    learned: JSON.parse(localStorage.getItem(LS_KEY) || '[]'),
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `history-trainer-backup-${Date.now()}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  showEdStatus(statusEl, 'ok', 'Файл загружен.');
+}
+
+function importBackup(event) {
+  const statusEl = document.getElementById('ed-export-status');
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const payload = JSON.parse(e.target.result);
+      if (!payload || typeof payload !== 'object') throw new Error('Bad format');
+      if (payload.custom) localStorage.setItem(LS_CUSTOM_KEY, JSON.stringify(payload.custom));
+      if (Array.isArray(payload.learned)) {
+        learnedKeys = new Set(payload.learned);
+        saveLearnedLS();
+        document.getElementById('learned-count').textContent = learnedKeys.size;
+      }
+      loadCustomCards();
+      rebuildAndRefresh();
+      showEdStatus(statusEl, 'ok', 'Данные восстановлены успешно!');
+    } catch(err) {
+      showEdStatus(statusEl, 'err', 'Ошибка чтения файла: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ---- Helpers ----
+function showEdStatus(el, type, msg) {
+  el.textContent = msg;
+  el.className = `ed-status ${type}`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.className = 'ed-status'; }, 4000);
+}
+function clearEdStatus() {
+  ['ed-add-status','ed-export-status'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.className = 'ed-status';
+  });
+}
+
+// ---- Init ----
+loadCustomCards();
+updateEdThemeAutocomplete();
 </script>
+
+<!-- ============================================================
+     EDITOR MODAL
+     ============================================================ -->
+<div id="editor-modal" role="dialog" aria-modal="true" aria-label="Редактор карточек">
+  <div id="editor-panel">
+    <button id="editor-close-btn" onclick="closeEditor()" title="Закрыть">✕</button>
+    <div class="ed-title">📝 Редактор карточек</div>
+
+    <!-- Tabs -->
+    <div class="ed-tabs">
+      <button class="ed-tab-btn active" data-edtab="add"      onclick="switchEditorTab('add')">➕ Добавить</button>
+      <button class="ed-tab-btn"        data-edtab="mycards"  onclick="switchEditorTab('mycards')">🗂 Мои карточки</button>
+      <button class="ed-tab-btn"        data-edtab="export"   onclick="switchEditorTab('export')">💾 Экспорт / Импорт</button>
+    </div>
+
+    <!-- === ADD PANE === -->
+    <div class="ed-pane active" id="ed-pane-add">
+      <!-- Mode selector -->
+      <div class="ed-field">
+        <div class="ed-label">Раздел</div>
+        <div class="ed-segment">
+          <button class="ed-seg-btn active" data-edmode="dates"  onclick="setEdMode('dates')">📅 Даты</button>
+          <button class="ed-seg-btn"        data-edmode="terms"  onclick="setEdMode('terms')">📖 Термины</button>
+        </div>
+      </div>
+
+      <!-- Epoch + Theme row -->
+      <div class="ed-row">
+        <div class="ed-field">
+          <div class="ed-label">Эпоха</div>
+          <select id="ed-epoch" class="ed-select">
+            <option value="ancient">Древняя Русь</option>
+            <option value="razdro">Раздробленность</option>
+            <option value="moscow">Московское княжество</option>
+            <option value="tsardom">Русское царство</option>
+            <option value="empire">Российская империя</option>
+            <option value="soviet">Советский период</option>
+          </select>
+        </div>
+        <div class="ed-field">
+          <div class="ed-label">Тема (тег)</div>
+          <div class="ed-autocomplete-wrap">
+            <input id="ed-theme" class="ed-input" placeholder="напр. rurik, soc…" autocomplete="off" oninput="edThemeInput(this.value)" onfocus="edThemeInput(this.value)">
+            <div class="ed-autocomplete-list" id="ed-ac-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bulk textarea -->
+      <div class="ed-field">
+        <div class="ed-label" id="ed-textarea-label">Данные (каждая строка: дата — событие)</div>
+        <textarea id="ed-bulk" class="ed-textarea" placeholder="862 — Призвание варягов&#10;882 — Объединение Новгорода и Киева Олегом&#10;988 — Крещение Руси"></textarea>
+        <div class="ed-hint" style="margin-top:5px">Разделитель: «—», «–» или «-». Одна карточка = одна строка.</div>
+      </div>
+
+      <!-- Edit-mode hidden fields -->
+      <input type="hidden" id="ed-edit-key">
+
+      <!-- Status -->
+      <div class="ed-status" id="ed-add-status"></div>
+
+      <!-- Buttons -->
+      <div class="ed-btn-row">
+        <button class="ed-btn" onclick="parseAndAddCards()">💾 Сохранить в базу</button>
+        <button class="ed-btn secondary" id="ed-cancel-edit-btn" style="display:none" onclick="cancelEditCard()">✕ Отмена</button>
+      </div>
+    </div>
+
+    <!-- === MY CARDS PANE === -->
+    <div class="ed-pane" id="ed-pane-mycards">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+        <div class="ed-label" style="margin:0">Ваши карточки</div>
+        <span class="ed-cards-count" id="ed-mycards-count">0 карточек</span>
+      </div>
+      <div class="ed-cards-list" id="ed-mycards-list"></div>
+      <div class="ed-btn-row" style="margin-top:4px">
+        <button class="ed-btn danger" onclick="clearAllCustomCards()">🗑 Удалить все</button>
+      </div>
+    </div>
+
+    <!-- === EXPORT PANE === -->
+    <div class="ed-pane" id="ed-pane-export">
+      <div class="ed-hint">Резервная копия содержит все ваши карточки <b>и</b> список выученных карточек.</div>
+      <div class="ed-btn-row">
+        <button class="ed-btn" onclick="exportBackup()">⬇ Скачать резервную копию</button>
+        <button class="ed-btn secondary" onclick="document.getElementById('ed-import-file').click()">⬆ Загрузить из файла</button>
+      </div>
+      <input type="file" id="ed-import-file" accept=".json" style="display:none" onchange="importBackup(event)">
+      <div class="ed-status" id="ed-export-status"></div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
