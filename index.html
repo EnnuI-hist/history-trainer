@@ -177,6 +177,131 @@ header p {
 .score-pill strong { font-family: var(--ff-serif); font-size: 1rem; color: var(--text); }
 
 /* =========================================================
+   DAILY GOAL & STREAK (ОГОНЁК)
+   ========================================================= */
+.daily-goal-pill {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  gap: 6px;
+}
+.daily-goal-pill:hover {
+  border-color: var(--border2);
+  box-shadow: 0 0 16px var(--gold-glow);
+  transform: translateY(-1px);
+}
+.streak-flame {
+  font-size: 1.05rem;
+  line-height: 1;
+  display: inline-block;
+  transition: all .35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: grayscale(1) opacity(0.42);
+}
+.daily-goal-pill.completed-today .streak-flame {
+  filter: none;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.9), 0 0 18px rgba(239, 68, 68, 0.7);
+  animation: flamePulse 2.2s ease-in-out infinite;
+}
+@keyframes flamePulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px #f59e0b); }
+  50% { transform: scale(1.18); filter: drop-shadow(0 0 10px #f59e0b) drop-shadow(0 0 16px #ef4444); }
+}
+.daily-goal-pill.completed-today {
+  border-color: rgba(245, 166, 35, 0.65);
+  background: linear-gradient(135deg, rgba(20, 28, 52, 0.85), rgba(45, 30, 15, 0.85));
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.22);
+}
+.pill-divider {
+  color: var(--border2);
+  opacity: 0.55;
+  margin: 0 1px;
+}
+.goal-label {
+  color: var(--text2);
+}
+.goal-mini-bar {
+  display: inline-block;
+  width: 36px;
+  height: 5px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  margin-left: 2px;
+  vertical-align: middle;
+}
+.goal-mini-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--accent2));
+  border-radius: 99px;
+  transition: width .35s ease;
+}
+.daily-goal-pill.completed-today .goal-mini-fill {
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
+}
+
+/* Dropdown popover */
+.goal-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass2);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  box-shadow: var(--shadow-gold), 0 8px 32px rgba(0,0,0,.7);
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1010;
+  min-width: 175px;
+  animation: fadeUp .2s ease;
+}
+.goal-dropdown.open {
+  display: flex;
+}
+.goal-dd-title {
+  font-size: .72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  text-align: center;
+}
+.goal-dd-options {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+.goal-dd-btn {
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(10, 15, 30, 0.6);
+  color: var(--text2);
+  font-family: var(--ff-sans);
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .18s;
+}
+.goal-dd-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold2);
+  transform: translateY(-1px);
+}
+.goal-dd-btn.active {
+  background: var(--gold-glow);
+  border-color: var(--gold);
+  color: var(--gold2);
+  box-shadow: 0 0 10px var(--gold-glow);
+}
+
+/* =========================================================
    EPOCH & MODE NAVIGATION
    ========================================================= */
 .epoch-bar {
@@ -1849,6 +1974,22 @@ body.zen-mode .section.active {
     <div class="score-pill"><span class="dot dot-wrong"></span>Ошибки:&nbsp;<strong id="s-wrong">0</strong></div>
     <div class="score-pill"><span class="dot dot-streak"></span>Серия:&nbsp;<strong id="s-streak">0</strong></div>
     <div class="score-pill"><span class="dot dot-total"></span>Очки:&nbsp;<strong id="s-total">0</strong></div>
+    <div class="score-pill daily-goal-pill" id="daily-goal-pill" onclick="toggleDailyGoalMenu(event)" title="Дневная цель (нажмите для выбора порога)">
+      <span class="streak-flame" id="streak-flame-icon">🔥</span>
+      <strong id="streak-days-count">0</strong>&nbsp;дн.
+      <span class="pill-divider">·</span>
+      <span class="goal-label">Сегодня:</span>&nbsp;<strong id="goal-progress-text">0 / 25</strong>
+      <span class="goal-mini-bar"><span class="goal-mini-fill" id="goal-mini-fill"></span></span>
+      <div class="goal-dropdown" id="goal-dropdown" onclick="event.stopPropagation()">
+        <div class="goal-dd-title">Цель на день:</div>
+        <div class="goal-dd-options">
+          <button class="goal-dd-btn" data-goal="15" onclick="setDailyGoal(15, event)">15</button>
+          <button class="goal-dd-btn active" data-goal="25" onclick="setDailyGoal(25, event)">25</button>
+          <button class="goal-dd-btn" data-goal="50" onclick="setDailyGoal(50, event)">50</button>
+          <button class="goal-dd-btn" data-goal="100" onclick="setDailyGoal(100, event)">100</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Top-level navigation: Epochs -->
@@ -2740,6 +2881,7 @@ function toggleKnown(){
   } else {
     learnedKeys.add(key);
     soundKnown();
+    registerDailyAction();
   }
   saveLearnedLS();
   // If hiding and just un-learned: rebuild, card stays
@@ -2835,6 +2977,7 @@ function answerQuiz(el, answer){
     addCorrect();
     setProgress(100);
     soundCorrect();
+    registerDailyAction();
   } else {
     el.classList.add('wrong');
     fb.className='quiz-feedback show err';
@@ -2920,6 +3063,7 @@ function checkSort(){
     addCorrect(); addCorrect();
     setProgress(100);
     soundCorrect();
+    registerDailyAction();
   } else {
     res.className='sort-result show err';
     let h='<div class="correction">';
@@ -3009,6 +3153,7 @@ function selectMatchSide(side, termKey, el) {
       const pct = Math.round((matchMatched.size / matchPairs.length) * 100);
       setProgress(pct);
       soundCorrect();
+      registerDailyAction();
       renderMatch();
       if (matchMatched.size === matchPairs.length) {
         const res = document.getElementById('match-result');
@@ -3257,6 +3402,7 @@ function checkInputAnswer() {
     addCorrect();
     setProgress(100);
     soundCorrect();
+    registerDailyAction();
   } else {
     fb.className = 'input-feedback show err';
     fb.innerHTML = `❌ <strong>Неверно.</strong> Правильный ответ: <strong>${inputQuestion.canonical}</strong><br><span style="opacity:.9">${inputQuestion.detail}</span>`;
@@ -3706,6 +3852,186 @@ function soundKnown() {
   } catch(e) {}
 }
 
+/** 6. Daily goal victory: triumphant warm harmonic celebration */
+function soundVictory() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  try {
+    const t0 = ctx.currentTime;
+    const notes = [
+      { freq: 523.25, time: 0, dur: 0.35, vol: 0.04 },    // C5
+      { freq: 659.25, time: 0.08, dur: 0.35, vol: 0.04 },   // E5
+      { freq: 783.99, time: 0.16, dur: 0.40, vol: 0.045 },  // G5
+      { freq: 1046.50, time: 0.26, dur: 0.60, vol: 0.05 }  // C6
+    ];
+    notes.forEach(n => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const start = t0 + n.time;
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(n.freq, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.linearRampToValueAtTime(n.vol, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + n.dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + n.dur);
+    });
+  } catch(e) {}
+}
+
+// =====================================================================
+//  DAILY GOAL & STREAK (ОГОНЁК)
+// =====================================================================
+const STREAK_LS_KEY = 'rus-trainer-streak-v1';
+
+let streakData = {
+  target: 25,
+  streak: 0,
+  lastCompletedDate: null,
+  todayDate: null,
+  todayCount: 0
+};
+
+function getLocalDateStr(d = new Date()) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getDaysDiff(dateStr1, dateStr2) {
+  if (!dateStr1 || !dateStr2) return 999;
+  const [y1, m1, d1] = dateStr1.split('-').map(Number);
+  const [y2, m2, d2] = dateStr2.split('-').map(Number);
+  const utc1 = Date.UTC(y1, m1 - 1, d1);
+  const utc2 = Date.UTC(y2, m2 - 1, d2);
+  return Math.round((utc2 - utc1) / (1000 * 60 * 60 * 24));
+}
+
+function loadStreakLS() {
+  try {
+    const raw = localStorage.getItem(STREAK_LS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        streakData = { ...streakData, ...parsed };
+      }
+    }
+  } catch(e) {}
+  initStreakDate();
+  saveStreakLS();
+  updateStreakUI();
+}
+
+function saveStreakLS() {
+  try {
+    localStorage.setItem(STREAK_LS_KEY, JSON.stringify(streakData));
+  } catch(e) {}
+}
+
+function initStreakDate() {
+  const todayStr = getLocalDateStr();
+  if (streakData.todayDate !== todayStr) {
+    if (streakData.lastCompletedDate) {
+      const diff = getDaysDiff(streakData.lastCompletedDate, todayStr);
+      // diff === 1 means completed yesterday -> keep streak
+      // diff === 0 means completed today
+      // diff > 1 means missed at least one full calendar day -> reset streak to 0
+      if (diff > 1) {
+        streakData.streak = 0;
+      }
+    } else {
+      streakData.streak = 0;
+    }
+    streakData.todayDate = todayStr;
+    streakData.todayCount = 0;
+  }
+}
+
+function updateStreakUI() {
+  const flameEl = document.getElementById('streak-flame-icon');
+  const daysEl = document.getElementById('streak-days-count');
+  const progText = document.getElementById('goal-progress-text');
+  const miniFill = document.getElementById('goal-mini-fill');
+  const pillEl = document.getElementById('daily-goal-pill');
+
+  if (!flameEl || !daysEl || !progText || !miniFill || !pillEl) return;
+
+  const todayStr = getLocalDateStr();
+  const isDoneToday = (streakData.lastCompletedDate === todayStr) || (streakData.todayCount >= streakData.target);
+
+  daysEl.textContent = streakData.streak || 0;
+  progText.textContent = `${streakData.todayCount || 0} / ${streakData.target}`;
+
+  const pct = Math.min(100, Math.round(((streakData.todayCount || 0) / streakData.target) * 100));
+  miniFill.style.width = pct + '%';
+
+  pillEl.classList.toggle('completed-today', isDoneToday);
+
+  // Update active state on dropdown buttons
+  document.querySelectorAll('.goal-dd-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.goal, 10) === streakData.target);
+  });
+}
+
+function registerDailyAction() {
+  initStreakDate();
+  streakData.todayCount = (streakData.todayCount || 0) + 1;
+
+  const todayStr = getLocalDateStr();
+  const wasCompleted = (streakData.lastCompletedDate === todayStr);
+  const nowCompleted = (streakData.todayCount >= streakData.target);
+
+  if (nowCompleted && !wasCompleted) {
+    streakData.lastCompletedDate = todayStr;
+    streakData.streak = (streakData.streak || 0) + 1;
+    saveStreakLS();
+    updateStreakUI();
+    soundVictory();
+  } else {
+    saveStreakLS();
+    updateStreakUI();
+  }
+}
+
+function toggleDailyGoalMenu(event) {
+  event.stopPropagation();
+  const dd = document.getElementById('goal-dropdown');
+  if (dd) dd.classList.toggle('open');
+}
+
+function closeDailyGoalMenu() {
+  const dd = document.getElementById('goal-dropdown');
+  if (dd) dd.classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('#daily-goal-pill')) {
+    closeDailyGoalMenu();
+  }
+});
+
+function setDailyGoal(val, event) {
+  if (event) event.stopPropagation();
+  soundClick();
+  streakData.target = parseInt(val, 10) || 25;
+  const todayStr = getLocalDateStr();
+  const wasCompleted = (streakData.lastCompletedDate === todayStr);
+  const nowCompleted = (streakData.todayCount >= streakData.target);
+
+  if (nowCompleted && !wasCompleted) {
+    streakData.lastCompletedDate = todayStr;
+    streakData.streak = (streakData.streak || 0) + 1;
+    soundVictory();
+  }
+
+  saveStreakLS();
+  updateStreakUI();
+  closeDailyGoalMenu();
+}
+
 // =====================================================================
 //  FOCUS / ZEN MODE
 // =====================================================================
@@ -3796,6 +4122,7 @@ try {
 buildBgPresets();
 applyBgState();
 updateSoundUI();
+loadStreakLS();
 
 applyEpoch('all');
 initCardSwipe();
@@ -4135,6 +4462,7 @@ function exportBackup() {
     exportedAt: new Date().toISOString(),
     custom: JSON.parse(localStorage.getItem(LS_CUSTOM_KEY) || '{}'),
     learned: JSON.parse(localStorage.getItem(LS_KEY) || '[]'),
+    streak: JSON.parse(localStorage.getItem(STREAK_LS_KEY) || '{}'),
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -4158,6 +4486,10 @@ function importBackup(event) {
         learnedKeys = new Set(payload.learned);
         saveLearnedLS();
         document.getElementById('learned-count').textContent = learnedKeys.size;
+      }
+      if (payload.streak && typeof payload.streak === 'object') {
+        localStorage.setItem(STREAK_LS_KEY, JSON.stringify(payload.streak));
+        loadStreakLS();
       }
       loadCustomCards();
       rebuildAndRefresh();
