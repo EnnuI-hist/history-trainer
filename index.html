@@ -1510,6 +1510,23 @@ input[type=range]#bg-dim-slider::-webkit-slider-thumb {
 ::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,.45); }
 
 /* =========================================================
+   AUDIO & TOP BUTTONS
+   ========================================================= */
+#sound-toggle-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--glass2);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  color: var(--text2); font-size: 1rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .22s; box-shadow: var(--shadow-gold);
+  flex-shrink: 0;
+  user-select: none;
+}
+#sound-toggle-btn:hover { border-color: var(--border2); color: var(--gold2); box-shadow: 0 0 14px var(--gold-glow); transform: translateY(-1px); }
+#sound-toggle-btn.muted { opacity: 0.65; color: var(--muted); border-color: var(--border); filter: grayscale(0.6); }
+
+/* =========================================================
    EDITOR BUTTON & MODAL
    ========================================================= */
 #editor-toggle-btn {
@@ -1737,6 +1754,7 @@ body.zen-mode .tabs,
 body.zen-mode .theme-bar,
 body.zen-mode #event-count,
 body.zen-mode #empty-placeholder,
+body.zen-mode #sound-toggle-btn,
 body.zen-mode #editor-toggle-btn,
 body.zen-mode #bg-toggle-btn,
 body.zen-mode #bg-panel {
@@ -1758,6 +1776,7 @@ body.zen-mode .section.active {
 }
 
 @media (max-width: 768px) {
+  #sound-toggle-btn { width: 34px; height: 34px; font-size: .92rem; }
   #editor-toggle-btn { width: 34px; height: 34px; font-size: .92rem; }
   #editor-panel { padding: 18px 14px; max-height: 95vh; }
   .ed-title { font-size: 1.1rem; }
@@ -1785,6 +1804,7 @@ body.zen-mode .section.active {
 <!-- BG settings panel -->
 <div id="bg-panel-wrap">
   <div class="top-btns">
+    <button id="sound-toggle-btn" onclick="toggleSound()" title="Звуки ASMR (вкл/выкл)" aria-label="Звуковые эффекты">🔊</button>
     <button id="zen-toggle-btn" onclick="toggleZenMode()" title="Режим фокуса / Дзен (F)" aria-label="Режим фокуса"><span class="zen-icon">🧘</span><span class="zen-label">Фокус</span></button>
     <button id="editor-toggle-btn" onclick="openEditor()" title="Редактор карточек">➕</button>
     <button id="bg-toggle-btn" onclick="toggleBgPanel()" title="Настройки фона">🎨</button>
@@ -2492,15 +2512,16 @@ function updateEventCount() {
 //  TABS & TOP NAV
 // =====================================================================
 document.querySelectorAll('.epoch-btn').forEach(btn => {
-  btn.addEventListener('click', () => applyEpoch(btn.dataset.epoch));
+  btn.addEventListener('click', () => { soundClick(); applyEpoch(btn.dataset.epoch); });
 });
 
 document.querySelectorAll('.mode-btn').forEach(btn => {
-  btn.addEventListener('click', () => applyMode(btn.dataset.mode));
+  btn.addEventListener('click', () => { soundClick(); applyMode(btn.dataset.mode); });
 });
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
+    soundClick();
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     btn.classList.add('active');
@@ -2523,7 +2544,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 //  THEME BUTTONS
 // =====================================================================
 document.querySelectorAll('.theme-btn').forEach(btn => {
-  btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
+  btn.addEventListener('click', () => { soundClick(); applyTheme(btn.dataset.theme); });
 });
 
 // =====================================================================
@@ -2620,9 +2641,10 @@ let cardJustSwiped = false;
 function flipCard(){
   if (cardJustSwiped) return;
   document.getElementById('flashcard').classList.toggle('flipped');
+  soundFlip();
 }
-function nextCard(){ if(!displayEvents.length) return; cardIdx=(cardIdx+1)%displayEvents.length; renderCard(); }
-function prevCard(){ if(!displayEvents.length) return; cardIdx=(cardIdx-1+displayEvents.length)%displayEvents.length; renderCard(); }
+function nextCard(){ if(!displayEvents.length) return; cardIdx=(cardIdx+1)%displayEvents.length; soundClick(); renderCard(); }
+function prevCard(){ if(!displayEvents.length) return; cardIdx=(cardIdx-1+displayEvents.length)%displayEvents.length; soundClick(); renderCard(); }
 
 function initCardSwipe() {
   const card = document.getElementById('flashcard');
@@ -2665,11 +2687,13 @@ function initCardSwipe() {
 
 function toggleFlipMode(){
   flipMode = !flipMode;
+  soundClick();
   updateFlipModeBtn();
   renderCard();
 }
 
 function shuffleCards(){
+  soundClick();
   const btn = document.getElementById('btn-shuffle');
   if(!isShuffled){
     // Shuffle display copy
@@ -2693,6 +2717,7 @@ function shuffleCards(){
 }
 
 function toggleHideLearned(){
+  soundClick();
   hideLearned = document.getElementById('chk-hide-learned').checked;
   buildDisplayEvents();
   if(isShuffled){
@@ -2711,8 +2736,10 @@ function toggleKnown(){
   const key = getEventKey(e);
   if(learnedKeys.has(key)){
     learnedKeys.delete(key);
+    soundClick();
   } else {
     learnedKeys.add(key);
+    soundKnown();
   }
   saveLearnedLS();
   // If hiding and just un-learned: rebuild, card stays
@@ -2807,12 +2834,14 @@ function answerQuiz(el, answer){
     fb.innerHTML=`✅ <strong>Верно!</strong> ${quizQuestion.detail}`;
     addCorrect();
     setProgress(100);
+    soundCorrect();
   } else {
     el.classList.add('wrong');
     fb.className='quiz-feedback show err';
     fb.innerHTML=`❌ <strong>Неверно.</strong> Правильный ответ: <strong>${quizQuestion.correct}</strong><br>${quizQuestion.detail}`;
     addWrong(quizQuestion.questionText, answer, String(quizQuestion.correct));
     setProgress(30);
+    soundWrong();
   }
   document.getElementById('qz-next').classList.remove('hidden');
 }
@@ -2890,6 +2919,7 @@ function checkSort(){
     res.innerHTML='✅ <strong>Отлично!</strong> Все события расположены верно!';
     addCorrect(); addCorrect();
     setProgress(100);
+    soundCorrect();
   } else {
     res.className='sort-result show err';
     let h='<div class="correction">';
@@ -2905,6 +2935,7 @@ function checkSort(){
       correct.map(e=>`${e.event} (${e.year})`).join(' → ')
     );
     setProgress(40);
+    soundWrong();
   }
   document.getElementById('sort-check').disabled=true;
 }
@@ -2962,6 +2993,7 @@ function renderMatch() {
 
 function selectMatchSide(side, termKey, el) {
   if (matchMatched.has(termKey)) return;
+  soundClick();
   if (side === 'left') {
     matchSelLeft = (matchSelLeft === termKey) ? null : termKey;
   } else {
@@ -2976,6 +3008,7 @@ function selectMatchSide(side, termKey, el) {
       addCorrect();
       const pct = Math.round((matchMatched.size / matchPairs.length) * 100);
       setProgress(pct);
+      soundCorrect();
       renderMatch();
       if (matchMatched.size === matchPairs.length) {
         const res = document.getElementById('match-result');
@@ -2992,6 +3025,7 @@ function selectMatchSide(side, termKey, el) {
       );
       matchSelLeft = null;
       matchSelRight = null;
+      soundWrong();
       renderMatch();
       // Briefly highlight wrong cards
       document.querySelectorAll('.match-card:not(.matched)').forEach(c => {
@@ -3222,11 +3256,13 @@ function checkInputAnswer() {
     fb.innerHTML = `✅ <strong>Верно!</strong> Эталонный ответ: <strong>${inputQuestion.canonical}</strong><br><span style="opacity:.9">${inputQuestion.detail}</span>`;
     addCorrect();
     setProgress(100);
+    soundCorrect();
   } else {
     fb.className = 'input-feedback show err';
     fb.innerHTML = `❌ <strong>Неверно.</strong> Правильный ответ: <strong>${inputQuestion.canonical}</strong><br><span style="opacity:.9">${inputQuestion.detail}</span>`;
     addWrong(inputQuestion.questionText, rawValue, inputQuestion.canonical);
     setProgress(30);
+    soundWrong();
   }
 
   document.getElementById('inp-btn-next').classList.remove('hidden');
@@ -3453,11 +3489,230 @@ function clearCustomBg() {
 }
 
 // =====================================================================
+//  TACTILE ASMR AUDIO SYSTEM (Web Audio API)
+// =====================================================================
+const SOUND_LS_KEY = 'rus-trainer-sound-v1';
+let soundEnabled = localStorage.getItem(SOUND_LS_KEY) !== 'false';
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!soundEnabled) return null;
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) {
+      audioCtx = new AudioContextClass();
+    }
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+  return audioCtx;
+}
+
+// Unlock audio on first user interaction anywhere
+function unlockAudio() {
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+}
+['click', 'touchstart', 'keydown'].forEach(evt => {
+  window.addEventListener(evt, unlockAudio, { passive: true });
+});
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem(SOUND_LS_KEY, soundEnabled);
+  updateSoundUI();
+  if (soundEnabled) {
+    getAudioCtx();
+    soundClick();
+  }
+}
+
+function updateSoundUI() {
+  const btn = document.getElementById('sound-toggle-btn');
+  if (!btn) return;
+  btn.textContent = soundEnabled ? '🔊' : '🔇';
+  btn.classList.toggle('muted', !soundEnabled);
+  btn.title = soundEnabled ? 'Звук: ВКЛ (нажмите, чтобы выключить)' : 'Звук: ВЫКЛ (нажмите, чтобы включить)';
+  btn.setAttribute('aria-label', soundEnabled ? 'Выключить звук' : 'Включить звук');
+}
+
+/** 1. Card flip: soft paper rustle (bandpass filtered noise, ~95ms decay) */
+function soundFlip() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  try {
+    const dur = 0.095;
+    const bufferSize = Math.floor(ctx.sampleRate * dur);
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      last = (last + (0.025 * white)) / 1.025;
+      data[i] = last * 3.5;
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1200, ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(700, ctx.currentTime + dur);
+    filter.Q.value = 1.4;
+
+    const gain = ctx.createGain();
+    const t0 = ctx.currentTime;
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(0.045, t0 + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+
+    noise.start(t0);
+    noise.stop(t0 + dur);
+  } catch(e) {}
+}
+
+/** 2. Nav/tab click: subtle low-frequency mechanical micro-pulse (~180Hz, 32ms) */
+function soundClick() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  try {
+    const dur = 0.032;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const t0 = ctx.currentTime;
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(210, t0);
+    osc.frequency.exponentialRampToValueAtTime(110, t0 + dur);
+
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(0.04, t0 + 0.003);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(t0);
+    osc.stop(t0 + dur);
+  } catch(e) {}
+}
+
+/** 3. Correct answer: warm gentle harmonic chord (C5 + E5 soft sine tones) */
+function soundCorrect() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  try {
+    const t0 = ctx.currentTime;
+    const notes = [
+      { freq: 523.25, time: 0, dur: 0.28, vol: 0.035 }, // C5
+      { freq: 659.25, time: 0.035, dur: 0.32, vol: 0.032 } // E5 (staggered harp-like feel)
+    ];
+
+    notes.forEach(n => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const start = t0 + n.time;
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(n.freq, start);
+
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.linearRampToValueAtTime(n.vol, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + n.dur);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(start);
+      osc.stop(start + n.dur);
+    });
+  } catch(e) {}
+}
+
+/** 4. Wrong answer: soft muted wooden knock (two low thuds, no alarm/buzz) */
+function soundWrong() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  try {
+    const t0 = ctx.currentTime;
+    const knocks = [
+      { f1: 150, f2: 70, time: 0, dur: 0.07, vol: 0.055 },
+      { f1: 120, f2: 60, time: 0.045, dur: 0.065, vol: 0.035 }
+    ];
+
+    knocks.forEach(k => {
+      const osc = ctx.createOscillator();
+      const filter = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
+      const start = t0 + k.time;
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(k.f1, start);
+      osc.frequency.exponentialRampToValueAtTime(k.f2, start + k.dur);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(320, start);
+      filter.Q.value = 1.8;
+
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.linearRampToValueAtTime(k.vol, start + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + k.dur);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(start);
+      osc.stop(start + k.dur);
+    });
+  } catch(e) {}
+}
+
+/** 5. Known stamp: light crystalline chime (pure high gentle harmonics) */
+function soundKnown() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  try {
+    const t0 = ctx.currentTime;
+    const notes = [
+      { freq: 1046.50, time: 0, dur: 0.24, vol: 0.03 }, // C6
+      { freq: 1567.98, time: 0.03, dur: 0.28, vol: 0.022 } // G6
+    ];
+
+    notes.forEach(n => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const start = t0 + n.time;
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(n.freq, start);
+
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.linearRampToValueAtTime(n.vol, start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + n.dur);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(start);
+      osc.stop(start + n.dur);
+    });
+  } catch(e) {}
+}
+
+// =====================================================================
 //  FOCUS / ZEN MODE
 // =====================================================================
 function toggleZenMode(forceState) {
   const isZen = forceState !== undefined ? Boolean(forceState) : !document.body.classList.contains('zen-mode');
   document.body.classList.toggle('zen-mode', isZen);
+  soundClick();
   
   const btn = document.getElementById('zen-toggle-btn');
   if (btn) {
@@ -3540,6 +3795,7 @@ try {
 } catch(e) {}
 buildBgPresets();
 applyBgState();
+updateSoundUI();
 
 applyEpoch('all');
 initCardSwipe();
