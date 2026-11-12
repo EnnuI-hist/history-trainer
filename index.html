@@ -1913,6 +1913,569 @@ body.zen-mode .section.active {
   body.zen-mode #zen-toggle-btn .zen-label { display: inline; }
   body.zen-mode .app { padding: 56px 12px 32px; }
 }
+
+/* =========================================================
+   CULTURE SECTION & LIGHTBOX
+   ========================================================= */
+.card-container.culture-card {
+  height: 430px;
+}
+.fc-culture-front {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 10px;
+}
+.fc-culture-img-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  height: 245px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  background: rgba(8, 12, 20, 0.75);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5), 0 0 20px var(--gold-glow);
+  cursor: zoom-in;
+  flex-shrink: 0;
+}
+.fc-culture-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .35s ease;
+}
+.fc-culture-img-wrap:hover img {
+  transform: scale(1.03);
+}
+.fc-zoom-hint {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  background: rgba(8, 12, 20, 0.82);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border2);
+  color: var(--gold2);
+  font-size: .72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 99px;
+  pointer-events: none;
+}
+.fc-culture-back {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  text-align: left;
+  gap: 10px;
+}
+.fc-cult-title {
+  font-family: var(--ff-serif);
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--gold2);
+  text-align: center;
+  line-height: 1.25;
+}
+.fc-cult-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+.fc-cult-pill {
+  background: rgba(10, 15, 28, 0.65);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 7px 10px;
+  text-align: center;
+}
+.fc-cult-pill span {
+  display: block;
+  font-size: .66rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.fc-cult-pill strong {
+  font-size: .82rem;
+  color: var(--text);
+  font-weight: 600;
+}
+.fc-cult-lore {
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.10), rgba(16, 22, 42, 0.65));
+  border-left: 3px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  padding: 10px 14px;
+  font-size: .86rem;
+  color: var(--text2);
+  line-height: 1.5;
+  width: 100%;
+}
+
+/* Target switcher in Quiz & Input for Culture */
+.culture-target-bar {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.culture-target-bar.show {
+  display: flex;
+}
+.ct-label {
+  font-size: .76rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-right: 4px;
+}
+.ct-btn {
+  background: rgba(18, 26, 48, 0.75);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-family: var(--ff-sans);
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+}
+.ct-btn:hover {
+  border-color: var(--gold);
+  color: var(--text);
+}
+.ct-btn.active {
+  background: linear-gradient(135deg, rgba(201,168,76,.32), rgba(123,164,245,.2));
+  border-color: var(--gold2);
+  color: var(--gold2);
+  box-shadow: 0 0 14px var(--gold-glow);
+}
+
+/* Media preview inside Quiz & Written Input */
+.qz-media {
+  display: none;
+  margin: 0 auto 16px;
+  max-width: 420px;
+  height: 220px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  background: rgba(8, 12, 20, 0.75);
+  box-shadow: 0 6px 24px rgba(0,0,0,.45);
+  position: relative;
+  cursor: zoom-in;
+}
+.qz-media.show {
+  display: block;
+}
+.qz-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Fullscreen Lightbox */
+#lightbox-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(5, 8, 15, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 24px;
+  cursor: zoom-out;
+  animation: fadeUp .2s ease;
+}
+#lightbox-modal.open {
+  display: flex;
+}
+#lightbox-img {
+  max-width: min(92vw, 960px);
+  max-height: 78vh;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--border2);
+  box-shadow: 0 0 50px rgba(201,168,76,.18), 0 16px 48px rgba(0,0,0,.8);
+  object-fit: contain;
+  background: var(--bg1);
+}
+#lightbox-caption {
+  margin-top: 14px;
+  font-family: var(--ff-serif);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--gold2);
+  text-align: center;
+}
+#lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--glass2);
+  color: var(--text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+}
+#lightbox-close:hover {
+  border-color: var(--gold2);
+  color: var(--gold2);
+  transform: scale(1.08);
+}
+
+/* =========================================================
+   BESTIARY (ENCYCLOPEDIA & LIVE SEARCH)
+   ========================================================= */
+.bst-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.bst-subtabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.bst-subtab-btn {
+  background: rgba(18, 26, 48, 0.75);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  color: #ded7c8;
+  padding: 9px 20px;
+  border-radius: 99px;
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .85rem;
+  font-weight: 600;
+  transition: all .22s;
+}
+.bst-subtab-btn:hover {
+  border-color: var(--gold);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.bst-subtab-btn.active {
+  background: linear-gradient(135deg, rgba(201,168,76,.32), rgba(123,164,245,.22));
+  border-color: var(--gold2);
+  color: var(--gold2);
+  box-shadow: 0 0 18px var(--gold-glow);
+}
+.bst-search-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.bst-search-wrap {
+  flex: 1;
+  position: relative;
+  min-width: 240px;
+}
+.bst-search-input {
+  width: 100%;
+  background: var(--glass2);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1.5px solid var(--border2);
+  border-radius: 99px;
+  padding: 11px 90px 11px 40px;
+  color: var(--text);
+  font-family: var(--ff-sans);
+  font-size: .92rem;
+  outline: none;
+  transition: all .2s;
+  box-shadow: var(--shadow-gold);
+}
+.bst-search-input:focus {
+  border-color: var(--gold2);
+  box-shadow: 0 0 22px var(--gold-glow);
+}
+.bst-search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold);
+  font-size: .95rem;
+  pointer-events: none;
+}
+.bst-kbd-hint {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(10, 15, 28, 0.75);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: .7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/* Bestiary Known Button */
+.bst-known-btn {
+  padding: 5px 13px;
+  border-radius: 99px;
+  border: 1px solid var(--border2);
+  background: rgba(16, 22, 42, 0.65);
+  color: var(--text2);
+  font-family: var(--ff-sans);
+  font-size: .75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.bst-known-btn:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+.bst-known-btn.is-known {
+  background: rgba(95, 216, 124, 0.16);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+/* 1. Chronicle Vertical Timeline */
+.bst-timeline {
+  position: relative;
+  margin-left: 16px;
+  padding-left: 24px;
+  border-left: 2px solid rgba(201, 168, 76, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.bst-tl-item {
+  position: relative;
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-gold);
+  transition: border-color .2s, transform .2s;
+}
+.bst-tl-item:hover {
+  border-color: var(--border2);
+  transform: translateX(2px);
+}
+.bst-tl-item::before {
+  content: '';
+  position: absolute;
+  left: -31px;
+  top: 22px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--gold2);
+  border: 2px solid var(--bg0);
+  box-shadow: 0 0 10px var(--gold);
+}
+.bst-tl-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.bst-tl-year {
+  font-family: var(--ff-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--gold2);
+  line-height: 1.2;
+}
+.bst-tl-event {
+  font-family: var(--ff-serif);
+  font-size: 1.18rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.bst-tl-detail {
+  font-size: .86rem;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+/* 2. Glossary Cards */
+.bst-glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+.bst-term-card {
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-gold);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  transition: border-color .2s, transform .2s;
+}
+.bst-term-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+}
+.bst-term-title {
+  font-family: var(--ff-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--gold2);
+  margin-bottom: 4px;
+}
+.bst-term-def {
+  font-size: .88rem;
+  color: var(--text2);
+  line-height: 1.55;
+}
+
+/* 3. Architecture Monument Cards */
+.bst-monuments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.bst-mon-card {
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-gold);
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.bst-mon-thumb {
+  width: 100%;
+  height: 165px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  cursor: zoom-in;
+  position: relative;
+  background: var(--bg1);
+}
+.bst-mon-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .3s ease;
+}
+.bst-mon-thumb:hover img {
+  transform: scale(1.05);
+}
+.bst-mon-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bst-mon-title {
+  font-family: var(--ff-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--gold2);
+  line-height: 1.25;
+}
+.bst-mon-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.bst-mon-pill {
+  background: rgba(10, 15, 28, 0.65);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: .78rem;
+  color: var(--text2);
+}
+.bst-mon-pill strong {
+  color: var(--text);
+}
+.bst-mon-lore {
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.12), rgba(16, 22, 42, 0.7));
+  border-left: 3px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  padding: 10px 14px;
+  font-size: .86rem;
+  color: var(--text2);
+  line-height: 1.55;
+}
+.bst-mon-lore-label {
+  display: block;
+  font-size: .68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--gold2);
+  margin-bottom: 4px;
+}
+
+/* Editor photo preview */
+.ed-photo-preview {
+  width: 100%;
+  max-height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  display: none;
+  margin-top: 6px;
+}
+.ed-photo-preview.show {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .card-container.culture-card { height: 420px; }
+  .fc-culture-img-wrap { height: 195px; }
+  .fc-cult-meta { grid-template-columns: 1fr; gap: 5px; }
+  .bst-glossary-grid { grid-template-columns: 1fr; }
+  .bst-mon-card { grid-template-columns: 1fr; }
+  .bst-mon-thumb { height: 190px; }
+  .bst-kbd-hint { display: none; }
+  .bst-search-input { padding-right: 16px; }
+}
 </style>
 </head>
 <body>
@@ -2003,11 +2566,13 @@ body.zen-mode .section.active {
     <button class="epoch-btn active" data-epoch="all">✦ Все эпохи</button>
   </div>
 
-  <!-- Second-level navigation: Dates / Terms -->
+  <!-- Second-level navigation: Dates / Terms / Culture / Bestiary -->
   <div class="mode-bar-wrap">
     <div class="mode-bar" id="mode-bar">
       <button class="mode-btn active" data-mode="dates">📅 Даты</button>
       <button class="mode-btn" data-mode="terms">📖 Термины</button>
+      <button class="mode-btn" data-mode="culture">🏛 Культура</button>
+      <button class="mode-btn" data-mode="bestiary">📚 Бестиарий</button>
     </div>
   </div>
 
@@ -2069,12 +2634,27 @@ body.zen-mode .section.active {
           <div class="theme-badge" id="fc-badge"></div>
           <div class="fc-title" id="fc-front-title">Событие</div>
           <div class="event" id="fc-event"></div>
+          <div class="fc-culture-front" id="fc-culture-front">
+            <div class="fc-culture-img-wrap" onclick="openLightboxFromCard(event)" title="Нажмите, чтобы открыть фото во весь экран">
+              <img id="fc-cult-img" src="" alt="Памятник культуры">
+              <span class="fc-zoom-hint">🔍 Во весь экран</span>
+            </div>
+          </div>
         </div>
         <div class="card-face card-back">
           <div class="theme-badge" id="fc-badge2"></div>
           <div class="fc-title" id="fc-back-title">Дата</div>
           <div class="year" id="fc-year"></div>
           <div class="detail" id="fc-detail"></div>
+          <div class="fc-culture-back" id="fc-culture-back">
+            <div class="fc-cult-title" id="fc-cult-title"></div>
+            <div class="fc-cult-meta">
+              <div class="fc-cult-pill"><span>Дата</span><strong id="fc-cult-year"></strong></div>
+              <div class="fc-cult-pill"><span>Зодчий / Автор</span><strong id="fc-cult-author"></strong></div>
+              <div class="fc-cult-pill"><span>Правитель</span><strong id="fc-cult-ruler"></strong></div>
+            </div>
+            <div class="fc-cult-lore" id="fc-cult-lore"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -2093,8 +2673,18 @@ body.zen-mode .section.active {
 
   <!-- ========== QUIZ ========== -->
   <div class="section" id="sec-quiz">
+    <div class="culture-target-bar" id="qz-culture-bar">
+      <span class="ct-label">Угадывать по фото:</span>
+      <button class="ct-btn active" data-ctarget="title" onclick="setCultureTarget('title')">🏛 Название</button>
+      <button class="ct-btn" data-ctarget="author" onclick="setCultureTarget('author')">🎨 Автор / зодчий</button>
+      <button class="ct-btn" data-ctarget="ruler" onclick="setCultureTarget('ruler')">👑 Правитель</button>
+    </div>
     <div class="quiz-question">
       <div class="q-label" id="qz-label"></div>
+      <div class="qz-media" id="qz-media" onclick="openLightbox(this.querySelector('img').src, 'Памятник архитектуры')">
+        <img id="qz-img" src="" alt="Вопрос по культуре">
+        <span class="fc-zoom-hint">🔍 Увеличить</span>
+      </div>
       <div class="q-text" id="qz-text"></div>
     </div>
     <div class="quiz-options" id="qz-options"></div>
@@ -2136,12 +2726,22 @@ body.zen-mode .section.active {
 
   <!-- ========== WRITTEN INPUT ========== -->
   <div class="section" id="sec-input">
+    <div class="culture-target-bar" id="inp-culture-bar">
+      <span class="ct-label">Вводить по фото:</span>
+      <button class="ct-btn active" data-ctarget="title" onclick="setCultureTarget('title')">🏛 Название</button>
+      <button class="ct-btn" data-ctarget="author" onclick="setCultureTarget('author')">🎨 Автор / зодчий</button>
+      <button class="ct-btn" data-ctarget="ruler" onclick="setCultureTarget('ruler')">👑 Правитель</button>
+    </div>
     <div class="input-card glass">
       <div class="input-meta">
         <span class="theme-badge" id="inp-badge"></span>
         <span class="input-counter" id="inp-counter"></span>
       </div>
       <div class="input-prompt-label" id="inp-prompt-label">Историческое событие:</div>
+      <div class="qz-media" id="inp-media" onclick="openLightbox(this.querySelector('img').src, 'Памятник архитектуры')">
+        <img id="inp-img" src="" alt="Памятник">
+        <span class="fc-zoom-hint">🔍 Увеличить</span>
+      </div>
       <div class="input-prompt-text" id="inp-prompt-text"></div>
       
       <div class="input-form">
@@ -2160,7 +2760,37 @@ body.zen-mode .section.active {
     <div id="review-content"></div>
   </div>
 
+  <!-- ========== BESTIARY (СПРАВОЧНИК-ЭНЦИКЛОПЕДИЯ) ========== -->
+  <div class="section" id="sec-bestiary">
+    <div class="bst-header">
+      <div class="bst-subtabs">
+        <button class="bst-subtab-btn active" data-bst="dates" onclick="setBestiaryTab('dates')">📜 Хроника (Даты)</button>
+        <button class="bst-subtab-btn" data-bst="terms" onclick="setBestiaryTab('terms')">📖 Глоссарий (Термины)</button>
+        <button class="bst-subtab-btn" data-bst="culture" onclick="setBestiaryTab('culture')">🏛 Памятники архитектуры</button>
+      </div>
+      <div class="bst-search-bar">
+        <div class="bst-search-wrap">
+          <span class="bst-search-icon">🔎</span>
+          <input type="text" id="bst-search-input" class="bst-search-input" placeholder="Быстрый поиск по датам, терминам, правителям и лору..." oninput="renderBestiary()" autocomplete="off">
+          <span class="bst-kbd-hint">Ctrl + K</span>
+        </div>
+        <label class="ctrl-label" title="Показывать только ещё не изученные карточки">
+          <input type="checkbox" id="bst-only-unlearned" onchange="renderBestiary()">
+          Только неизученные
+        </label>
+      </div>
+    </div>
+    <div id="bst-content"></div>
+  </div>
+
 </div><!-- /app -->
+
+<!-- Fullscreen Lightbox Modal -->
+<div id="lightbox-modal" onclick="closeLightbox(event)">
+  <button id="lightbox-close" onclick="closeLightbox(event)" title="Закрыть (Esc)">✕</button>
+  <img id="lightbox-img" src="" alt="Просмотр памятника" onclick="event.stopPropagation()">
+  <div id="lightbox-caption" onclick="event.stopPropagation()"></div>
+</div>
 
 <script>
 // =====================================================================
@@ -2403,12 +3033,49 @@ const DATA_TERMS = {
   soviet:  [],
 };
 
+const DATA_CULTURE = [
+  {
+    id: "cult_sophia_kiev",
+    epoch: "ancient",
+    theme: "culture",
+    title: "Софийский собор в Киеве",
+    year: "1037 г.",
+    author: "Византийские и древнерусские зодчие",
+    ruler: "Ярослав Мудрый",
+    lore: "Главный митрополичий храм Древней Руси, заложенный Ярославом Мудрым на месте решающей победы над печенегами (1036 г.). Прославился тринадцатиглавой композицией, мозаикой «Богоматерь Оранта» (Нерушимая Стена) и фресками с изображением семьи князя.",
+    image: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a1022"/><stop offset="100%" stop-color="#172342"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f3d98b"/><stop offset="100%" stop-color="#b88928"/></linearGradient></defs><rect width="800" height="500" fill="url(#bg)"/><circle cx="400" cy="210" r="170" fill="rgba(201,168,76,0.08)"/><g stroke="#c9a84c" stroke-width="2" fill="none" opacity="0.35"><circle cx="400" cy="210" r="140"/><circle cx="400" cy="210" r="195"/></g><rect x="170" y="250" width="460" height="170" rx="6" fill="#e8e2d5" stroke="#c9a84c" stroke-width="3"/><rect x="230" y="190" width="340" height="70" fill="#dfd7c6" stroke="#c9a84c" stroke-width="2.5"/><rect x="355" y="120" width="90" height="75" fill="#e8e2d5" stroke="#c9a84c" stroke-width="2.5"/><rect x="260" y="145" width="65" height="50" fill="#e8e2d5" stroke="#c9a84c" stroke-width="2"/><rect x="475" y="145" width="65" height="50" fill="#e8e2d5" stroke="#c9a84c" stroke-width="2"/><path d="M350 120 Q400 55 450 120 Z" fill="url(#gold)"/><path d="M255 145 Q292 95 330 145 Z" fill="url(#gold)"/><path d="M470 145 Q507 95 545 145 Z" fill="url(#gold)"/><path d="M185 250 Q215 205 245 250 Z" fill="url(#gold)"/><path d="M555 250 Q585 205 615 250 Z" fill="url(#gold)"/><g stroke="#e8c97a" stroke-width="3"><line x1="400" y1="45" x2="400" y2="78"/><line x1="388" y1="57" x2="412" y2="57"/><line x1="292" y1="88" x2="292" y2="115"/><line x1="283" y1="98" x2="301" y2="98"/><line x1="507" y1="88" x2="507" y2="115"/><line x1="498" y1="98" x2="516" y2="98"/></g><g fill="#1c2744" stroke="#b88928" stroke-width="2"><rect x="375" y="320" width="50" height="100" rx="25"/><rect x="285" y="335" width="38" height="85" rx="19"/><rect x="477" y="335" width="38" height="85" rx="19"/><rect x="210" y="285" width="24" height="55" rx="12"/><rect x="566" y="285" width="24" height="55" rx="12"/></g><text x="400" y="465" text-anchor="middle" fill="#e8c97a" font-family="Georgia, serif" font-size="22" letter-spacing="2">СОФИЙСКИЙ СОБОР В КИЕВЕ · XI В.</text></svg>`)
+  },
+  {
+    id: "cult_pokrov_nerl",
+    epoch: "ancient",
+    theme: "culture",
+    title: "Церковь Покрова на Нерли",
+    year: "1165 г.",
+    author: "Владимиро-суздальские мастера",
+    ruler: "Андрей Боголюбский",
+    lore: "Жемчужина белокаменного зодчества Северо-Восточной Руси, возведённая у слияния рек Нерли и Клязьмы под Владимиром в память о погибшем сыне Андрея Боголюбского — Изяславе. Отличается утончёнными пропорциями, перспективным порталом и белокаменной резьбой с образом царя Давида.",
+    image: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#091326"/><stop offset="100%" stop-color="#15294a"/></linearGradient><linearGradient id="gold2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f6de96"/><stop offset="100%" stop-color="#ba8b2a"/></linearGradient></defs><rect width="800" height="500" fill="url(#sky)"/><circle cx="400" cy="195" r="145" fill="rgba(232,201,122,0.09)"/><path d="M120 410 Q400 345 680 410 L800 410 L800 500 L0 500 L0 410 Z" fill="#102138" stroke="#c9a84c" stroke-width="1.5"/><rect x="315" y="190" width="170" height="190" rx="4" fill="#f3efe6" stroke="#c9a84c" stroke-width="2.5"/><line x1="368" y1="190" x2="368" y2="380" stroke="#c9a84c" stroke-width="2"/><line x1="432" y1="190" x2="432" y2="380" stroke="#c9a84c" stroke-width="2"/><rect x="366" y="118" width="68" height="72" fill="#efeae0" stroke="#c9a84c" stroke-width="2.5"/><path d="M362 118 Q400 52 438 118 Z" fill="url(#gold2)"/><line x1="400" y1="36" x2="400" y2="68" stroke="#e8c97a" stroke-width="3"/><line x1="388" y1="48" x2="412" y2="48" stroke="#e8c97a" stroke-width="3"/><rect x="383" y="310" width="34" height="70" rx="17" fill="#192848" stroke="#b88928" stroke-width="2"/><rect x="392" y="220" width="16" height="48" rx="8" fill="#192848"/><rect x="334" y="232" width="14" height="42" rx="7" fill="#192848"/><rect x="452" y="232" width="14" height="42" rx="7" fill="#192848"/><text x="400" y="465" text-anchor="middle" fill="#e8c97a" font-family="Georgia, serif" font-size="22" letter-spacing="2">ЦЕРКОВЬ ПОКРОВА НА НЕРЛИ · 1165 Г.</text></svg>`)
+  },
+  {
+    id: "cult_golden_gates_vladimir",
+    epoch: "ancient",
+    theme: "culture",
+    title: "Золотые ворота во Владимире",
+    year: "1164 г.",
+    author: "Владимиро-суздальские зодчие",
+    ruler: "Андрей Боголюбский",
+    lore: "Выдающийся памятник русского оборонного и триумфального белокаменного зодчества. Служили парадным въездом в стольный Владимир, были увенчаны надвратной Ризположенской церковью, а массивные дубовые створы ворот покрывали листы золочёной меди.",
+    image: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><defs><linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0b101d"/><stop offset="100%" stop-color="#19233c"/></linearGradient><linearGradient id="gold3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc90"/><stop offset="100%" stop-color="#b68524"/></linearGradient></defs><rect width="800" height="500" fill="url(#bg3)"/><circle cx="400" cy="220" r="165" fill="rgba(201,168,76,0.08)"/><polygon points="150,415 240,260 280,260 280,415" fill="#d9d1c0" stroke="#c9a84c" stroke-width="2"/><polygon points="650,415 560,260 520,260 520,415" fill="#d9d1c0" stroke="#c9a84c" stroke-width="2"/><rect x="265" y="195" width="270" height="220" rx="5" fill="#eee9de" stroke="#c9a84c" stroke-width="3"/><path d="M335 415 L335 285 Q400 225 465 285 L465 415 Z" fill="#131c31" stroke="url(#gold3)" stroke-width="4"/><rect x="345" y="315" width="110" height="100" fill="url(#gold3)" opacity="0.88"/><line x1="400" y1="315" x2="400" y2="415" stroke="#0b101d" stroke-width="3"/><rect x="350" y="135" width="100" height="60" fill="#e8e2d5" stroke="#c9a84c" stroke-width="2.5"/><rect x="376" y="92" width="48" height="43" fill="#eee9de" stroke="#c9a84c" stroke-width="2"/><path d="M372 92 Q400 45 428 92 Z" fill="url(#gold3)"/><line x1="400" y1="28" x2="400" y2="56" stroke="#e8c97a" stroke-width="3"/><line x1="390" y1="38" x2="410" y2="38" stroke="#e8c97a" stroke-width="3"/><text x="400" y="465" text-anchor="middle" fill="#e8c97a" font-family="Georgia, serif" font-size="22" letter-spacing="2">ЗОЛОТЫЕ ВОРОТА ВО ВЛАДИМИРЕ · 1164 Г.</text></svg>`)
+  }
+];
+
 const ALL_EVENTS = Object.entries(DATA_DATES).flatMap(([epoch, arr]) =>
   arr.map(item => ({ ...item, epoch }))
 );
 const ALL_TERMS = Object.entries(DATA_TERMS).flatMap(([epoch, arr]) =>
   arr.map(item => ({ ...item, epoch }))
 );
+const ALL_CULTURE = DATA_CULTURE.map(item => ({ ...item }));
 
 // =====================================================================
 //  STATE
@@ -2437,8 +3104,13 @@ function saveLearnedLS() {
   localStorage.setItem(LS_KEY, JSON.stringify([...learnedKeys]));
 }
 function getEventKey(e) {
+  if (e.lore !== undefined || e.title !== undefined) return `cult::${e.id || e.title}`;
   return e.term !== undefined ? `term::${e.term}` : `${e.sortYear}::${e.event}`;
 }
+
+let cultureTarget = 'title'; // 'title' | 'author' | 'ruler'
+let bestiarySubTab = 'dates'; // 'dates' | 'terms' | 'culture'
+let edTempCultureImage = '';
 
 const EPOCH_NAMES = {
   all:     'Все эпохи',
@@ -2452,6 +3124,7 @@ const EPOCH_NAMES = {
 
 const DATE_THEMES = new Set(['rurik', 'razdro', 'mongol', 'moscow', 'culture']);
 const TERM_THEMES = new Set(['soc', 'gov', 'econ', 'cult', 'mil']);
+const CULTURE_THEMES = new Set(['culture', 'cult', 'rurik', 'razdro', 'moscow']);
 
 const THEME_NAMES = {
   all: 'Все темы',
@@ -2500,15 +3173,20 @@ function addWrong(question, yourAnswer, correctAnswer){
   errors.push({question, yourAnswer, correctAnswer});
 }
 
-function getEpochSource() {
-  if (currentMode === 'terms') {
+function getEpochSource(modeOverride) {
+  const m = modeOverride || (currentMode === 'bestiary' ? bestiarySubTab : currentMode);
+  if (m === 'terms') {
     return currentEpoch === 'all' ? ALL_TERMS : (DATA_TERMS[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+  }
+  if (m === 'culture') {
+    return currentEpoch === 'all' ? ALL_CULTURE : ALL_CULTURE.filter(item => item.epoch === currentEpoch);
   }
   return currentEpoch === 'all' ? ALL_EVENTS : (DATA_DATES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
 }
 
 function updateThemeButtonsVisibility(epochItems) {
-  const allowedThemes = currentMode === 'terms' ? TERM_THEMES : DATE_THEMES;
+  const effMode = currentMode === 'bestiary' ? bestiarySubTab : currentMode;
+  const allowedThemes = effMode === 'terms' ? TERM_THEMES : (effMode === 'culture' ? CULTURE_THEMES : DATE_THEMES);
   const presentThemes = new Set(epochItems.map(e => e.theme));
   document.querySelectorAll('.theme-btn').forEach(btn => {
     const t = btn.dataset.theme;
@@ -2524,11 +3202,26 @@ function updateThemeButtonsVisibility(epochItems) {
 }
 
 function syncWorkspaceVisibility(epochItems) {
-  const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
-  const isEmpty = epochItems.length === 0;
   const placeholder = document.getElementById('empty-placeholder');
   const themeBar = document.getElementById('theme-bar');
   const eventCountEl = document.getElementById('event-count');
+  const tabsEl = document.querySelector('.tabs');
+
+  if (currentMode === 'bestiary') {
+    if (tabsEl) tabsEl.style.display = 'none';
+    placeholder.classList.remove('show');
+    themeBar.style.display = epochItems.length > 0 ? '' : 'none';
+    eventCountEl.style.display = '';
+    document.querySelectorAll('.section').forEach(s => {
+      s.classList.toggle('active', s.id === 'sec-bestiary');
+      s.style.display = s.id === 'sec-bestiary' ? 'block' : 'none';
+    });
+    return true;
+  }
+
+  if (tabsEl) tabsEl.style.display = '';
+  const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+  const isEmpty = epochItems.length === 0;
 
   if (isEmpty && activeTab !== 'review') {
     themeBar.style.display = 'none';
@@ -2536,7 +3229,7 @@ function syncWorkspaceVisibility(epochItems) {
     document.querySelectorAll('.section').forEach(s => {
       if (s.id !== 'sec-review') s.style.display = 'none';
     });
-    const modeLabel = currentMode === 'terms' ? 'Термины' : 'Даты';
+    const modeLabel = currentMode === 'terms' ? 'Термины' : (currentMode === 'culture' ? 'Культура' : 'Даты');
     document.getElementById('ep-sub').textContent =
       `Раздел «${EPOCH_NAMES[currentEpoch]}» (${modeLabel}) пока пуст и готов к наполнению.`;
     placeholder.classList.add('show');
@@ -2548,7 +3241,12 @@ function syncWorkspaceVisibility(epochItems) {
   themeBar.style.display = isEmpty ? 'none' : '';
   eventCountEl.style.display = isEmpty ? 'none' : '';
   document.querySelectorAll('.section').forEach(s => {
-    s.style.display = '';
+    if (s.id === 'sec-bestiary') {
+      s.classList.remove('active');
+      s.style.display = 'none';
+    } else {
+      s.style.display = '';
+    }
   });
   return !isEmpty;
 }
@@ -2563,6 +3261,11 @@ function applyEpoch(epoch) {
 
 function updateFlipModeBtn() {
   const btn = document.getElementById('btn-flip-mode');
+  if (currentMode === 'culture') {
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = '';
   if (currentMode === 'terms') {
     btn.textContent = flipMode ? '📝 Определение → Термин' : '📖 Термин → Определение';
   } else {
@@ -2576,17 +3279,32 @@ function applyMode(mode) {
   document.querySelectorAll('.mode-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.mode === mode);
   });
+
   const sortTabBtn  = document.querySelector('.tab-btn[data-tab="sort"]');
   const matchTabBtn = document.querySelector('.tab-btn[data-tab="match"]');
+  const cardsTabBtn = document.querySelector('.tab-btn[data-tab="cards"]');
+
   if (sortTabBtn && matchTabBtn) {
-    sortTabBtn.style.display  = mode === 'terms' ? 'none' : '';
-    matchTabBtn.style.display = mode === 'terms' ? '' : 'none';
-    if (mode === 'terms' && sortTabBtn.classList.contains('active')) {
-      matchTabBtn.click();
-    } else if (mode === 'dates' && matchTabBtn.classList.contains('active')) {
-      sortTabBtn.click();
+    if (mode === 'culture') {
+      sortTabBtn.style.display = 'none';
+      matchTabBtn.style.display = 'none';
+      if (sortTabBtn.classList.contains('active') || matchTabBtn.classList.contains('active')) {
+        cardsTabBtn.click();
+      }
+    } else if (mode === 'terms') {
+      sortTabBtn.style.display = 'none';
+      matchTabBtn.style.display = '';
+      if (sortTabBtn.classList.contains('active')) matchTabBtn.click();
+    } else if (mode === 'dates') {
+      sortTabBtn.style.display = '';
+      matchTabBtn.style.display = 'none';
+      if (matchTabBtn.classList.contains('active')) sortTabBtn.click();
     }
   }
+
+  document.getElementById('qz-culture-bar')?.classList.toggle('show', mode === 'culture');
+  document.getElementById('inp-culture-bar')?.classList.toggle('show', mode === 'culture');
+
   updateFlipModeBtn();
   refreshFilterState();
 }
@@ -2595,7 +3313,10 @@ function refreshFilterState() {
   const epochItems = getEpochSource();
   updateThemeButtonsVisibility(epochItems);
   const hasItems = syncWorkspaceVisibility(epochItems);
-  if (hasItems) {
+  if (currentMode === 'bestiary') {
+    applyTheme(currentTheme);
+    renderBestiary();
+  } else if (hasItems) {
     applyTheme(currentTheme);
   }
 }
@@ -2604,8 +3325,11 @@ function applyTheme(theme){
   currentTheme = theme;
   const epochItems = getEpochSource();
   filteredEvents = theme === 'all' ? [...epochItems] : epochItems.filter(e => e.theme === theme);
-  if (currentMode === 'terms') {
+  const effMode = currentMode === 'bestiary' ? bestiarySubTab : currentMode;
+  if (effMode === 'terms') {
     filteredEvents.sort((a,b) => a.term.localeCompare(b.term, 'ru'));
+  } else if (effMode === 'culture') {
+    filteredEvents.sort((a,b) => a.title.localeCompare(b.title, 'ru'));
   } else {
     filteredEvents.sort((a,b) => a.sortYear - b.sortYear);
   }
@@ -2618,6 +3342,11 @@ function applyTheme(theme){
     b.classList.toggle('active', b.dataset.theme === theme);
   });
   updateEventCount();
+
+  if (currentMode === 'bestiary') {
+    renderBestiary();
+    return;
+  }
 
   cardIdx = 0;
   renderCard();
@@ -2705,8 +3434,29 @@ function renderCard(){
   const e = displayEvents[cardIdx];
   const known = learnedKeys.has(getEventKey(e));
 
+  const fcContainer = document.getElementById('flashcard');
+  const cultFront = document.getElementById('fc-culture-front');
+  const cultBack  = document.getElementById('fc-culture-back');
+  const isCulture = currentMode === 'culture';
+
+  fcContainer.classList.toggle('culture-card', isCulture);
+  cultFront.style.display = isCulture ? 'flex' : 'none';
+  cultBack.style.display  = isCulture ? 'flex' : 'none';
+  document.getElementById('fc-event').style.display      = isCulture ? 'none' : '';
+  document.getElementById('fc-back-title').style.display = isCulture ? 'none' : '';
+  document.getElementById('fc-year').style.display       = isCulture ? 'none' : '';
+  document.getElementById('fc-detail').style.display     = isCulture ? 'none' : '';
+
   // Flip mode determines which face shows what
-  if(currentMode === 'terms') {
+  if (isCulture) {
+    document.getElementById('fc-front-title').textContent = 'Памятник культуры';
+    document.getElementById('fc-cult-img').src = e.image || '';
+    document.getElementById('fc-cult-title').textContent = e.title || '';
+    document.getElementById('fc-cult-year').textContent = e.year || '—';
+    document.getElementById('fc-cult-author').textContent = e.author || 'Неизвестен';
+    document.getElementById('fc-cult-ruler').textContent = e.ruler || '—';
+    document.getElementById('fc-cult-lore').textContent = e.lore || '';
+  } else if(currentMode === 'terms') {
     if(flipMode) {
       // Front: DEF, Back: TERM
       document.getElementById('fc-front-title').textContent = 'Определение';
@@ -2896,9 +3646,49 @@ function toggleKnown(){
 // =====================================================================
 //  QUIZ
 // =====================================================================
+const CULTURE_FALLBACK_DISTRACTORS = {
+  title: [
+    'Десятинная церковь в Киеве',
+    'Софийский собор в Новгороде',
+    'Успенский собор во Владимире',
+    'Дмитриевский собор во Владимире',
+    'Церковь Спаса на Нередице'
+  ],
+  author: [
+    'Византийские мастера',
+    'Мастер Пётр',
+    'Феофан Грек',
+    'Андрей Рублёв',
+    'Новгородские зодчие'
+  ],
+  ruler: [
+    'Владимир Святославич',
+    'Ярослав Мудрый',
+    'Владимир Мономах',
+    'Юрий Долгорукий',
+    'Всеволод Большое Гнездо',
+    'Дмитрий Донской'
+  ]
+};
+
+function setCultureTarget(targetField) {
+  cultureTarget = targetField;
+  soundClick();
+  document.querySelectorAll('.ct-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.ctarget === targetField);
+  });
+  const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+  if (activeTab === 'quiz') generateQuiz();
+  if (activeTab === 'input') generateInputQuestion();
+}
+
 function generateQuiz(){
-  const pool = filteredEvents.length >= 4 ? filteredEvents : getEpochSource();
-  if(pool.length < 4){
+  const pool = filteredEvents.length >= 1 ? filteredEvents : getEpochSource();
+  const minRequired = currentMode === 'culture' ? 1 : 4;
+  const qzMedia = document.getElementById('qz-media');
+  if (qzMedia) qzMedia.classList.remove('show');
+
+  if(pool.length < minRequired){
     document.getElementById('qz-label').textContent = '';
     document.getElementById('qz-text').textContent = 'Нужно минимум 4 карточки для теста. Выберите «Все темы».';
     document.getElementById('qz-options').innerHTML = '';
@@ -2911,11 +3701,37 @@ function generateQuiz(){
   setProgress(0);
 
   const target = pool[Math.floor(Math.random()*pool.length)];
-  const qContext = currentEpoch === 'all' ? THEME_NAMES[currentTheme] : `${EPOCH_NAMES[currentEpoch]} · ${THEME_NAMES[currentTheme]}`;
+  const qContext = currentEpoch === 'all' ? (THEME_NAMES[currentTheme] || 'Все темы') : `${EPOCH_NAMES[currentEpoch]} · ${THEME_NAMES[currentTheme] || 'Все темы'}`;
   let options = [];
   let isDefOpts = false;
 
-  if (currentMode === 'terms') {
+  if (currentMode === 'culture') {
+    if (qzMedia) {
+      document.getElementById('qz-img').src = target.image || '';
+      qzMedia.classList.add('show');
+    }
+    const fieldMap = {
+      title:  { q: 'Какой памятник культуры изображён на иллюстрации?', label: 'Название' },
+      author: { q: `Кто является автором / зодчим памятника «${target.title}»?`, label: 'Автор / зодчий' },
+      ruler:  { q: `При каком правителе был создан памятник «${target.title}»?`, label: 'Правитель' }
+    };
+    const meta = fieldMap[cultureTarget] || fieldMap.title;
+    const correctVal = target[cultureTarget] || target.title;
+
+    document.getElementById('qz-label').textContent = `Вопрос ${quizCount} · ${qContext} · ${meta.label}`;
+    document.getElementById('qz-text').textContent  = meta.q;
+
+    const poolDistractors = ALL_CULTURE.map(x => x[cultureTarget]).filter(v => v && v !== correctVal);
+    const fallbackDistractors = (CULTURE_FALLBACK_DISTRACTORS[cultureTarget] || []).filter(v => v !== correctVal);
+    const uniqueWrong = [...new Set([...poolDistractors, ...fallbackDistractors])];
+    options = shuffle([...shuffle(uniqueWrong).slice(0, 3), correctVal]);
+
+    quizQuestion = {
+      correct: correctVal,
+      questionText: `${meta.label}: ${target.title}`,
+      detail: `<strong>${target.title}</strong> (${target.year}) · Зодчий: ${target.author} · Правитель: ${target.ruler}<br>${target.lore}`
+    };
+  } else if (currentMode === 'terms') {
     const type = Math.random() < 0.5 ? 'term' : 'def';
     if (type === 'term') {
       document.getElementById('qz-label').textContent = `Вопрос ${quizCount} · ${qContext}`;
@@ -3334,7 +4150,38 @@ function generateInputQuestion() {
   inputEl.value = '';
   checkBtn.disabled = false;
 
-  if (currentMode === 'terms') {
+  const inpMedia = document.getElementById('inp-media');
+  if (inpMedia) inpMedia.classList.remove('show');
+
+  if (currentMode === 'culture') {
+    if (inpMedia) {
+      document.getElementById('inp-img').src = target.image || '';
+      inpMedia.classList.add('show');
+    }
+    const labels = {
+      title: 'Назовите памятник по изображению:',
+      author: `Укажите автора / зодчего («${target.title}»):`,
+      ruler: `Укажите правителя, при котором создан памятник («${target.title}»):`
+    };
+    const placeholders = {
+      title: 'Введите название памятника (напр.: Софийский собор в Киеве)...',
+      author: 'Введите автора или зодчих...',
+      ruler: 'Введите имя правителя (напр.: Ярослав Мудрый)...'
+    };
+    const canonical = target[cultureTarget] || target.title;
+    promptLabel.textContent = labels[cultureTarget] || labels.title;
+    promptText.textContent = `${target.year} · ${EPOCH_NAMES[target.epoch] || 'Древняя Русь'}`;
+    promptText.style.fontFamily = 'var(--ff-serif)';
+    promptText.style.fontSize = '1.25rem';
+    inputEl.placeholder = placeholders[cultureTarget] || placeholders.title;
+    inputQuestion = {
+      type: 'culture',
+      target,
+      canonical,
+      questionText: `${labels[cultureTarget]} ${target.title}`,
+      detail: `<strong>${target.title}</strong> (${target.year}) · Правитель: ${target.ruler} · ${target.lore}`
+    };
+  } else if (currentMode === 'terms') {
     promptLabel.textContent = 'Определение термина:';
     promptText.textContent = target.def;
     promptText.style.fontFamily = 'var(--ff-sans)';
@@ -3383,9 +4230,22 @@ function checkInputAnswer() {
   document.getElementById('inp-btn-check').disabled = true;
 
   const isTerm = inputQuestion.type === 'term';
+  const isCulture = inputQuestion.type === 'culture';
   let isCorrect = false;
 
-  if (isTerm) {
+  if (isCulture) {
+    const userNorm = normalizeInputTerm(rawValue);
+    const acceptable = new Set([
+      ...getAcceptableTermVariants(inputQuestion.canonical),
+      ...getAcceptableTermVariants(inputQuestion.target.title),
+      ...getAcceptableTermVariants(inputQuestion.target.ruler),
+      ...getAcceptableTermVariants(inputQuestion.target.author)
+    ]);
+    // Допускаем краткое название без уточнения города (например, «Софийский собор» или «Золотые ворота»)
+    const shortTitle = normalizeInputTerm(inputQuestion.target.title.replace(/\s+в[о]?\s+\S+$/i, ''));
+    if (shortTitle) acceptable.add(shortTitle);
+    isCorrect = acceptable.has(userNorm);
+  } else if (isTerm) {
     const userNorm = normalizeInputTerm(rawValue);
     const variants = getAcceptableTermVariants(inputQuestion.target.term);
     isCorrect = variants.includes(userNorm);
@@ -4060,7 +4920,28 @@ function toggleZenMode(forceState) {
 //  KEYBOARD
 // =====================================================================
 document.addEventListener('keydown', e => {
+  // Global Ctrl+K / Cmd+K shortcut for Bestiary Live Search
+  if ((e.ctrlKey || e.metaKey) && (e.code === 'KeyK' || e.key === 'k' || e.key === 'K' || e.key === 'л' || e.key === 'Л')) {
+    e.preventDefault();
+    if (document.body.classList.contains('zen-mode')) toggleZenMode(false);
+    if (currentMode !== 'bestiary') applyMode('bestiary');
+    const searchEl = document.getElementById('bst-search-input');
+    if (searchEl) {
+      setTimeout(() => { searchEl.focus(); searchEl.select(); }, 30);
+    }
+    return;
+  }
+
+  // Close Lightbox on Escape
+  const lb = document.getElementById('lightbox-modal');
+  if (e.key === 'Escape' && lb && lb.classList.contains('open')) {
+    e.preventDefault();
+    closeLightbox();
+    return;
+  }
+
   if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) {
+    if (e.key === 'Escape') e.target.blur();
     return;
   }
 
@@ -4129,15 +5010,180 @@ initCardSwipe();
 document.getElementById('learned-count').textContent = learnedKeys.size;
 
 // =====================================================================
-//  CUSTOM CARDS — EDITOR
+//  LIGHTBOX (ПОЛНОЭКРАННЫЙ ПРОСМОТР ФОТО ПАМЯТНИКОВ)
+// =====================================================================
+function openLightbox(src, title) {
+  if (!src) return;
+  soundClick();
+  const modal = document.getElementById('lightbox-modal');
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox-caption').textContent = title || '';
+  modal.classList.add('open');
+}
+
+function openLightboxFromCard(event) {
+  if (event) event.stopPropagation();
+  if (!displayEvents.length) return;
+  const e = displayEvents[cardIdx];
+  openLightbox(e.image, `${e.title} (${e.year})`);
+}
+
+function closeLightbox(event) {
+  if (event) event.stopPropagation();
+  const modal = document.getElementById('lightbox-modal');
+  if (modal) modal.classList.remove('open');
+}
+
+// =====================================================================
+//  BESTIARY (СПРАВОЧНИК-ЭНЦИКЛОПЕДИЯ + БЫСТРЫЙ ПОИСК)
+// =====================================================================
+function setBestiaryTab(subTab) {
+  bestiarySubTab = subTab;
+  soundClick();
+  document.querySelectorAll('.bst-subtab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.bst === subTab);
+  });
+  refreshFilterState();
+}
+
+function toggleBestiaryKnown(keyEnc) {
+  const key = decodeURIComponent(keyEnc);
+  if (learnedKeys.has(key)) {
+    learnedKeys.delete(key);
+    soundClick();
+  } else {
+    learnedKeys.add(key);
+    soundKnown();
+    registerDailyAction();
+  }
+  saveLearnedLS();
+  buildDisplayEvents();
+  renderBestiary();
+}
+
+function renderBestiary() {
+  const container = document.getElementById('bst-content');
+  if (!container) return;
+
+  const query = (document.getElementById('bst-search-input')?.value || '').trim().toLowerCase();
+  const onlyUnlearned = document.getElementById('bst-only-unlearned')?.checked || false;
+
+  const epochItems = getEpochSource(bestiarySubTab);
+  let list = currentTheme === 'all' ? [...epochItems] : epochItems.filter(e => e.theme === currentTheme);
+
+  if (onlyUnlearned) {
+    list = list.filter(e => !learnedKeys.has(getEventKey(e)));
+  }
+
+  if (query) {
+    list = list.filter(e => {
+      if (bestiarySubTab === 'dates') {
+        return (e.year && e.year.toLowerCase().includes(query)) ||
+               (e.event && e.event.toLowerCase().includes(query)) ||
+               (e.detail && e.detail.toLowerCase().includes(query));
+      } else if (bestiarySubTab === 'terms') {
+        return (e.term && e.term.toLowerCase().includes(query)) ||
+               (e.def && e.def.toLowerCase().includes(query));
+      } else {
+        return (e.title && e.title.toLowerCase().includes(query)) ||
+               (e.year && e.year.toLowerCase().includes(query)) ||
+               (e.author && e.author.toLowerCase().includes(query)) ||
+               (e.ruler && e.ruler.toLowerCase().includes(query)) ||
+               (e.lore && e.lore.toLowerCase().includes(query));
+      }
+    });
+  }
+
+  if (bestiarySubTab === 'dates') {
+    list.sort((a, b) => a.sortYear - b.sortYear);
+  } else if (bestiarySubTab === 'terms') {
+    list.sort((a, b) => a.term.localeCompare(b.term, 'ru'));
+  } else {
+    list.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
+  }
+
+  const prefix = currentEpoch === 'all' ? (THEME_NAMES[currentTheme] || 'Все темы') : `${EPOCH_NAMES[currentEpoch]} · ${THEME_NAMES[currentTheme] || 'Все темы'}`;
+  document.getElementById('event-count').textContent = `Бестиарий · ${prefix} — найдено: ${list.length}`;
+
+  if (!list.length) {
+    container.innerHTML = `<div class="review-empty">🔎 По вашему запросу ничего не найдено. Попробуйте изменить фильтры или строку поиска.</div>`;
+    return;
+  }
+
+  if (bestiarySubTab === 'dates') {
+    container.innerHTML = `<div class="bst-timeline">${list.map(e => {
+      const key = getEventKey(e);
+      const known = learnedKeys.has(key);
+      const keyEnc = encodeURIComponent(key);
+      return `<div class="bst-tl-item">
+        <div class="bst-tl-top">
+          <div>
+            <span class="theme-badge ${escHtml(e.theme)}" style="margin-bottom:4px">${escHtml(THEME_NAMES[e.theme] || e.theme)}</span>
+            <div class="bst-tl-year">${escHtml(e.year)}</div>
+          </div>
+          <button class="bst-known-btn ${known ? 'is-known' : ''}" onclick="toggleBestiaryKnown('${keyEnc}')">✓ Знаю</button>
+        </div>
+        <div class="bst-tl-event">${escHtml(e.event)}</div>
+        ${e.detail ? `<div class="bst-tl-detail">${escHtml(e.detail)}</div>` : ''}
+      </div>`;
+    }).join('')}</div>`;
+  } else if (bestiarySubTab === 'terms') {
+    container.innerHTML = `<div class="bst-glossary-grid">${list.map(e => {
+      const key = getEventKey(e);
+      const known = learnedKeys.has(key);
+      const keyEnc = encodeURIComponent(key);
+      return `<div class="bst-term-card">
+        <div>
+          <div class="bst-tl-top">
+            <span class="theme-badge ${escHtml(e.theme)}" style="margin-bottom:4px">${escHtml(THEME_NAMES[e.theme] || e.theme)}</span>
+            <button class="bst-known-btn ${known ? 'is-known' : ''}" onclick="toggleBestiaryKnown('${keyEnc}')">✓ Знаю</button>
+          </div>
+          <div class="bst-term-title">${escHtml(e.term)}</div>
+          <div class="bst-term-def">${escHtml(e.def)}</div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } else {
+    container.innerHTML = `<div class="bst-monuments-list">${list.map(e => {
+      const key = getEventKey(e);
+      const known = learnedKeys.has(key);
+      const keyEnc = encodeURIComponent(key);
+      const safeImg = escHtml(e.image || '');
+      const safeTitle = escHtml(`${e.title} (${e.year})`);
+      return `<div class="bst-mon-card">
+        <div class="bst-mon-thumb" onclick="openLightbox('${safeImg}', '${safeTitle}')" title="Нажмите для увеличения">
+          <img src="${safeImg}" alt="${escHtml(e.title)}">
+          <span class="fc-zoom-hint">🔍</span>
+        </div>
+        <div class="bst-mon-body">
+          <div class="bst-tl-top" style="margin-bottom:0">
+            <div class="bst-mon-title">${escHtml(e.title)}</div>
+            <button class="bst-known-btn ${known ? 'is-known' : ''}" onclick="toggleBestiaryKnown('${keyEnc}')">✓ Знаю</button>
+          </div>
+          <div class="bst-mon-meta">
+            <span class="bst-mon-pill">📅 <strong>${escHtml(e.year || '—')}</strong></span>
+            <span class="bst-mon-pill">🎨 Зодчий: <strong>${escHtml(e.author || 'Неизвестен')}</strong></span>
+            <span class="bst-mon-pill">👑 Правитель: <strong>${escHtml(e.ruler || '—')}</strong></span>
+          </div>
+          <div class="bst-mon-lore">
+            <span class="bst-mon-lore-label">📜 Исторический лор</span>
+            ${escHtml(e.lore || '')}
+          </div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+}
+
+// =====================================================================
+//  CUSTOM CARDS — EDITOR (DATES, TERMS, CULTURE)
 // =====================================================================
 const LS_CUSTOM_KEY = 'rus-trainer-custom-v1';
 
-// Runtime store for custom cards (mirrors DATA_DATES / DATA_TERMS structure)
 let CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
 let CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+let CUSTOM_CULTURE = [];
 
-/** Load custom cards from localStorage and merge into DATA arrays */
 function loadCustomCards() {
   try {
     const saved = JSON.parse(localStorage.getItem(LS_CUSTOM_KEY) || '{}');
@@ -4146,9 +5192,11 @@ function loadCustomCards() {
       CUSTOM_DATES[ep] = (saved.dates && saved.dates[ep]) ? saved.dates[ep] : [];
       CUSTOM_TERMS[ep] = (saved.terms && saved.terms[ep]) ? saved.terms[ep] : [];
     });
+    CUSTOM_CULTURE = Array.isArray(saved.culture) ? saved.culture : [];
   } catch(e) {
     CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
     CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+    CUSTOM_CULTURE = [];
   }
   _mergeCustomIntoData();
 }
@@ -4156,19 +5204,19 @@ function loadCustomCards() {
 function _mergeCustomIntoData() {
   const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
   epochs.forEach(ep => {
-    // Remove previously merged custom items, keep built-in
     DATA_DATES[ep] = DATA_DATES[ep].filter(x => !x._custom);
     DATA_TERMS[ep] = DATA_TERMS[ep].filter(x => !x._custom);
-    // Push custom
     CUSTOM_DATES[ep].forEach(c => DATA_DATES[ep].push({ ...c, _custom: true }));
     CUSTOM_TERMS[ep].forEach(c => DATA_TERMS[ep].push({ ...c, _custom: true }));
   });
-  // Rebuild flat arrays
+  for (let i = DATA_CULTURE.length - 1; i >= 0; i--) {
+    if (DATA_CULTURE[i]._custom) DATA_CULTURE.splice(i, 1);
+  }
+  CUSTOM_CULTURE.forEach(c => DATA_CULTURE.push({ ...c, _custom: true }));
   _rebuildAllArrays();
 }
 
 function _rebuildAllArrays() {
-  // ALL_EVENTS and ALL_TERMS are const — we mutate them in place
   ALL_EVENTS.length = 0;
   Object.entries(DATA_DATES).forEach(([epoch, arr]) =>
     arr.forEach(item => ALL_EVENTS.push({ ...item, epoch }))
@@ -4177,10 +5225,12 @@ function _rebuildAllArrays() {
   Object.entries(DATA_TERMS).forEach(([epoch, arr]) =>
     arr.forEach(item => ALL_TERMS.push({ ...item, epoch }))
   );
+  ALL_CULTURE.length = 0;
+  DATA_CULTURE.forEach(item => ALL_CULTURE.push({ ...item }));
 }
 
 function saveCustomCards() {
-  const data = { dates: {}, terms: {} };
+  const data = { dates: {}, terms: {}, culture: CUSTOM_CULTURE };
   const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
   epochs.forEach(ep => {
     data.dates[ep] = CUSTOM_DATES[ep];
@@ -4195,7 +5245,7 @@ function rebuildAndRefresh() {
 }
 
 // ---- UI State ----
-let edMode = 'dates'; // 'dates' | 'terms'
+let edMode = 'dates'; // 'dates' | 'terms' | 'culture'
 let edActiveTab = 'add';
 
 function openEditor() {
@@ -4206,11 +5256,9 @@ function openEditor() {
 function closeEditor() {
   document.getElementById('editor-modal').classList.remove('open');
 }
-// Close on overlay click
 document.getElementById('editor-modal').addEventListener('click', function(e) {
   if (e.target === this) closeEditor();
 });
-// Close on Escape
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && document.getElementById('editor-modal').classList.contains('open')) closeEditor();
 });
@@ -4226,22 +5274,66 @@ function switchEditorTab(tab) {
 function setEdMode(mode) {
   edMode = mode;
   document.querySelectorAll('.ed-seg-btn').forEach(b => b.classList.toggle('active', b.dataset.edmode === mode));
-  const label = document.getElementById('ed-textarea-label');
-  if (label) label.textContent = mode === 'dates'
-    ? 'Данные (каждая строка: дата — событие)'
-    : 'Данные (каждая строка: термин — определение)';
-  document.getElementById('ed-bulk').placeholder = mode === 'dates'
-    ? '862 — Призвание варягов\n882 — Объединение Новгорода и Киева Олегом'
-    : 'Вотчина — наследственное земельное владение\nПоместье — земля, данная за службу';
+  const bulkWrap = document.getElementById('ed-bulk-wrap');
+  const cultFields = document.getElementById('ed-culture-fields');
+  if (bulkWrap) bulkWrap.style.display = mode === 'culture' ? 'none' : 'flex';
+  if (cultFields) cultFields.style.display = mode === 'culture' ? 'flex' : 'none';
+
+  if (mode !== 'culture') {
+    const label = document.getElementById('ed-textarea-label');
+    if (label) label.textContent = mode === 'dates'
+      ? 'Данные (каждая строка: дата — событие)'
+      : 'Данные (каждая строка: термин — определение)';
+    document.getElementById('ed-bulk').placeholder = mode === 'dates'
+      ? '862 — Призвание варягов\n882 — Объединение Новгорода и Киева Олегом'
+      : 'Вотчина — наследственное земельное владение\nПоместье — земля, данная за службу';
+  } else if (!document.getElementById('ed-theme').value) {
+    document.getElementById('ed-theme').value = 'culture';
+  }
   updateEdThemeAutocomplete();
 }
 
-// ---- Autocomplete for theme ----
+// Auto-compress uploaded Culture photo up to 1000px in WebP
+function handleEdCulturePhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const MAX_DIM = 1000;
+  const QUALITY = 0.82;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const img = new Image();
+    img.onload = function() {
+      let w = img.naturalWidth;
+      let h = img.naturalHeight;
+      if (w > MAX_DIM || h > MAX_DIM) {
+        if (w >= h) { h = Math.round(h * MAX_DIM / w); w = MAX_DIM; }
+        else { w = Math.round(w * MAX_DIM / h); h = MAX_DIM; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      let dataUrl = canvas.toDataURL('image/webp', QUALITY);
+      if (!dataUrl.startsWith('data:image/webp')) {
+        dataUrl = canvas.toDataURL('image/jpeg', QUALITY);
+      }
+      edTempCultureImage = dataUrl;
+      const prev = document.getElementById('ed-cult-preview');
+      if (prev) {
+        prev.src = dataUrl;
+        prev.classList.add('show');
+      }
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
 function updateEdThemeAutocomplete() {
-  const themes = edMode === 'dates'
-    ? [...DATE_THEMES].map(k => ({ key: k, name: THEME_NAMES[k] }))
-    : [...TERM_THEMES].map(k => ({ key: k, name: THEME_NAMES[k] }));
-  window._edThemes = themes;
+  const allowedSet = edMode === 'dates' ? DATE_THEMES : (edMode === 'terms' ? TERM_THEMES : CULTURE_THEMES);
+  window._edThemes = [...allowedSet].map(k => ({ key: k, name: THEME_NAMES[k] }));
 }
 
 function edThemeInput(val) {
@@ -4269,7 +5361,6 @@ document.addEventListener('click', e => {
   }
 });
 
-// ---- Parse sort year ----
 function parseSortYear(yearStr) {
   const y = yearStr.trim();
   const m = y.match(/^-?(\d+)/);
@@ -4279,30 +5370,56 @@ function parseSortYear(yearStr) {
   return n;
 }
 
-// ---- Guess theme ----
 function guessTheme(mode, tagInput) {
   const t = tagInput.trim().toLowerCase();
-  if (!t) return mode === 'dates' ? 'rurik' : 'soc';
-  const allowed = mode === 'dates' ? [...DATE_THEMES] : [...TERM_THEMES];
+  if (!t) return mode === 'dates' ? 'rurik' : (mode === 'terms' ? 'soc' : 'culture');
+  const allowed = mode === 'dates' ? [...DATE_THEMES] : (mode === 'terms' ? [...TERM_THEMES] : [...CULTURE_THEMES]);
   if (allowed.includes(t)) return t;
-  // fuzzy: find first allowed that starts with t
   const match = allowed.find(k => k.startsWith(t) || t.startsWith(k));
   return match || allowed[0];
 }
 
-// ---- Parse and add cards ----
 function parseAndAddCards() {
   const statusEl = document.getElementById('ed-add-status');
-  const raw = document.getElementById('ed-bulk').value.trim();
   const epoch = document.getElementById('ed-epoch').value;
   const themeRaw = document.getElementById('ed-theme').value;
   const theme = guessTheme(edMode, themeRaw);
+  const editKey = document.getElementById('ed-edit-key').value;
 
+  if (edMode === 'culture') {
+    const title = document.getElementById('ed-cult-title').value.trim();
+    const year = document.getElementById('ed-cult-year').value.trim();
+    const author = document.getElementById('ed-cult-author').value.trim() || 'Неизвестен';
+    const ruler = document.getElementById('ed-cult-ruler').value.trim() || '—';
+    const lore = document.getElementById('ed-cult-lore').value.trim();
+    if (!title || !year) {
+      showEdStatus(statusEl, 'err', 'Укажите название памятника и дату/век.');
+      return;
+    }
+    if (editKey) _removeCustomByKey(editKey);
+    const defaultSvg = DATA_CULTURE[0]?.image || '';
+    CUSTOM_CULTURE.push({
+      id: `cult_custom_${Date.now()}`,
+      epoch,
+      theme,
+      image: edTempCultureImage || defaultSvg,
+      title,
+      year,
+      author,
+      ruler,
+      lore: lore || 'Памятник отечественной культуры и архитектуры.'
+    });
+    saveCustomCards();
+    rebuildAndRefresh();
+    cancelEditCard();
+    showEdStatus(statusEl, 'ok', editKey ? 'Памятник обновлён!' : 'Памятник культуры сохранён в базу!');
+    return;
+  }
+
+  const raw = document.getElementById('ed-bulk').value.trim();
   if (!raw) { showEdStatus(statusEl, 'err', 'Поле данных пустое.'); return; }
 
-  const editKey = document.getElementById('ed-edit-key').value;
   if (editKey) {
-    // Single edit mode
     const lines = raw.split('\n').filter(l => l.trim());
     const line = lines[0];
     const sep = line.match(/\s[—–-]\s/);
@@ -4312,10 +5429,8 @@ function parseAndAddCards() {
     const right = line.substring(idx + sep[0].length).trim();
     if (!left || !right) { showEdStatus(statusEl, 'err', 'Левая или правая часть пустая.'); return; }
 
-    // Remove old card
     _removeCustomByKey(editKey);
 
-    // Add updated card
     if (edMode === 'dates') {
       CUSTOM_DATES[epoch].push({ year: left, sortYear: parseSortYear(left), event: right, theme });
     } else {
@@ -4328,7 +5443,6 @@ function parseAndAddCards() {
     return;
   }
 
-  // Bulk add
   const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
   let added = 0, skipped = 0;
   lines.forEach(line => {
@@ -4356,10 +5470,16 @@ function parseAndAddCards() {
 function cancelEditCard() {
   document.getElementById('ed-edit-key').value = '';
   document.getElementById('ed-bulk').value = '';
+  ['ed-cult-title','ed-cult-year','ed-cult-author','ed-cult-ruler','ed-cult-lore'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  edTempCultureImage = '';
+  const prev = document.getElementById('ed-cult-preview');
+  if (prev) { prev.src = ''; prev.classList.remove('show'); }
   document.getElementById('ed-cancel-edit-btn').style.display = 'none';
 }
 
-// ---- Render My Cards ----
 function renderMyCards() {
   const listEl = document.getElementById('ed-mycards-list');
   const countEl = document.getElementById('ed-mycards-count');
@@ -4369,6 +5489,8 @@ function renderMyCards() {
     CUSTOM_DATES[ep].forEach((c, i) => items.push({ type:'dates', epoch:ep, idx:i, ...c }));
     CUSTOM_TERMS[ep].forEach((c, i) => items.push({ type:'terms', epoch:ep, idx:i, ...c }));
   });
+  CUSTOM_CULTURE.forEach((c, i) => items.push({ type:'culture', idx:i, ...c }));
+
   countEl.textContent = `${items.length} карточек`;
   if (!items.length) {
     listEl.innerHTML = '<div class="ed-empty">Пока нет пользовательских карточек.<br>Добавьте их во вкладке «Добавить».</div>';
@@ -4377,10 +5499,10 @@ function renderMyCards() {
   listEl.innerHTML = items.map(item => {
     const keyStr = item.type === 'dates'
       ? `${item.sortYear}::${item.event}::${item.epoch}`
-      : `term::${item.term}::${item.epoch}`;
+      : (item.type === 'terms' ? `term::${item.term}::${item.epoch}` : `cult::${item.id}`);
     const keyEnc = encodeURIComponent(keyStr);
-    const left  = item.type === 'dates' ? item.year  : item.term;
-    const right = item.type === 'dates' ? item.event : item.def;
+    const left  = item.type === 'dates' ? item.year  : (item.type === 'terms' ? item.term : `🏛 ${item.title}`);
+    const right = item.type === 'dates' ? item.event : (item.type === 'terms' ? item.def  : `${item.year} · ${item.ruler}`);
     const meta = `${EPOCH_NAMES[item.epoch] || item.epoch} · ${THEME_NAMES[item.theme] || item.theme}`;
     return `<div class="ed-card-item">
       <div class="ed-ci-body">
@@ -4402,8 +5524,10 @@ function escHtml(s) {
 
 function _removeCustomByKey(keyEncoded) {
   const key = decodeURIComponent(keyEncoded);
-  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
-  if (key.startsWith('term::')) {
+  if (key.startsWith('cult::')) {
+    const [, id] = key.split('::');
+    CUSTOM_CULTURE = CUSTOM_CULTURE.filter(c => c.id !== id);
+  } else if (key.startsWith('term::')) {
     const [, term, epoch] = key.split('::');
     if (CUSTOM_TERMS[epoch]) CUSTOM_TERMS[epoch] = CUSTOM_TERMS[epoch].filter(c => c.term !== term);
   } else {
@@ -4421,6 +5545,27 @@ function deleteCustomCard(keyEncoded) {
 
 function startEditCard(keyEncoded) {
   const key = decodeURIComponent(keyEncoded);
+  if (key.startsWith('cult::')) {
+    const [, id] = key.split('::');
+    const item = CUSTOM_CULTURE.find(c => c.id === id);
+    if (!item) return;
+    switchEditorTab('add');
+    setEdMode('culture');
+    document.getElementById('ed-epoch').value = item.epoch || 'ancient';
+    document.getElementById('ed-theme').value = item.theme || 'culture';
+    document.getElementById('ed-cult-title').value = item.title || '';
+    document.getElementById('ed-cult-year').value = item.year || '';
+    document.getElementById('ed-cult-author').value = item.author || '';
+    document.getElementById('ed-cult-ruler').value = item.ruler || '';
+    document.getElementById('ed-cult-lore').value = item.lore || '';
+    edTempCultureImage = item.image || '';
+    const prev = document.getElementById('ed-cult-preview');
+    if (prev && edTempCultureImage) { prev.src = edTempCultureImage; prev.classList.add('show'); }
+    document.getElementById('ed-edit-key').value = keyEncoded;
+    document.getElementById('ed-cancel-edit-btn').style.display = '';
+    return;
+  }
+
   let found = null;
   if (key.startsWith('term::')) {
     const [, term, epoch] = key.split('::');
@@ -4449,16 +5594,16 @@ function clearAllCustomCards() {
   if (!confirm('Удалить все пользовательские карточки?')) return;
   CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
   CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+  CUSTOM_CULTURE = [];
   saveCustomCards();
   rebuildAndRefresh();
   renderMyCards();
 }
 
-// ---- Export / Import ----
 function exportBackup() {
   const statusEl = document.getElementById('ed-export-status');
   const payload = {
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
     custom: JSON.parse(localStorage.getItem(LS_CUSTOM_KEY) || '{}'),
     learned: JSON.parse(localStorage.getItem(LS_KEY) || '[]'),
@@ -4502,7 +5647,6 @@ function importBackup(event) {
   event.target.value = '';
 }
 
-// ---- Helpers ----
 function showEdStatus(el, type, msg) {
   el.textContent = msg;
   el.className = `ed-status ${type}`;
@@ -4542,8 +5686,9 @@ updateEdThemeAutocomplete();
       <div class="ed-field">
         <div class="ed-label">Раздел</div>
         <div class="ed-segment">
-          <button class="ed-seg-btn active" data-edmode="dates"  onclick="setEdMode('dates')">📅 Даты</button>
-          <button class="ed-seg-btn"        data-edmode="terms"  onclick="setEdMode('terms')">📖 Термины</button>
+          <button class="ed-seg-btn active" data-edmode="dates"   onclick="setEdMode('dates')">📅 Даты</button>
+          <button class="ed-seg-btn"        data-edmode="terms"   onclick="setEdMode('terms')">📖 Термины</button>
+          <button class="ed-seg-btn"        data-edmode="culture" onclick="setEdMode('culture')">🏛 Культура</button>
         </div>
       </div>
 
@@ -4563,17 +5708,55 @@ updateEdThemeAutocomplete();
         <div class="ed-field">
           <div class="ed-label">Тема (тег)</div>
           <div class="ed-autocomplete-wrap">
-            <input id="ed-theme" class="ed-input" placeholder="напр. rurik, soc…" autocomplete="off" oninput="edThemeInput(this.value)" onfocus="edThemeInput(this.value)">
+            <input id="ed-theme" class="ed-input" placeholder="напр. rurik, soc, culture…" autocomplete="off" oninput="edThemeInput(this.value)" onfocus="edThemeInput(this.value)">
             <div class="ed-autocomplete-list" id="ed-ac-list"></div>
           </div>
         </div>
       </div>
 
-      <!-- Bulk textarea -->
-      <div class="ed-field">
+      <!-- Bulk textarea (Dates & Terms) -->
+      <div class="ed-field" id="ed-bulk-wrap">
         <div class="ed-label" id="ed-textarea-label">Данные (каждая строка: дата — событие)</div>
-        <textarea id="ed-bulk" class="ed-textarea" placeholder="862 — Призвание варягов&#10;882 — Объединение Новгорода и Киева Олегом&#10;988 — Крещение Руси"></textarea>
+        <textarea id="ed-bulk" class="ed-textarea" placeholder="862 — Призвание варягов
+882 — Объединение Новгорода и Киева Олегом
+988 — Крещение Руси"></textarea>
         <div class="ed-hint" style="margin-top:5px">Разделитель: «—», «–» или «-». Одна карточка = одна строка.</div>
+      </div>
+
+      <!-- Culture dedicated fields -->
+      <div id="ed-culture-fields" style="display:none;flex-direction:column;gap:10px">
+        <div class="ed-field">
+          <div class="ed-label">Фото памятника (автосжатие до 1000px WebP)</div>
+          <div class="bg-upload-row">
+            <label class="bg-upload-btn" for="ed-cult-file">📷 Загрузить изображение…</label>
+            <input type="file" id="ed-cult-file" accept="image/*" style="display:none" onchange="handleEdCulturePhoto(event)">
+          </div>
+          <img id="ed-cult-preview" class="ed-photo-preview" alt="Превью памятника">
+        </div>
+        <div class="ed-row">
+          <div class="ed-field">
+            <div class="ed-label">Название памятника *</div>
+            <input id="ed-cult-title" class="ed-input" placeholder="напр. Успенский собор во Владимире">
+          </div>
+          <div class="ed-field">
+            <div class="ed-label">Дата / век *</div>
+            <input id="ed-cult-year" class="ed-input" placeholder="напр. 1158–1160 гг.">
+          </div>
+        </div>
+        <div class="ed-row">
+          <div class="ed-field">
+            <div class="ed-label">Автор / зодчий</div>
+            <input id="ed-cult-author" class="ed-input" placeholder="напр. Мастера Андрея Боголюбского">
+          </div>
+          <div class="ed-field">
+            <div class="ed-label">Правитель</div>
+            <input id="ed-cult-ruler" class="ed-input" placeholder="напр. Андрей Боголюбский">
+          </div>
+        </div>
+        <div class="ed-field">
+          <div class="ed-label">Исторический лор / описание</div>
+          <textarea id="ed-cult-lore" class="ed-textarea" style="min-height:76px" placeholder="Краткая история создания, архитектурные особенности и значение..."></textarea>
+        </div>
       </div>
 
       <!-- Edit-mode hidden fields -->
