@@ -1920,6 +1920,112 @@ body.zen-mode .section.active {
 .card-container.culture-card {
   height: 430px;
 }
+
+/* Culture interactive photo upload slot & replacement */
+.cult-upload-slot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  border: 2px dashed rgba(201, 168, 76, 0.45);
+  border-radius: 14px;
+  background: rgba(14, 20, 36, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .25s ease;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.35);
+  user-select: none;
+}
+.cult-upload-slot:hover,
+.cult-upload-slot.drag-hover,
+.fc-culture-img-wrap.drag-hover,
+.qz-media.drag-hover,
+.bst-mon-thumb.drag-hover {
+  border-color: var(--gold2) !important;
+  background: rgba(22, 32, 58, 0.85) !important;
+  box-shadow: 0 0 24px var(--gold-glow), inset 0 0 25px rgba(201, 168, 76, 0.2) !important;
+}
+.cult-slot-icon {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.45));
+  transition: transform .25s;
+}
+.cult-upload-slot:hover .cult-slot-icon {
+  transform: scale(1.15) rotate(-3deg);
+}
+.cult-slot-title {
+  font-family: var(--ff-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gold2);
+  margin-bottom: 4px;
+}
+.cult-slot-hint {
+  font-size: .78rem;
+  color: var(--muted);
+  line-height: 1.35;
+  max-width: 320px;
+}
+
+/* Button to replace existing culture photo */
+.fc-replace-btn {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  background: rgba(8, 12, 20, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-family: var(--ff-sans);
+  font-size: .72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+.fc-replace-btn:hover {
+  border-color: var(--gold2);
+  color: var(--gold2);
+  background: rgba(18, 26, 48, 0.95);
+  transform: scale(1.05);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+/* Compact adjustments for Bestiary thumbnail slot */
+.bst-mon-thumb .cult-upload-slot {
+  min-height: 100%;
+  border-radius: 12px;
+  padding: 10px;
+}
+.bst-mon-thumb .cult-slot-icon {
+  font-size: 1.5rem;
+  margin-bottom: 2px;
+}
+.bst-mon-thumb .cult-slot-title {
+  font-size: .84rem;
+  margin-bottom: 2px;
+}
+.bst-mon-thumb .cult-slot-hint {
+  font-size: .68rem;
+}
+.bst-mon-thumb .fc-replace-btn {
+  bottom: 6px;
+  left: 8px;
+  padding: 3px 8px;
+  font-size: .68rem;
+}
 .fc-culture-front {
   display: none;
   flex-direction: column;
@@ -2635,9 +2741,15 @@ body.zen-mode .section.active {
           <div class="fc-title" id="fc-front-title">Событие</div>
           <div class="event" id="fc-event"></div>
           <div class="fc-culture-front" id="fc-culture-front">
-            <div class="fc-culture-img-wrap" onclick="openLightboxFromCard(event)" title="Нажмите, чтобы открыть фото во весь экран">
+            <div class="fc-culture-img-wrap" id="fc-cult-wrap" onclick="handleCultureSlotClick(event, 'fc')" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultureSlotDrop(event, 'fc')" title="Памятник культуры">
               <img id="fc-cult-img" src="" alt="Памятник культуры">
-              <span class="fc-zoom-hint">🔍 Во весь экран</span>
+              <div id="fc-cult-placeholder" class="cult-upload-slot">
+                <div class="cult-slot-icon">📷</div>
+                <div class="cult-slot-title">Загрузить фото памятника</div>
+                <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
+              </div>
+              <button class="fc-replace-btn" id="fc-cult-replace" onclick="triggerCulturePhotoUpload(currentCardCultId, event)" title="Загрузить другое фото">📷 Заменить фото</button>
+              <span class="fc-zoom-hint" id="fc-cult-zoom">🔍 Во весь экран</span>
             </div>
           </div>
         </div>
@@ -2681,9 +2793,15 @@ body.zen-mode .section.active {
     </div>
     <div class="quiz-question">
       <div class="q-label" id="qz-label"></div>
-      <div class="qz-media" id="qz-media" onclick="openLightbox(this.querySelector('img').src, 'Памятник архитектуры')">
+      <div class="qz-media" id="qz-media" onclick="handleCultureSlotClick(event, 'quiz')" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultureSlotDrop(event, 'quiz')">
         <img id="qz-img" src="" alt="Вопрос по культуре">
-        <span class="fc-zoom-hint">🔍 Увеличить</span>
+        <div id="qz-placeholder" class="cult-upload-slot">
+          <div class="cult-slot-icon">📷</div>
+          <div class="cult-slot-title">Загрузить фото памятника</div>
+          <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
+        </div>
+        <button class="fc-replace-btn" id="qz-replace" onclick="triggerCulturePhotoUpload(quizQuestion?.target?.id, event)" title="Загрузить другое фото">📷 Заменить фото</button>
+        <span class="fc-zoom-hint" id="qz-zoom">🔍 Увеличить</span>
       </div>
       <div class="q-text" id="qz-text"></div>
     </div>
@@ -2738,9 +2856,15 @@ body.zen-mode .section.active {
         <span class="input-counter" id="inp-counter"></span>
       </div>
       <div class="input-prompt-label" id="inp-prompt-label">Историческое событие:</div>
-      <div class="qz-media" id="inp-media" onclick="openLightbox(this.querySelector('img').src, 'Памятник архитектуры')">
+      <div class="qz-media" id="inp-media" onclick="handleCultureSlotClick(event, 'inp')" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultureSlotDrop(event, 'inp')">
         <img id="inp-img" src="" alt="Памятник">
-        <span class="fc-zoom-hint">🔍 Увеличить</span>
+        <div id="inp-placeholder" class="cult-upload-slot">
+          <div class="cult-slot-icon">📷</div>
+          <div class="cult-slot-title">Загрузить фото памятника</div>
+          <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
+        </div>
+        <button class="fc-replace-btn" id="inp-replace" onclick="triggerCulturePhotoUpload(inputQuestion?.target?.id, event)" title="Загрузить другое фото">📷 Заменить фото</button>
+        <span class="fc-zoom-hint" id="inp-zoom">🔍 Увеличить</span>
       </div>
       <div class="input-prompt-text" id="inp-prompt-text"></div>
       
@@ -2786,6 +2910,8 @@ body.zen-mode .section.active {
 </div><!-- /app -->
 
 <!-- Fullscreen Lightbox Modal -->
+<input type="file" id="quick-cult-upload" accept="image/*" style="display:none">
+
 <div id="lightbox-modal" onclick="closeLightbox(event)">
   <button id="lightbox-close" onclick="closeLightbox(event)" title="Закрыть (Esc)">✕</button>
   <img id="lightbox-img" src="" alt="Просмотр памятника" onclick="event.stopPropagation()">
@@ -3043,7 +3169,7 @@ const DATA_CULTURE = [
     author: "Византийские и древнерусские зодчие",
     ruler: "Ярослав Мудрый",
     lore: "Главный митрополичий храм Древней Руси, заложенный Ярославом Мудрым на месте решающей победы над печенегами (1036 г.). Прославился тринадцатиглавой композицией, мозаикой «Богоматерь Оранта» (Нерушимая Стена) и фресками с изображением семьи князя.",
-    image: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0a1022"/><stop offset="100%" stop-color="#172342"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f3d98b"/><stop offset="100%" stop-color="#b88928"/></linearGradient></defs><rect width="800" height="500" fill="url(#bg)"/><circle cx="400" cy="210" r="170" fill="rgba(201,168,76,0.08)"/><g stroke="#c9a84c" stroke-width="2" fill="none" opacity="0.35"><circle cx="400" cy="210" r="140"/><circle cx="400" cy="210" r="195"/></g><rect x="170" y="250" width="460" height="170" rx="6" fill="#e8e2d5" stroke="#c9a84c" stroke-width="3"/><rect x="230" y="190" width="340" height="70" fill="#dfd7c6" stroke="#c9a84c" stroke-width="2.5"/><rect x="355" y="120" width="90" height="75" fill="#e8e2d5" stroke="#c9a84c" stroke-width="2.5"/><rect x="260" y="145" width="65" height="50" fill="#e8e2d5" stroke="#c9a84c" stroke-width="2"/><rect x="475" y="145" width="65" height="50" fill="#e8e2d5" stroke="#c9a84c" stroke-width="2"/><path d="M350 120 Q400 55 450 120 Z" fill="url(#gold)"/><path d="M255 145 Q292 95 330 145 Z" fill="url(#gold)"/><path d="M470 145 Q507 95 545 145 Z" fill="url(#gold)"/><path d="M185 250 Q215 205 245 250 Z" fill="url(#gold)"/><path d="M555 250 Q585 205 615 250 Z" fill="url(#gold)"/><g stroke="#e8c97a" stroke-width="3"><line x1="400" y1="45" x2="400" y2="78"/><line x1="388" y1="57" x2="412" y2="57"/><line x1="292" y1="88" x2="292" y2="115"/><line x1="283" y1="98" x2="301" y2="98"/><line x1="507" y1="88" x2="507" y2="115"/><line x1="498" y1="98" x2="516" y2="98"/></g><g fill="#1c2744" stroke="#b88928" stroke-width="2"><rect x="375" y="320" width="50" height="100" rx="25"/><rect x="285" y="335" width="38" height="85" rx="19"/><rect x="477" y="335" width="38" height="85" rx="19"/><rect x="210" y="285" width="24" height="55" rx="12"/><rect x="566" y="285" width="24" height="55" rx="12"/></g><text x="400" y="465" text-anchor="middle" fill="#e8c97a" font-family="Georgia, serif" font-size="22" letter-spacing="2">СОФИЙСКИЙ СОБОР В КИЕВЕ · XI В.</text></svg>`)
+    image: ""
   },
   {
     id: "cult_pokrov_nerl",
@@ -3054,7 +3180,7 @@ const DATA_CULTURE = [
     author: "Владимиро-суздальские мастера",
     ruler: "Андрей Боголюбский",
     lore: "Жемчужина белокаменного зодчества Северо-Восточной Руси, возведённая у слияния рек Нерли и Клязьмы под Владимиром в память о погибшем сыне Андрея Боголюбского — Изяславе. Отличается утончёнными пропорциями, перспективным порталом и белокаменной резьбой с образом царя Давида.",
-    image: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#091326"/><stop offset="100%" stop-color="#15294a"/></linearGradient><linearGradient id="gold2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f6de96"/><stop offset="100%" stop-color="#ba8b2a"/></linearGradient></defs><rect width="800" height="500" fill="url(#sky)"/><circle cx="400" cy="195" r="145" fill="rgba(232,201,122,0.09)"/><path d="M120 410 Q400 345 680 410 L800 410 L800 500 L0 500 L0 410 Z" fill="#102138" stroke="#c9a84c" stroke-width="1.5"/><rect x="315" y="190" width="170" height="190" rx="4" fill="#f3efe6" stroke="#c9a84c" stroke-width="2.5"/><line x1="368" y1="190" x2="368" y2="380" stroke="#c9a84c" stroke-width="2"/><line x1="432" y1="190" x2="432" y2="380" stroke="#c9a84c" stroke-width="2"/><rect x="366" y="118" width="68" height="72" fill="#efeae0" stroke="#c9a84c" stroke-width="2.5"/><path d="M362 118 Q400 52 438 118 Z" fill="url(#gold2)"/><line x1="400" y1="36" x2="400" y2="68" stroke="#e8c97a" stroke-width="3"/><line x1="388" y1="48" x2="412" y2="48" stroke="#e8c97a" stroke-width="3"/><rect x="383" y="310" width="34" height="70" rx="17" fill="#192848" stroke="#b88928" stroke-width="2"/><rect x="392" y="220" width="16" height="48" rx="8" fill="#192848"/><rect x="334" y="232" width="14" height="42" rx="7" fill="#192848"/><rect x="452" y="232" width="14" height="42" rx="7" fill="#192848"/><text x="400" y="465" text-anchor="middle" fill="#e8c97a" font-family="Georgia, serif" font-size="22" letter-spacing="2">ЦЕРКОВЬ ПОКРОВА НА НЕРЛИ · 1165 Г.</text></svg>`)
+    image: ""
   },
   {
     id: "cult_golden_gates_vladimir",
@@ -3065,7 +3191,62 @@ const DATA_CULTURE = [
     author: "Владимиро-суздальские зодчие",
     ruler: "Андрей Боголюбский",
     lore: "Выдающийся памятник русского оборонного и триумфального белокаменного зодчества. Служили парадным въездом в стольный Владимир, были увенчаны надвратной Ризположенской церковью, а массивные дубовые створы ворот покрывали листы золочёной меди.",
-    image: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><defs><linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0b101d"/><stop offset="100%" stop-color="#19233c"/></linearGradient><linearGradient id="gold3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f5dc90"/><stop offset="100%" stop-color="#b68524"/></linearGradient></defs><rect width="800" height="500" fill="url(#bg3)"/><circle cx="400" cy="220" r="165" fill="rgba(201,168,76,0.08)"/><polygon points="150,415 240,260 280,260 280,415" fill="#d9d1c0" stroke="#c9a84c" stroke-width="2"/><polygon points="650,415 560,260 520,260 520,415" fill="#d9d1c0" stroke="#c9a84c" stroke-width="2"/><rect x="265" y="195" width="270" height="220" rx="5" fill="#eee9de" stroke="#c9a84c" stroke-width="3"/><path d="M335 415 L335 285 Q400 225 465 285 L465 415 Z" fill="#131c31" stroke="url(#gold3)" stroke-width="4"/><rect x="345" y="315" width="110" height="100" fill="url(#gold3)" opacity="0.88"/><line x1="400" y1="315" x2="400" y2="415" stroke="#0b101d" stroke-width="3"/><rect x="350" y="135" width="100" height="60" fill="#e8e2d5" stroke="#c9a84c" stroke-width="2.5"/><rect x="376" y="92" width="48" height="43" fill="#eee9de" stroke="#c9a84c" stroke-width="2"/><path d="M372 92 Q400 45 428 92 Z" fill="url(#gold3)"/><line x1="400" y1="28" x2="400" y2="56" stroke="#e8c97a" stroke-width="3"/><line x1="390" y1="38" x2="410" y2="38" stroke="#e8c97a" stroke-width="3"/><text x="400" y="465" text-anchor="middle" fill="#e8c97a" font-family="Georgia, serif" font-size="22" letter-spacing="2">ЗОЛОТЫЕ ВОРОТА ВО ВЛАДИМИРЕ · 1164 Г.</text></svg>`)
+    image: ""
+  },
+  {
+    id: "cult_desyatinnaya",
+    epoch: "ancient",
+    theme: "culture",
+    title: "Десятинная церковь в Киеве",
+    year: "989–996 гг.",
+    author: "Византийские мастера",
+    ruler: "Владимир Святославич",
+    lore: "Первый каменный христианский храм на Руси, заложенный князем Владимиром Красное Солнышко. На его содержание выделялась десятая часть княжеских доходов (десятина). Разрушен во время монгольского штурма Киева в 1240 г.",
+    image: ""
+  },
+  {
+    id: "cult_sophia_novgorod",
+    epoch: "ancient",
+    theme: "culture",
+    title: "Софийский собор в Новгороде",
+    year: "1045–1050 гг.",
+    author: "Византийские и новгородские зодчие",
+    ruler: "Владимир Ярославич",
+    lore: "Древнейший сохранившийся каменный храм на территории современной России. Построен сыном Ярослава Мудрого князем Владимиром Ярославичем. Увенчан пятью куполами в форме шлемов русского воинства и свинцовым голубем на кресте центрального купола.",
+    image: ""
+  },
+  {
+    id: "cult_uspensky_vladimir",
+    epoch: "ancient",
+    theme: "culture",
+    title: "Успенский собор во Владимире",
+    year: "1158–1160 гг.",
+    author: "Мастера Андрея Боголюбского",
+    ruler: "Андрей Боголюбский",
+    lore: "Кафедральный белокаменный собор Владимиро-Суздальской Руси, главный храм Северо-Восточной Руси. В начале XV века был расписан великим иконописцем Андреем Рублёвым и Даниилом Чёрным.",
+    image: ""
+  },
+  {
+    id: "cult_dmitrievsky_vladimir",
+    epoch: "ancient",
+    theme: "culture",
+    title: "Дмитриевский собор во Владимире",
+    year: "1194–1197 гг.",
+    author: "Владимиро-суздальские мастера",
+    ruler: "Всеволод Большое Гнездо",
+    lore: "Придворный белокаменный храм князя Всеволода Большое Гнездо, посвящённый его небесному покровителю Дмитрию Солунскому. Всемирно известен богатейшей фасадной резьбой (около 600 рельефов с изображениями царя Давида, Александра Македонского, мифических зверей и святых).",
+    image: ""
+  },
+  {
+    id: "cult_spas_nereditsa",
+    epoch: "ancient",
+    theme: "culture",
+    title: "Церковь Спаса на Нередице",
+    year: "1198 г.",
+    author: "Новгородские зодчие",
+    ruler: "Ярослав Владимирович",
+    lore: "Классический памятник новгородской архитектуры конца XII века на холме близ Новгорода. Одноглавый кубический храм с мощными массивными стенами и знаменитым ансамблем фресковой живописи.",
+    image: ""
   }
 ];
 
@@ -3449,8 +3630,30 @@ function renderCard(){
 
   // Flip mode determines which face shows what
   if (isCulture) {
+    activeCultureMonumentId = e.id;
+    currentCardCultId = e.id;
     document.getElementById('fc-front-title').textContent = 'Памятник культуры';
-    document.getElementById('fc-cult-img').src = e.image || '';
+
+    const cultImg = getCultureImage(e);
+    const imgEl = document.getElementById('fc-cult-img');
+    const placeholderEl = document.getElementById('fc-cult-placeholder');
+    const replaceBtn = document.getElementById('fc-cult-replace');
+    const zoomHint = document.getElementById('fc-cult-zoom');
+
+    if (cultImg) {
+      imgEl.src = cultImg;
+      imgEl.style.display = 'block';
+      if (placeholderEl) placeholderEl.style.display = 'none';
+      if (replaceBtn) replaceBtn.style.display = '';
+      if (zoomHint) zoomHint.style.display = '';
+    } else {
+      imgEl.src = '';
+      imgEl.style.display = 'none';
+      if (placeholderEl) placeholderEl.style.display = 'flex';
+      if (replaceBtn) replaceBtn.style.display = 'none';
+      if (zoomHint) zoomHint.style.display = 'none';
+    }
+
     document.getElementById('fc-cult-title').textContent = e.title || '';
     document.getElementById('fc-cult-year').textContent = e.year || '—';
     document.getElementById('fc-cult-author').textContent = e.author || 'Неизвестен';
@@ -3646,31 +3849,6 @@ function toggleKnown(){
 // =====================================================================
 //  QUIZ
 // =====================================================================
-const CULTURE_FALLBACK_DISTRACTORS = {
-  title: [
-    'Десятинная церковь в Киеве',
-    'Софийский собор в Новгороде',
-    'Успенский собор во Владимире',
-    'Дмитриевский собор во Владимире',
-    'Церковь Спаса на Нередице'
-  ],
-  author: [
-    'Византийские мастера',
-    'Мастер Пётр',
-    'Феофан Грек',
-    'Андрей Рублёв',
-    'Новгородские зодчие'
-  ],
-  ruler: [
-    'Владимир Святославич',
-    'Ярослав Мудрый',
-    'Владимир Мономах',
-    'Юрий Долгорукий',
-    'Всеволод Большое Гнездо',
-    'Дмитрий Донской'
-  ]
-};
-
 function setCultureTarget(targetField) {
   cultureTarget = targetField;
   soundClick();
@@ -3706,9 +3884,27 @@ function generateQuiz(){
   let isDefOpts = false;
 
   if (currentMode === 'culture') {
+    activeCultureMonumentId = target.id;
+    const cultImg = getCultureImage(target);
     if (qzMedia) {
-      document.getElementById('qz-img').src = target.image || '';
       qzMedia.classList.add('show');
+      const qzImg = document.getElementById('qz-img');
+      const qzPlaceholder = document.getElementById('qz-placeholder');
+      const qzReplace = document.getElementById('qz-replace');
+      const qzZoom = document.getElementById('qz-zoom');
+      if (cultImg) {
+        qzImg.src = cultImg;
+        qzImg.style.display = 'block';
+        if (qzPlaceholder) qzPlaceholder.style.display = 'none';
+        if (qzReplace) qzReplace.style.display = '';
+        if (qzZoom) qzZoom.style.display = '';
+      } else {
+        qzImg.src = '';
+        qzImg.style.display = 'none';
+        if (qzPlaceholder) qzPlaceholder.style.display = 'flex';
+        if (qzReplace) qzReplace.style.display = 'none';
+        if (qzZoom) qzZoom.style.display = 'none';
+      }
     }
     const fieldMap = {
       title:  { q: 'Какой памятник культуры изображён на иллюстрации?', label: 'Название' },
@@ -3722,12 +3918,12 @@ function generateQuiz(){
     document.getElementById('qz-text').textContent  = meta.q;
 
     const poolDistractors = ALL_CULTURE.map(x => x[cultureTarget]).filter(v => v && v !== correctVal);
-    const fallbackDistractors = (CULTURE_FALLBACK_DISTRACTORS[cultureTarget] || []).filter(v => v !== correctVal);
-    const uniqueWrong = [...new Set([...poolDistractors, ...fallbackDistractors])];
+    const uniqueWrong = [...new Set(poolDistractors)];
     options = shuffle([...shuffle(uniqueWrong).slice(0, 3), correctVal]);
 
     quizQuestion = {
       correct: correctVal,
+      target: target,
       questionText: `${meta.label}: ${target.title}`,
       detail: `<strong>${target.title}</strong> (${target.year}) · Зодчий: ${target.author} · Правитель: ${target.ruler}<br>${target.lore}`
     };
@@ -4154,9 +4350,27 @@ function generateInputQuestion() {
   if (inpMedia) inpMedia.classList.remove('show');
 
   if (currentMode === 'culture') {
+    activeCultureMonumentId = target.id;
+    const cultImg = getCultureImage(target);
     if (inpMedia) {
-      document.getElementById('inp-img').src = target.image || '';
       inpMedia.classList.add('show');
+      const inpImg = document.getElementById('inp-img');
+      const inpPlaceholder = document.getElementById('inp-placeholder');
+      const inpReplace = document.getElementById('inp-replace');
+      const inpZoom = document.getElementById('inp-zoom');
+      if (cultImg) {
+        inpImg.src = cultImg;
+        inpImg.style.display = 'block';
+        if (inpPlaceholder) inpPlaceholder.style.display = 'none';
+        if (inpReplace) inpReplace.style.display = '';
+        if (inpZoom) inpZoom.style.display = '';
+      } else {
+        inpImg.src = '';
+        inpImg.style.display = 'none';
+        if (inpPlaceholder) inpPlaceholder.style.display = 'flex';
+        if (inpReplace) inpReplace.style.display = 'none';
+        if (inpZoom) inpZoom.style.display = 'none';
+      }
     }
     const labels = {
       title: 'Назовите памятник по изображению:',
@@ -5025,7 +5239,10 @@ function openLightboxFromCard(event) {
   if (event) event.stopPropagation();
   if (!displayEvents.length) return;
   const e = displayEvents[cardIdx];
-  openLightbox(e.image, `${e.title} (${e.year})`);
+  const src = getCultureImage(e);
+  if (src) {
+    openLightbox(src, `${e.title} (${e.year})`);
+  }
 }
 
 function closeLightbox(event) {
@@ -5148,13 +5365,31 @@ function renderBestiary() {
       const key = getEventKey(e);
       const known = learnedKeys.has(key);
       const keyEnc = encodeURIComponent(key);
-      const safeImg = escHtml(e.image || '');
       const safeTitle = escHtml(`${e.title} (${e.year})`);
+      const cultImg = getCultureImage(e);
+
+      let thumbHtml = '';
+      if (cultImg) {
+        const safeImg = escHtml(cultImg);
+        thumbHtml = `
+          <div class="bst-mon-thumb" onclick="openLightbox('${safeImg}', '${safeTitle}')" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Нажмите для увеличения">
+            <img src="${safeImg}" alt="${escHtml(e.title)}">
+            <button class="fc-replace-btn" onclick="triggerCulturePhotoUpload('${escHtml(e.id)}', event)" title="Заменить фото">📷 Заменить</button>
+            <span class="fc-zoom-hint">🔍</span>
+          </div>`;
+      } else {
+        thumbHtml = `
+          <div class="bst-mon-thumb" onclick="triggerCulturePhotoUpload('${escHtml(e.id)}', event)" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Загрузить фото памятника">
+            <div class="cult-upload-slot">
+              <div class="cult-slot-icon">📷</div>
+              <div class="cult-slot-title">Загрузить фото</div>
+              <div class="cult-slot-hint">Клик, перенос или Ctrl+V</div>
+            </div>
+          </div>`;
+      }
+
       return `<div class="bst-mon-card">
-        <div class="bst-mon-thumb" onclick="openLightbox('${safeImg}', '${safeTitle}')" title="Нажмите для увеличения">
-          <img src="${safeImg}" alt="${escHtml(e.title)}">
-          <span class="fc-zoom-hint">🔍</span>
-        </div>
+        ${thumbHtml}
         <div class="bst-mon-body">
           <div class="bst-tl-top" style="margin-bottom:0">
             <div class="bst-mon-title">${escHtml(e.title)}</div>
@@ -5179,6 +5414,240 @@ function renderBestiary() {
 //  CUSTOM CARDS — EDITOR (DATES, TERMS, CULTURE)
 // =====================================================================
 const LS_CUSTOM_KEY = 'rus-trainer-custom-v1';
+const LS_CULT_IMGS_KEY = 'rus-trainer-cult-imgs-v1';
+
+let CUSTOM_CULTURE_IMAGES = {};
+let activeCultureMonumentId = null;
+let currentCardCultId = null;
+let pendingUploadCultId = null;
+
+function loadCultureImages() {
+  try {
+    CUSTOM_CULTURE_IMAGES = JSON.parse(localStorage.getItem(LS_CULT_IMGS_KEY) || '{}');
+  } catch(e) {
+    CUSTOM_CULTURE_IMAGES = {};
+  }
+}
+
+function saveCultureImages() {
+  try {
+    localStorage.setItem(LS_CULT_IMGS_KEY, JSON.stringify(CUSTOM_CULTURE_IMAGES));
+  } catch(e) {
+    console.warn('Failed to save culture images', e);
+  }
+}
+
+function getCultureImage(item) {
+  if (!item) return '';
+  if (item.id && CUSTOM_CULTURE_IMAGES[item.id]) {
+    return CUSTOM_CULTURE_IMAGES[item.id];
+  }
+  return item.image || '';
+}
+
+function compressImageFile(file, maxDim = 1200, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    if (!file || !(file instanceof Blob)) {
+      return reject(new Error('Не изображение'));
+    }
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Ошибка чтения файла'));
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Не удалось загрузить картинку'));
+      img.onload = function() {
+        let w = img.naturalWidth || img.width;
+        let h = img.naturalHeight || img.height;
+        if (!w || !h) {
+          return reject(new Error('Некорректный размер картинки'));
+        }
+        if (w > maxDim || h > maxDim) {
+          if (w >= h) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        let dataUrl = canvas.toDataURL('image/webp', quality);
+        if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
+        }
+        resolve(dataUrl);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function triggerCulturePhotoUpload(cultId, event) {
+  if (event) event.stopPropagation();
+  if (!cultId) return;
+  pendingUploadCultId = cultId;
+  const inp = document.getElementById('quick-cult-upload');
+  if (inp) {
+    inp.value = '';
+    inp.click();
+  }
+}
+
+function saveAndApplyCultureImage(cultId, dataUrl) {
+  if (!cultId || !dataUrl) return;
+  CUSTOM_CULTURE_IMAGES[cultId] = dataUrl;
+  saveCultureImages();
+  soundCorrect();
+
+  if (currentMode === 'culture') {
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+    if (activeTab === 'cards') {
+      renderCard();
+    } else if (activeTab === 'quiz') {
+      updateQuizCultureImage(cultId, dataUrl);
+    } else if (activeTab === 'input') {
+      updateInputCultureImage(cultId, dataUrl);
+    }
+  } else if (currentMode === 'bestiary') {
+    renderBestiary();
+  }
+}
+
+function updateQuizCultureImage(cultId, dataUrl) {
+  if (quizQuestion?.target && quizQuestion.target.id === cultId) {
+    const qzImg = document.getElementById('qz-img');
+    const qzPlaceholder = document.getElementById('qz-placeholder');
+    const qzReplace = document.getElementById('qz-replace');
+    const qzZoom = document.getElementById('qz-zoom');
+    if (dataUrl) {
+      if (qzImg) { qzImg.src = dataUrl; qzImg.style.display = 'block'; }
+      if (qzPlaceholder) qzPlaceholder.style.display = 'none';
+      if (qzReplace) qzReplace.style.display = '';
+      if (qzZoom) qzZoom.style.display = '';
+    } else {
+      if (qzImg) { qzImg.src = ''; qzImg.style.display = 'none'; }
+      if (qzPlaceholder) qzPlaceholder.style.display = 'flex';
+      if (qzReplace) qzReplace.style.display = 'none';
+      if (qzZoom) qzZoom.style.display = 'none';
+    }
+  }
+}
+
+function updateInputCultureImage(cultId, dataUrl) {
+  if (inputQuestion?.target && inputQuestion.target.id === cultId) {
+    const inpImg = document.getElementById('inp-img');
+    const inpPlaceholder = document.getElementById('inp-placeholder');
+    const inpReplace = document.getElementById('inp-replace');
+    const inpZoom = document.getElementById('inp-zoom');
+    if (dataUrl) {
+      if (inpImg) { inpImg.src = dataUrl; inpImg.style.display = 'block'; }
+      if (inpPlaceholder) inpPlaceholder.style.display = 'none';
+      if (inpReplace) inpReplace.style.display = '';
+      if (inpZoom) inpZoom.style.display = '';
+    } else {
+      if (inpImg) { inpImg.src = ''; inpImg.style.display = 'none'; }
+      if (inpPlaceholder) inpPlaceholder.style.display = 'flex';
+      if (inpReplace) inpReplace.style.display = 'none';
+      if (inpZoom) inpZoom.style.display = 'none';
+    }
+  }
+}
+
+function handleCultureSlotClick(event, slotType) {
+  if (event) event.stopPropagation();
+  let cultId = null;
+  let imgSrc = null;
+  let title = '';
+
+  if (slotType === 'fc') {
+    if (!displayEvents.length) return;
+    const e = displayEvents[cardIdx];
+    cultId = e.id;
+    imgSrc = getCultureImage(e);
+    title = `${e.title} (${e.year})`;
+  } else if (slotType === 'quiz') {
+    if (!quizQuestion || !quizQuestion.target) return;
+    cultId = quizQuestion.target.id;
+    imgSrc = getCultureImage(quizQuestion.target);
+    title = `${quizQuestion.target.title} (${quizQuestion.target.year})`;
+  } else if (slotType === 'inp') {
+    if (!inputQuestion || !inputQuestion.target) return;
+    cultId = inputQuestion.target.id;
+    imgSrc = getCultureImage(inputQuestion.target);
+    title = `${inputQuestion.target.title} (${inputQuestion.target.year})`;
+  }
+
+  if (imgSrc) {
+    openLightbox(imgSrc, title);
+  } else if (cultId) {
+    triggerCulturePhotoUpload(cultId, event);
+  }
+}
+
+function handleCultDragOver(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.add('drag-hover');
+}
+
+function handleCultDragLeave(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.remove('drag-hover');
+}
+
+async function handleCultDrop(event, cultId) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.remove('drag-hover');
+  if (!cultId) return;
+
+  const dt = event.dataTransfer;
+  if (!dt || !dt.files || !dt.files.length) return;
+  const file = dt.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+
+  try {
+    const dataUrl = await compressImageFile(file, 1200, 0.85);
+    saveAndApplyCultureImage(cultId, dataUrl);
+  } catch(err) {
+    console.error('Ошибка Drag & Drop изображения:', err);
+  }
+}
+
+async function handleCultureSlotDrop(event, slotType) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.remove('drag-hover');
+
+  let cultId = null;
+  if (slotType === 'fc') {
+    cultId = displayEvents[cardIdx]?.id;
+  } else if (slotType === 'quiz') {
+    cultId = quizQuestion?.target?.id;
+  } else if (slotType === 'inp') {
+    cultId = inputQuestion?.target?.id;
+  }
+
+  if (!cultId) return;
+
+  const dt = event.dataTransfer;
+  if (!dt || !dt.files || !dt.files.length) return;
+  const file = dt.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+
+  try {
+    const dataUrl = await compressImageFile(file, 1200, 0.85);
+    saveAndApplyCultureImage(cultId, dataUrl);
+  } catch(err) {
+    console.error('Ошибка Drag & Drop изображения:', err);
+  }
+}
 
 let CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
 let CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
@@ -5603,11 +6072,12 @@ function clearAllCustomCards() {
 function exportBackup() {
   const statusEl = document.getElementById('ed-export-status');
   const payload = {
-    version: 2,
+    version: 3,
     exportedAt: new Date().toISOString(),
     custom: JSON.parse(localStorage.getItem(LS_CUSTOM_KEY) || '{}'),
     learned: JSON.parse(localStorage.getItem(LS_KEY) || '[]'),
     streak: JSON.parse(localStorage.getItem(STREAK_LS_KEY) || '{}'),
+    cultImages: JSON.parse(localStorage.getItem(LS_CULT_IMGS_KEY) || '{}'),
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -5636,6 +6106,10 @@ function importBackup(event) {
         localStorage.setItem(STREAK_LS_KEY, JSON.stringify(payload.streak));
         loadStreakLS();
       }
+      if (payload.cultImages && typeof payload.cultImages === 'object') {
+        localStorage.setItem(LS_CULT_IMGS_KEY, JSON.stringify(payload.cultImages));
+        loadCultureImages();
+      }
       loadCustomCards();
       rebuildAndRefresh();
       showEdStatus(statusEl, 'ok', 'Данные восстановлены успешно!');
@@ -5660,7 +6134,64 @@ function clearEdStatus() {
   });
 }
 
+// Quick upload input listener
+const quickCultInput = document.getElementById('quick-cult-upload');
+if (quickCultInput) {
+  quickCultInput.addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file || !pendingUploadCultId) return;
+    try {
+      const dataUrl = await compressImageFile(file, 1200, 0.85);
+      saveAndApplyCultureImage(pendingUploadCultId, dataUrl);
+    } catch (err) {
+      console.error('Ошибка загрузки фото культуры:', err);
+    } finally {
+      pendingUploadCultId = null;
+      e.target.value = '';
+    }
+  });
+}
+
+// Global Ctrl+V (paste) handler for culture photos
+document.addEventListener('paste', async function(e) {
+  const items = (e.clipboardData || window.clipboardData)?.items;
+  if (!items) return;
+
+  let imageFile = null;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type && items[i].type.startsWith('image/')) {
+      imageFile = items[i].getAsFile();
+      break;
+    }
+  }
+
+  if (!imageFile) return;
+
+  let targetId = activeCultureMonumentId;
+  if (currentMode === 'culture') {
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+    if (activeTab === 'cards' && displayEvents[cardIdx]) {
+      targetId = displayEvents[cardIdx].id;
+    } else if (activeTab === 'quiz' && quizQuestion?.target) {
+      targetId = quizQuestion.target.id;
+    } else if (activeTab === 'input' && inputQuestion?.target) {
+      targetId = inputQuestion.target.id;
+    }
+  }
+
+  if (!targetId) return;
+
+  e.preventDefault();
+  try {
+    const dataUrl = await compressImageFile(imageFile, 1200, 0.85);
+    saveAndApplyCultureImage(targetId, dataUrl);
+  } catch(err) {
+    console.error('Ошибка вставки фото культуры:', err);
+  }
+});
+
 // ---- Init ----
+loadCultureImages();
 loadCustomCards();
 updateEdThemeAutocomplete();
 </script>
