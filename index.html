@@ -2748,7 +2748,7 @@ body.zen-mode .section.active {
                 <div class="cult-slot-title">Загрузить фото памятника</div>
                 <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
               </div>
-              <button class="fc-replace-btn" id="fc-cult-replace" onclick="triggerCulturePhotoUpload(currentCardCultId, event)" title="Загрузить другое фото">📷 Заменить фото</button>
+              <button class="fc-replace-btn" id="fc-cult-replace" onclick="triggerCulturePhotoUpload(null, event)" title="Загрузить другое фото">📷 Заменить фото</button>
               <span class="fc-zoom-hint" id="fc-cult-zoom">🔍 Во весь экран</span>
             </div>
           </div>
@@ -2800,7 +2800,7 @@ body.zen-mode .section.active {
           <div class="cult-slot-title">Загрузить фото памятника</div>
           <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
         </div>
-        <button class="fc-replace-btn" id="qz-replace" onclick="triggerCulturePhotoUpload(quizQuestion?.target?.id, event)" title="Загрузить другое фото">📷 Заменить фото</button>
+        <button class="fc-replace-btn" id="qz-replace" onclick="triggerCulturePhotoUpload(null, event)" title="Загрузить другое фото">📷 Заменить фото</button>
         <span class="fc-zoom-hint" id="qz-zoom">🔍 Увеличить</span>
       </div>
       <div class="q-text" id="qz-text"></div>
@@ -2863,7 +2863,7 @@ body.zen-mode .section.active {
           <div class="cult-slot-title">Загрузить фото памятника</div>
           <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
         </div>
-        <button class="fc-replace-btn" id="inp-replace" onclick="triggerCulturePhotoUpload(inputQuestion?.target?.id, event)" title="Загрузить другое фото">📷 Заменить фото</button>
+        <button class="fc-replace-btn" id="inp-replace" onclick="triggerCulturePhotoUpload(null, event)" title="Загрузить другое фото">📷 Заменить фото</button>
         <span class="fc-zoom-hint" id="inp-zoom">🔍 Увеличить</span>
       </div>
       <div class="input-prompt-text" id="inp-prompt-text"></div>
@@ -2910,7 +2910,7 @@ body.zen-mode .section.active {
 </div><!-- /app -->
 
 <!-- Fullscreen Lightbox Modal -->
-<input type="file" id="quick-cult-upload" accept="image/*" style="display:none">
+<input type="file" id="quick-cult-upload" accept="image/*" style="display:none" onchange="handleQuickCultUpload(this)">
 
 <div id="lightbox-modal" onclick="closeLightbox(event)">
   <button id="lightbox-close" onclick="closeLightbox(event)" title="Закрыть (Esc)">✕</button>
@@ -3630,8 +3630,8 @@ function renderCard(){
 
   // Flip mode determines which face shows what
   if (isCulture) {
-    activeCultureMonumentId = e.id;
-    currentCardCultId = e.id;
+    window._activeCultureId = e.id;
+    window._pendingCultId = e.id;
     document.getElementById('fc-front-title').textContent = 'Памятник культуры';
 
     const cultImg = getCultureImage(e);
@@ -3884,7 +3884,8 @@ function generateQuiz(){
   let isDefOpts = false;
 
   if (currentMode === 'culture') {
-    activeCultureMonumentId = target.id;
+    window._activeCultureId = target.id;
+    window._pendingCultId = target.id;
     const cultImg = getCultureImage(target);
     if (qzMedia) {
       qzMedia.classList.add('show');
@@ -5417,9 +5418,8 @@ const LS_CUSTOM_KEY = 'rus-trainer-custom-v1';
 const LS_CULT_IMGS_KEY = 'rus-trainer-cult-imgs-v1';
 
 let CUSTOM_CULTURE_IMAGES = {};
-let activeCultureMonumentId = null;
-let currentCardCultId = null;
-let pendingUploadCultId = null;
+window._activeCultureId = null;
+window._pendingCultId = null;
 
 function loadCultureImages() {
   try {
@@ -5432,8 +5432,11 @@ function loadCultureImages() {
 function saveCultureImages() {
   try {
     localStorage.setItem(LS_CULT_IMGS_KEY, JSON.stringify(CUSTOM_CULTURE_IMAGES));
-  } catch(e) {
-    console.warn('Failed to save culture images', e);
+    return true;
+  } catch(err) {
+    console.error('Ошибка сохранения фото в localStorage:', err);
+    alert('Не удалось сохранить фото: переполнена память браузера (localStorage). Очистите фон или сохраните фото через папку images/.');
+    return false;
   }
 }
 
@@ -5445,7 +5448,23 @@ function getCultureImage(item) {
   return item.image || '';
 }
 
-function compressImageFile(file, maxDim = 1200, quality = 0.85) {
+function getCurrentCultureId() {
+  if (currentMode === 'culture') {
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+    if (activeTab === 'cards') {
+      return (displayEvents[cardIdx] && displayEvents[cardIdx].id) ? displayEvents[cardIdx].id : null;
+    } else if (activeTab === 'quiz') {
+      return (quizQuestion && quizQuestion.target && quizQuestion.target.id) ? quizQuestion.target.id : null;
+    } else if (activeTab === 'input') {
+      return (inputQuestion && inputQuestion.target && inputQuestion.target.id) ? inputQuestion.target.id : null;
+    }
+  } else if (currentMode === 'bestiary') {
+    return window._pendingCultId || window._activeCultureId || null;
+  }
+  return window._pendingCultId || window._activeCultureId || null;
+}
+
+function compressImageFile(file, maxDim = 900, quality = 0.78) {
   return new Promise((resolve, reject) => {
     if (!file || !(file instanceof Blob)) {
       return reject(new Error('Не изображение'));
@@ -5454,7 +5473,7 @@ function compressImageFile(file, maxDim = 1200, quality = 0.85) {
     reader.onerror = () => reject(new Error('Ошибка чтения файла'));
     reader.onload = function(e) {
       const img = new Image();
-      img.onerror = () => reject(new Error('Не удалось загрузить картинку'));
+      img.onerror = () => reject(new Error('Не удалось декодировать картинку'));
       img.onload = function() {
         let w = img.naturalWidth || img.width;
         let h = img.naturalHeight || img.height;
@@ -5488,9 +5507,16 @@ function compressImageFile(file, maxDim = 1200, quality = 0.85) {
 }
 
 function triggerCulturePhotoUpload(cultId, event) {
-  if (event) event.stopPropagation();
-  if (!cultId) return;
-  pendingUploadCultId = cultId;
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  const targetId = cultId || getCurrentCultureId();
+  if (!targetId) {
+    console.warn('triggerCulturePhotoUpload: monument id not determined');
+    return;
+  }
+  window._pendingCultId = targetId;
   const inp = document.getElementById('quick-cult-upload');
   if (inp) {
     inp.value = '';
@@ -5498,12 +5524,35 @@ function triggerCulturePhotoUpload(cultId, event) {
   }
 }
 
+async function handleQuickCultUpload(inputEl) {
+  const file = inputEl && inputEl.files && inputEl.files[0];
+  const cultId = window._pendingCultId || getCurrentCultureId();
+  if (!file || !cultId) {
+    if (inputEl) inputEl.value = '';
+    return;
+  }
+  try {
+    const dataUrl = await compressImageFile(file, 900, 0.78);
+    saveAndApplyCultureImage(cultId, dataUrl);
+  } catch (err) {
+    console.error('Ошибка загрузки фото культуры:', err);
+    alert('Не удалось обработать изображение: ' + (err.message || err));
+  } finally {
+    if (inputEl) inputEl.value = '';
+  }
+}
+
 function saveAndApplyCultureImage(cultId, dataUrl) {
   if (!cultId || !dataUrl) return;
   CUSTOM_CULTURE_IMAGES[cultId] = dataUrl;
-  saveCultureImages();
-  soundCorrect();
+  const saved = saveCultureImages();
+  if (saved) soundCorrect();
 
+  // Принудительное мгновенное обновление текущего экрана
+  refreshCurrentCultureView(cultId, dataUrl);
+}
+
+function refreshCurrentCultureView(cultId, dataUrl) {
   if (currentMode === 'culture') {
     const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
     if (activeTab === 'cards') {
@@ -5519,47 +5568,51 @@ function saveAndApplyCultureImage(cultId, dataUrl) {
 }
 
 function updateQuizCultureImage(cultId, dataUrl) {
-  if (quizQuestion?.target && quizQuestion.target.id === cultId) {
-    const qzImg = document.getElementById('qz-img');
-    const qzPlaceholder = document.getElementById('qz-placeholder');
-    const qzReplace = document.getElementById('qz-replace');
-    const qzZoom = document.getElementById('qz-zoom');
-    if (dataUrl) {
-      if (qzImg) { qzImg.src = dataUrl; qzImg.style.display = 'block'; }
-      if (qzPlaceholder) qzPlaceholder.style.display = 'none';
-      if (qzReplace) qzReplace.style.display = '';
-      if (qzZoom) qzZoom.style.display = '';
-    } else {
-      if (qzImg) { qzImg.src = ''; qzImg.style.display = 'none'; }
-      if (qzPlaceholder) qzPlaceholder.style.display = 'flex';
-      if (qzReplace) qzReplace.style.display = 'none';
-      if (qzZoom) qzZoom.style.display = 'none';
-    }
+  const qzImg = document.getElementById('qz-img');
+  const qzPlaceholder = document.getElementById('qz-placeholder');
+  const qzReplace = document.getElementById('qz-replace');
+  const qzZoom = document.getElementById('qz-zoom');
+  const qzMedia = document.getElementById('qz-media');
+
+  if (qzMedia) qzMedia.classList.add('show');
+  if (dataUrl) {
+    if (qzImg) { qzImg.src = dataUrl; qzImg.style.display = 'block'; }
+    if (qzPlaceholder) qzPlaceholder.style.display = 'none';
+    if (qzReplace) qzReplace.style.display = '';
+    if (qzZoom) qzZoom.style.display = '';
+  } else {
+    if (qzImg) { qzImg.src = ''; qzImg.style.display = 'none'; }
+    if (qzPlaceholder) qzPlaceholder.style.display = 'flex';
+    if (qzReplace) qzReplace.style.display = 'none';
+    if (qzZoom) qzZoom.style.display = 'none';
   }
 }
 
 function updateInputCultureImage(cultId, dataUrl) {
-  if (inputQuestion?.target && inputQuestion.target.id === cultId) {
-    const inpImg = document.getElementById('inp-img');
-    const inpPlaceholder = document.getElementById('inp-placeholder');
-    const inpReplace = document.getElementById('inp-replace');
-    const inpZoom = document.getElementById('inp-zoom');
-    if (dataUrl) {
-      if (inpImg) { inpImg.src = dataUrl; inpImg.style.display = 'block'; }
-      if (inpPlaceholder) inpPlaceholder.style.display = 'none';
-      if (inpReplace) inpReplace.style.display = '';
-      if (inpZoom) inpZoom.style.display = '';
-    } else {
-      if (inpImg) { inpImg.src = ''; inpImg.style.display = 'none'; }
-      if (inpPlaceholder) inpPlaceholder.style.display = 'flex';
-      if (inpReplace) inpReplace.style.display = 'none';
-      if (inpZoom) inpZoom.style.display = 'none';
-    }
+  const inpImg = document.getElementById('inp-img');
+  const inpPlaceholder = document.getElementById('inp-placeholder');
+  const inpReplace = document.getElementById('inp-replace');
+  const inpZoom = document.getElementById('inp-zoom');
+  const inpMedia = document.getElementById('inp-media');
+
+  if (inpMedia) inpMedia.classList.add('show');
+  if (dataUrl) {
+    if (inpImg) { inpImg.src = dataUrl; inpImg.style.display = 'block'; }
+    if (inpPlaceholder) inpPlaceholder.style.display = 'none';
+    if (inpReplace) inpReplace.style.display = '';
+    if (inpZoom) inpZoom.style.display = '';
+  } else {
+    if (inpImg) { inpImg.src = ''; inpImg.style.display = 'none'; }
+    if (inpPlaceholder) inpPlaceholder.style.display = 'flex';
+    if (inpReplace) inpReplace.style.display = 'none';
+    if (inpZoom) inpZoom.style.display = 'none';
   }
 }
 
 function handleCultureSlotClick(event, slotType) {
-  if (event) event.stopPropagation();
+  if (event) {
+    event.stopPropagation();
+  }
   let cultId = null;
   let imgSrc = null;
   let title = '';
@@ -5605,7 +5658,8 @@ async function handleCultDrop(event, cultId) {
   event.preventDefault();
   event.stopPropagation();
   event.currentTarget.classList.remove('drag-hover');
-  if (!cultId) return;
+  const targetId = cultId || getCurrentCultureId();
+  if (!targetId) return;
 
   const dt = event.dataTransfer;
   if (!dt || !dt.files || !dt.files.length) return;
@@ -5613,10 +5667,11 @@ async function handleCultDrop(event, cultId) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 1200, 0.85);
-    saveAndApplyCultureImage(cultId, dataUrl);
+    const dataUrl = await compressImageFile(file, 900, 0.78);
+    saveAndApplyCultureImage(targetId, dataUrl);
   } catch(err) {
     console.error('Ошибка Drag & Drop изображения:', err);
+    alert('Не удалось обработать перетащенное изображение: ' + (err.message || err));
   }
 }
 
@@ -5633,7 +5688,7 @@ async function handleCultureSlotDrop(event, slotType) {
   } else if (slotType === 'inp') {
     cultId = inputQuestion?.target?.id;
   }
-
+  if (!cultId) cultId = getCurrentCultureId();
   if (!cultId) return;
 
   const dt = event.dataTransfer;
@@ -5642,10 +5697,11 @@ async function handleCultureSlotDrop(event, slotType) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 1200, 0.85);
+    const dataUrl = await compressImageFile(file, 900, 0.78);
     saveAndApplyCultureImage(cultId, dataUrl);
   } catch(err) {
     console.error('Ошибка Drag & Drop изображения:', err);
+    alert('Не удалось обработать перетащенное изображение: ' + (err.message || err));
   }
 }
 
@@ -6167,26 +6223,16 @@ document.addEventListener('paste', async function(e) {
 
   if (!imageFile) return;
 
-  let targetId = activeCultureMonumentId;
-  if (currentMode === 'culture') {
-    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
-    if (activeTab === 'cards' && displayEvents[cardIdx]) {
-      targetId = displayEvents[cardIdx].id;
-    } else if (activeTab === 'quiz' && quizQuestion?.target) {
-      targetId = quizQuestion.target.id;
-    } else if (activeTab === 'input' && inputQuestion?.target) {
-      targetId = inputQuestion.target.id;
-    }
-  }
-
+  const targetId = getCurrentCultureId();
   if (!targetId) return;
 
   e.preventDefault();
   try {
-    const dataUrl = await compressImageFile(imageFile, 1200, 0.85);
+    const dataUrl = await compressImageFile(imageFile, 900, 0.78);
     saveAndApplyCultureImage(targetId, dataUrl);
   } catch(err) {
     console.error('Ошибка вставки фото культуры:', err);
+    alert('Не удалось обработать вставленное изображение: ' + (err.message || err));
   }
 });
 
