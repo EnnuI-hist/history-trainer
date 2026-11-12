@@ -45,6 +45,7 @@
   --t-econ:    #4ade80;
   --t-cult:    #2dd4bf;
   --t-mil:     #fb7185;
+  --t-slavs:   #38bdf8;
   /* misc */
   --radius:    14px;
   --radius-lg: 20px;
@@ -527,6 +528,7 @@ header p {
 .theme-badge.econ    { color: var(--t-econ);    background: rgba(52,211,153,.12); }
 .theme-badge.cult    { color: var(--t-cult);    background: rgba(20,184,166,.12); }
 .theme-badge.mil     { color: var(--t-mil);     background: rgba(248,113,113,.12); }
+.theme-badge.slavs   { color: var(--t-slavs);   background: rgba(56,189,248,.14); }
 
 .event-count {
   text-align: center;
@@ -2705,6 +2707,7 @@ body.zen-mode .section.active {
     <button class="theme-btn" data-theme="econ" style="display:none">🌾 Экономика и быт</button>
     <button class="theme-btn" data-theme="cult" style="display:none">⛪ Культура и религия</button>
     <button class="theme-btn" data-theme="mil" style="display:none">🛡 Орда и военное дело</button>
+    <button class="theme-btn" data-theme="slavs" style="display:none">🗺 Расселение славян</button>
   </div>
   <div class="event-count" id="event-count"></div>
 
@@ -3121,6 +3124,16 @@ const DATA_TERMS = {
     { term:"Мозаика", def:"Картина, узор, выполненные соединёнными между собой мелкими разноцветными кусочками стекла, мрамора, цветных камней, один из способов украшения стен храмов", theme:"cult" },
     { term:"Фреска", def:"Техника живописи водяными красками по сырой штукатурке, один из способов украшения стен храмов", theme:"cult" },
     { term:"Монастырь", def:"Религиозная община, имеющая единый устав, а также единый комплекс богослужебных, жилых, хозяйственных построек, ей принадлежащих", theme:"cult" },
+    // ── Расселение славян ──
+    { term:"Поляне", def:"Район расселения: Среднее течение Днепра. Административный центр: Киев.", theme:"slavs" },
+    { term:"Древляне", def:"Район расселения: Между реками Днепр и Припять. Административный центр: Искоростень.", theme:"slavs" },
+    { term:"Ильменские словене", def:"Район расселения: В районе озера Ильмень и реки Волхов. Административный центр: Новгород.", theme:"slavs" },
+    { term:"Дреговичи", def:"Район расселения: Между реками Припять и Западная Двина. Административный центр: Туров.", theme:"slavs" },
+    { term:"Кривичи", def:"Район расселения: В верховьях рек Волга, Днепр, Западная Двина. Административный центр: Смоленск.", theme:"slavs" },
+    { term:"Северяне", def:"Район расселения: Между реками Десна и Днепр. Административный центр: Чернигов.", theme:"slavs" },
+    { term:"Радимичи", def:"Район расселения: В бассейне реки Сож, притока Днепра. Административный центр: крупного единого центра не было.", theme:"slavs" },
+    { term:"Вятичи", def:"Район расселения: В бассейне реки Оки, Клязьмы, Волги. Административный центр: крупного единого центра не было.", theme:"slavs" },
+    { term:"Полочане", def:"Район расселения: В долине Западной Двины. Административный центр: Полоцк.", theme:"slavs" },
   ],
 
   // ── 2. РАЗДРОБЛЕННОСТЬ ──
@@ -3304,7 +3317,7 @@ const EPOCH_NAMES = {
 };
 
 const DATE_THEMES = new Set(['rurik', 'razdro', 'mongol', 'moscow', 'culture']);
-const TERM_THEMES = new Set(['soc', 'gov', 'econ', 'cult', 'mil']);
+const TERM_THEMES = new Set(['soc', 'gov', 'econ', 'cult', 'mil', 'slavs']);
 const CULTURE_THEMES = new Set(['culture', 'cult', 'rurik', 'razdro', 'moscow']);
 
 const THEME_NAMES = {
@@ -3319,6 +3332,7 @@ const THEME_NAMES = {
   econ: 'Экономика и быт',
   cult: 'Культура и религия',
   mil: 'Орда и военное дело',
+  slavs: '🗺 Расселение славян',
 };
 
 // =====================================================================
@@ -4297,6 +4311,10 @@ function getAcceptableTermVariants(rawTerm) {
 
   if (/^путь\s+/i.test(base)) {
     variants.add(base.replace(/^путь\s+/i, ''));
+  }
+  if (/^ильменские\s+словене/i.test(base)) {
+    variants.add('словене');
+    variants.add('словене ильменские');
   }
 
   return [...variants];
