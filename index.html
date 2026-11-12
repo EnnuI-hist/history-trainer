@@ -2588,6 +2588,42 @@ body.zen-mode .section.active {
   .bst-kbd-hint { display: none; }
   .bst-search-input { padding-right: 16px; }
 }
+
+/* Toast Notification */
+#app-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(14, 22, 42, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(95, 216, 124, 0.45);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 0 16px rgba(95, 216, 124, 0.22);
+  color: #f6f2e8;
+  padding: 10px 22px;
+  border-radius: 99px;
+  font-family: var(--ff-sans);
+  font-size: .88rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .28s cubic-bezier(.4,0,.2,1), transform .28s cubic-bezier(.4,0,.2,1);
+}
+#app-toast.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+#app-toast .toast-icon {
+  color: var(--green);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
 </style>
 </head>
 <body>
@@ -3309,6 +3345,25 @@ function getEventKey(e) {
 let cultureTarget = 'title'; // 'title' | 'author' | 'ruler'
 let bestiarySubTab = 'dates'; // 'dates' | 'terms' | 'culture'
 let edTempCultureImage = '';
+
+// Culture images store (IndexedDB + localStorage fallback)
+const LS_CULT_IMGS_KEY = 'rus-trainer-cult-imgs-v1';
+let CUSTOM_CULTURE_IMAGES = {};
+try {
+  CUSTOM_CULTURE_IMAGES = JSON.parse(localStorage.getItem(LS_CULT_IMGS_KEY) || '{}');
+} catch(e) {
+  CUSTOM_CULTURE_IMAGES = {};
+}
+window._activeCultureId = null;
+window._pendingCultId = null;
+
+function getCultureImage(item) {
+  if (!item) return '';
+  if (item.id && CUSTOM_CULTURE_IMAGES && CUSTOM_CULTURE_IMAGES[item.id]) {
+    return CUSTOM_CULTURE_IMAGES[item.id];
+  }
+  return item.image || '';
+}
 
 const EPOCH_NAMES = {
   all:     'Все эпохи',
@@ -5242,9 +5297,13 @@ applyBgState();
 updateSoundUI();
 loadStreakLS();
 
+loadCultureImages();
+loadCustomCards();
+
 applyEpoch('all');
 initCardSwipe();
 document.getElementById('learned-count').textContent = learnedKeys.size;
+initCultureImagesFromStorage();
 
 // =====================================================================
 //  LIGHTBOX (ПОЛНОЭКРАННЫЙ ПРОСМОТР ФОТО ПАМЯТНИКОВ)
@@ -5434,40 +5493,151 @@ function renderBestiary() {
 }
 
 // =====================================================================
-//  CUSTOM CARDS — EDITOR (DATES, TERMS, CULTURE)
+//  CUSTOM CARDS & CULTURE IMAGES — INDEXEDDB & STORAGE
 // =====================================================================
 const LS_CUSTOM_KEY = 'rus-trainer-custom-v1';
-const LS_CULT_IMGS_KEY = 'rus-trainer-cult-imgs-v1';
+const IDB_CULT_DB = 'RusHistoryTrainerDB';
+const IDB_CULT_STORE = 'cultureImages';
+const IDB_CULT_VER = 1;
 
-let CUSTOM_CULTURE_IMAGES = {};
-window._activeCultureId = null;
-window._pendingCultId = null;
-
-function loadCultureImages() {
-  try {
-    CUSTOM_CULTURE_IMAGES = JSON.parse(localStorage.getItem(LS_CULT_IMGS_KEY) || '{}');
-  } catch(e) {
-    CUSTOM_CULTURE_IMAGES = {};
+let _cultIdbPromise = null;
+function getCultureIDB() {
+  if (!_cultIdbPromise) {
+    _cultIdbPromise = new Promise((resolve, reject) => {
+      if (!window.indexedDB) {
+        return reject(new Error('IndexedDB не поддерживается браузером'));
+      }
+      const req = indexedDB.open(IDB_CULT_DB, IDB_CULT_VER);
+      req.onupgradeneeded = function(e) {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(IDB_CULT_STORE)) {
+          db.createObjectStore(IDB_CULT_STORE);
+        }
+      };
+      req.onsuccess = function() {
+        resolve(req.result);
+      };
+      req.onerror = function() {
+        _cultIdbPromise = null;
+        reject(req.error);
+      };
+    });
   }
+  return _cultIdbPromise;
 }
 
-function saveCultureImages() {
+async function idbSaveCultureImage(cultId, dataUrl) {
   try {
-    localStorage.setItem(LS_CULT_IMGS_KEY, JSON.stringify(CUSTOM_CULTURE_IMAGES));
-    return true;
-  } catch(err) {
-    console.error('Ошибка сохранения фото в localStorage:', err);
-    alert('Не удалось сохранить фото: переполнена память браузера (localStorage). Очистите фон или сохраните фото через папку images/.');
+    const db = await getCultureIDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_CULT_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_CULT_STORE);
+      store.put(dataUrl, cultId);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error);
+    });
+  } catch (err) {
+    console.warn('idbSaveCultureImage fallback to localStorage:', err);
     return false;
   }
 }
 
-function getCultureImage(item) {
-  if (!item) return '';
-  if (item.id && CUSTOM_CULTURE_IMAGES[item.id]) {
-    return CUSTOM_CULTURE_IMAGES[item.id];
+async function idbGetAllCultureImages() {
+  try {
+    const db = await getCultureIDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(IDB_CULT_STORE, 'readonly');
+      const store = tx.objectStore(IDB_CULT_STORE);
+      const res = {};
+      const req = store.openCursor();
+      req.onsuccess = function(e) {
+        const cursor = e.target.result;
+        if (cursor) {
+          res[cursor.key] = cursor.value;
+          cursor.continue();
+        } else {
+          resolve(res);
+        }
+      };
+      req.onerror = () => reject(req.error);
+    });
+  } catch (err) {
+    console.warn('idbGetAllCultureImages error:', err);
+    return {};
   }
-  return item.image || '';
+}
+
+function loadCultureImages() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(LS_CULT_IMGS_KEY) || '{}');
+    if (parsed && typeof parsed === 'object') {
+      CUSTOM_CULTURE_IMAGES = Object.assign({}, parsed, CUSTOM_CULTURE_IMAGES);
+    }
+  } catch(e) {}
+}
+
+function saveCultureImagesLS(idbSaved = false) {
+  try {
+    localStorage.setItem(LS_CULT_IMGS_KEY, JSON.stringify(CUSTOM_CULTURE_IMAGES));
+    return true;
+  } catch(err) {
+    if (!idbSaved) {
+      console.warn('Ошибка сохранения в localStorage (лимит памяти):', err);
+    }
+    return false;
+  }
+}
+
+// Toast notification helper
+function showToast(msg, icon = '✓') {
+  let toastEl = document.getElementById('app-toast');
+  if (!toastEl) {
+    toastEl = document.createElement('div');
+    toastEl.id = 'app-toast';
+    document.body.appendChild(toastEl);
+  }
+  const textEl = document.getElementById('toast-text');
+  if (textEl) {
+    textEl.textContent = msg;
+    const iconEl = toastEl.querySelector('.toast-icon');
+    if (iconEl) iconEl.textContent = icon;
+  } else {
+    toastEl.innerHTML = `<span class="toast-icon">${icon}</span><span id="toast-text">${msg}</span>`;
+  }
+  toastEl.classList.add('show');
+  clearTimeout(toastEl._timer);
+  toastEl._timer = setTimeout(() => {
+    toastEl.classList.remove('show');
+  }, 2600);
+}
+
+async function initCultureImagesFromStorage() {
+  // 1. Synchronously ensure localStorage data is present
+  loadCultureImages();
+
+  // 2. Asynchronously load all culture images from IndexedDB
+  try {
+    const idbImgs = await idbGetAllCultureImages();
+    if (idbImgs && typeof idbImgs === 'object' && Object.keys(idbImgs).length > 0) {
+      Object.assign(CUSTOM_CULTURE_IMAGES, idbImgs);
+    }
+    // 3. Migrate any legacy localStorage culture images into IndexedDB
+    let lsImgs = {};
+    try {
+      lsImgs = JSON.parse(localStorage.getItem(LS_CULT_IMGS_KEY) || '{}');
+    } catch(e) {}
+    for (const [cid, cDataUrl] of Object.entries(lsImgs)) {
+      if (cid && cDataUrl && !idbImgs[cid]) {
+        await idbSaveCultureImage(cid, cDataUrl);
+      }
+    }
+  } catch(err) {
+    console.warn('initCultureImagesFromStorage error:', err);
+  }
+
+  // 4. Immediately refresh current culture view / bestiary
+  refreshCurrentCultureView();
 }
 
 function getCurrentCultureId() {
@@ -5486,7 +5656,7 @@ function getCurrentCultureId() {
   return window._pendingCultId || window._activeCultureId || null;
 }
 
-function compressImageFile(file, maxDim = 900, quality = 0.78) {
+function compressImageFile(file, maxDim = 1200, quality = 0.82) {
   return new Promise((resolve, reject) => {
     if (!file || !(file instanceof Blob)) {
       return reject(new Error('Не изображение'));
@@ -5554,23 +5724,37 @@ async function handleQuickCultUpload(inputEl) {
     return;
   }
   try {
-    const dataUrl = await compressImageFile(file, 900, 0.78);
-    saveAndApplyCultureImage(cultId, dataUrl);
+    const dataUrl = await compressImageFile(file, 1200, 0.82);
+    await saveAndApplyCultureImage(cultId, dataUrl);
   } catch (err) {
     console.error('Ошибка загрузки фото культуры:', err);
     alert('Не удалось обработать изображение: ' + (err.message || err));
   } finally {
     if (inputEl) inputEl.value = '';
+    window._pendingCultId = null;
   }
 }
 
-function saveAndApplyCultureImage(cultId, dataUrl) {
+async function saveAndApplyCultureImage(cultId, dataUrl) {
   if (!cultId || !dataUrl) return;
   CUSTOM_CULTURE_IMAGES[cultId] = dataUrl;
-  const saved = saveCultureImages();
-  if (saved) soundCorrect();
 
-  // Принудительное мгновенное обновление текущего экрана
+  // 1. Primary storage: IndexedDB (no 5MB quota limit)
+  let idbSaved = false;
+  try {
+    idbSaved = await idbSaveCultureImage(cultId, dataUrl);
+  } catch(e) {
+    console.warn('IDB save error:', e);
+  }
+
+  // 2. Secondary fallback: localStorage (silent if quota exceeded and IDB succeeded)
+  saveCultureImagesLS(idbSaved);
+
+  // 3. Visual toast notification & audio confirmation
+  soundCorrect();
+  showToast('✓ Фото сохранено в памяти браузера');
+
+  // 4. Instant view refresh
   refreshCurrentCultureView(cultId, dataUrl);
 }
 
@@ -5580,9 +5764,15 @@ function refreshCurrentCultureView(cultId, dataUrl) {
     if (activeTab === 'cards') {
       renderCard();
     } else if (activeTab === 'quiz') {
-      updateQuizCultureImage(cultId, dataUrl);
+      const qTarget = quizQuestion?.target;
+      const targetId = cultId || qTarget?.id;
+      const img = dataUrl || (qTarget ? getCultureImage(qTarget) : '');
+      updateQuizCultureImage(targetId, img);
     } else if (activeTab === 'input') {
-      updateInputCultureImage(cultId, dataUrl);
+      const iTarget = inputQuestion?.target;
+      const targetId = cultId || iTarget?.id;
+      const img = dataUrl || (iTarget ? getCultureImage(iTarget) : '');
+      updateInputCultureImage(targetId, img);
     }
   } else if (currentMode === 'bestiary') {
     renderBestiary();
@@ -5689,8 +5879,8 @@ async function handleCultDrop(event, cultId) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 900, 0.78);
-    saveAndApplyCultureImage(targetId, dataUrl);
+    const dataUrl = await compressImageFile(file, 1200, 0.82);
+    await saveAndApplyCultureImage(targetId, dataUrl);
   } catch(err) {
     console.error('Ошибка Drag & Drop изображения:', err);
     alert('Не удалось обработать перетащенное изображение: ' + (err.message || err));
@@ -5719,8 +5909,8 @@ async function handleCultureSlotDrop(event, slotType) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 900, 0.78);
-    saveAndApplyCultureImage(cultId, dataUrl);
+    const dataUrl = await compressImageFile(file, 1200, 0.82);
+    await saveAndApplyCultureImage(cultId, dataUrl);
   } catch(err) {
     console.error('Ошибка Drag & Drop изображения:', err);
     alert('Не удалось обработать перетащенное изображение: ' + (err.message || err));
@@ -6147,15 +6337,23 @@ function clearAllCustomCards() {
   renderMyCards();
 }
 
-function exportBackup() {
+async function exportBackup() {
   const statusEl = document.getElementById('ed-export-status');
+  let allCultImages = { ...CUSTOM_CULTURE_IMAGES };
+  try {
+    const idbImgs = await idbGetAllCultureImages();
+    if (idbImgs && typeof idbImgs === 'object') {
+      Object.assign(allCultImages, idbImgs);
+    }
+  } catch(e) {}
+
   const payload = {
     version: 3,
     exportedAt: new Date().toISOString(),
     custom: JSON.parse(localStorage.getItem(LS_CUSTOM_KEY) || '{}'),
     learned: JSON.parse(localStorage.getItem(LS_KEY) || '[]'),
     streak: JSON.parse(localStorage.getItem(STREAK_LS_KEY) || '{}'),
-    cultImages: JSON.parse(localStorage.getItem(LS_CULT_IMGS_KEY) || '{}'),
+    cultImages: allCultImages,
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -6170,7 +6368,7 @@ function importBackup(event) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     try {
       const payload = JSON.parse(e.target.result);
       if (!payload || typeof payload !== 'object') throw new Error('Bad format');
@@ -6185,11 +6383,17 @@ function importBackup(event) {
         loadStreakLS();
       }
       if (payload.cultImages && typeof payload.cultImages === 'object') {
-        localStorage.setItem(LS_CULT_IMGS_KEY, JSON.stringify(payload.cultImages));
-        loadCultureImages();
+        Object.assign(CUSTOM_CULTURE_IMAGES, payload.cultImages);
+        for (const [cid, cDataUrl] of Object.entries(payload.cultImages)) {
+          if (cid && cDataUrl) {
+            await idbSaveCultureImage(cid, cDataUrl);
+          }
+        }
+        saveCultureImagesLS(true);
       }
       loadCustomCards();
       rebuildAndRefresh();
+      refreshCurrentCultureView();
       showEdStatus(statusEl, 'ok', 'Данные восстановлены успешно!');
     } catch(err) {
       showEdStatus(statusEl, 'err', 'Ошибка чтения файла: ' + err.message);
@@ -6209,24 +6413,6 @@ function clearEdStatus() {
   ['ed-add-status','ed-export-status'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.className = 'ed-status';
-  });
-}
-
-// Quick upload input listener
-const quickCultInput = document.getElementById('quick-cult-upload');
-if (quickCultInput) {
-  quickCultInput.addEventListener('change', async function(e) {
-    const file = e.target.files[0];
-    if (!file || !pendingUploadCultId) return;
-    try {
-      const dataUrl = await compressImageFile(file, 1200, 0.85);
-      saveAndApplyCultureImage(pendingUploadCultId, dataUrl);
-    } catch (err) {
-      console.error('Ошибка загрузки фото культуры:', err);
-    } finally {
-      pendingUploadCultId = null;
-      e.target.value = '';
-    }
   });
 }
 
@@ -6250,8 +6436,8 @@ document.addEventListener('paste', async function(e) {
 
   e.preventDefault();
   try {
-    const dataUrl = await compressImageFile(imageFile, 900, 0.78);
-    saveAndApplyCultureImage(targetId, dataUrl);
+    const dataUrl = await compressImageFile(imageFile, 1200, 0.82);
+    await saveAndApplyCultureImage(targetId, dataUrl);
   } catch(err) {
     console.error('Ошибка вставки фото культуры:', err);
     alert('Не удалось обработать вставленное изображение: ' + (err.message || err));
@@ -6259,9 +6445,12 @@ document.addEventListener('paste', async function(e) {
 });
 
 // ---- Init ----
-loadCultureImages();
-loadCustomCards();
 updateEdThemeAutocomplete();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCultureImagesFromStorage);
+} else {
+  initCultureImagesFromStorage();
+}
 </script>
 
 <!-- ============================================================
@@ -6395,6 +6584,8 @@ updateEdThemeAutocomplete();
     </div>
   </div>
 </div>
+
+<div id="app-toast"><span class="toast-icon">✓</span><span id="toast-text"></span></div>
 
 </body>
 </html>
