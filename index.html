@@ -2710,8 +2710,173 @@ body.zen-mode .section.active {
   display: block;
 }
 
+/* Figures Cards (Бестиарий) */
+.bst-figures-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.bst-fig-card {
+  background: var(--glass);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-gold);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color .2s, transform .2s;
+}
+.bst-fig-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.bst-fig-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.bst-fig-name {
+  font-family: var(--ff-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--gold2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bst-fig-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.bst-fig-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .8rem;
+  color: var(--text2);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 99px;
+}
+.bst-fig-pill strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.bst-fig-facts {
+  font-size: .92rem;
+  color: var(--text);
+  line-height: 1.6;
+  background: rgba(0, 0, 0, 0.22);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+}
+.bst-fig-facts-label {
+  display: block;
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--gold);
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+/* Flashcard Figure */
+.card-container.figure-card {
+  height: 380px;
+}
+.fc-figure-front,
+.fc-figure-back {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  animation: fadeIn .25s ease;
+}
+.fc-fig-emblem {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 0 10px rgba(245, 166, 35, 0.5));
+}
+.fc-fig-role {
+  font-size: .88rem;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 600;
+}
+.fc-fig-name {
+  font-family: var(--ff-serif);
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff 0%, var(--gold2) 60%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.25;
+}
+.fc-fig-years-pill {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 99px;
+  background: rgba(245, 166, 35, 0.12);
+  border: 1px solid rgba(245, 166, 35, 0.35);
+  color: var(--gold);
+  font-weight: 600;
+  font-size: .92rem;
+  letter-spacing: .02em;
+}
+.fc-fig-years-large {
+  font-family: var(--ff-serif);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+.fc-fig-back-role {
+  font-size: .85rem;
+  color: var(--text2);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.fc-fig-facts-wrap {
+  width: 100%;
+  max-width: 580px;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+.fc-fig-facts-title {
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.fc-fig-facts-body {
+  font-size: .93rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+
 @media (max-width: 768px) {
   .card-container.culture-card { height: 420px; }
+  .card-container.figure-card { height: 420px; }
+  .fc-fig-name { font-size: 1.8rem; }
   .fc-culture-img-wrap { height: 195px; }
   .fc-cult-meta { grid-template-columns: 1fr; gap: 5px; }
   .bst-glossary-grid { grid-template-columns: 1fr; }
@@ -2823,12 +2988,13 @@ body.zen-mode .section.active {
     <button class="epoch-btn active" data-epoch="all">✦ Все эпохи</button>
   </div>
 
-  <!-- Second-level navigation: Dates / Terms / Culture / Bestiary -->
+  <!-- Second-level navigation: Dates / Terms / Culture / Figures / Bestiary -->
   <div class="mode-bar-wrap">
     <div class="mode-bar" id="mode-bar">
       <button class="mode-btn active" data-mode="dates">📅 Даты</button>
       <button class="mode-btn" data-mode="terms">📖 Термины</button>
       <button class="mode-btn" data-mode="culture">🏛 Культура</button>
+      <button class="mode-btn" data-mode="figures">👑 Деятели</button>
       <button class="mode-btn" data-mode="bestiary">📚 Бестиарий</button>
     </div>
   </div>
@@ -2905,6 +3071,12 @@ body.zen-mode .section.active {
             </div>
             <div class="cult-angles-bar" id="fc-angles-bar" onclick="event.stopPropagation()"></div>
           </div>
+          <div class="fc-figure-front" id="fc-figure-front" style="display:none">
+            <div class="fc-fig-emblem" id="fc-fig-emblem">👑</div>
+            <div class="fc-fig-role" id="fc-fig-role"></div>
+            <div class="fc-fig-name" id="fc-fig-name"></div>
+            <div class="fc-fig-years-pill" id="fc-fig-years-front"></div>
+          </div>
         </div>
         <div class="card-face card-back">
           <div class="theme-badge" id="fc-badge2"></div>
@@ -2919,6 +3091,14 @@ body.zen-mode .section.active {
               <div class="fc-cult-pill"><span>Правитель</span><strong id="fc-cult-ruler"></strong></div>
             </div>
             <div class="fc-cult-lore" id="fc-cult-lore"></div>
+          </div>
+          <div class="fc-figure-back" id="fc-figure-back" style="display:none">
+            <div class="fc-fig-years-large" id="fc-fig-years"></div>
+            <div class="fc-fig-back-role" id="fc-fig-role-back"></div>
+            <div class="fc-fig-facts-wrap">
+              <div class="fc-fig-facts-title">📜 Ключевые реформы, походы и факты для ЕГЭ и олимпиад:</div>
+              <div class="fc-fig-facts-body" id="fc-fig-facts"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -3044,6 +3224,7 @@ body.zen-mode .section.active {
         <button class="bst-subtab-btn active" data-bst="dates" onclick="setBestiaryTab('dates')">📜 Хроника (Даты)</button>
         <button class="bst-subtab-btn" data-bst="terms" onclick="setBestiaryTab('terms')">📖 Глоссарий (Термины)</button>
         <button class="bst-subtab-btn" data-bst="culture" onclick="setBestiaryTab('culture')">🏛 Памятники архитектуры</button>
+        <button class="bst-subtab-btn" data-bst="figures" onclick="setBestiaryTab('figures')">👑 Деятели</button>
       </div>
       <div class="bst-search-bar">
         <div class="bst-search-wrap">
@@ -3418,6 +3599,115 @@ const DATA_CULTURE = [
   }
 ];
 
+// Исторические деятели по эпохам
+const DATA_FIGURES = {
+  // ── 1. ДРЕВНЯЯ РУСЬ ──
+  ancient: [
+    {
+      id: "fig_oleg",
+      epoch: "ancient",
+      name: "Князь Олег Вещий",
+      years: "879–912 гг.",
+      role: "Великий князь Киевский, объединитель Руси",
+      facts: "Объединение Новгорода и Киева (882 г.), походы на Византию (907, 911 гг.) и выгодные торговые договоры, подчинение древлян, северян и радимичей.",
+      theme: "rurik"
+    },
+    {
+      id: "fig_olga",
+      epoch: "ancient",
+      name: "Княгиня Ольга",
+      years: "945–964 гг.",
+      role: "Правительница (регентша) Руси, святая равноапостольная",
+      facts: "Первая налоговая реформа на Руси (установление уроков и погостов после восстания древлян), личное крещение в Константинополе (ок. 957 г.).",
+      theme: "rurik"
+    },
+    {
+      id: "fig_svyatoslav",
+      epoch: "ancient",
+      name: "Святослав Игоревич",
+      years: "964–972 гг.",
+      role: "Великий князь Киевский, полководец",
+      facts: "Разгром Хазарского каганата (965 г.) и Волжской Булгарии, Дунайские походы, гибель у днепровских порогов от печенегов.",
+      theme: "rurik"
+    },
+    {
+      id: "fig_vladimir_1",
+      epoch: "ancient",
+      name: "Владимир I Святославич",
+      years: "980–1015 гг.",
+      role: "Великий князь Киевский, Креститель Руси",
+      facts: "Крещение Руси (988 г.), строительство оборонительных рубежей («Змиевы валы») против печенегов, чеканка первых русских монет (златников и сребреников).",
+      theme: "rurik"
+    },
+    {
+      id: "fig_yaroslav",
+      epoch: "ancient",
+      name: "Ярослав Мудрый",
+      years: "1019–1054 гг.",
+      role: "Великий князь Киевский, законодатель и просветитель",
+      facts: "Создание «Русской Правды» (Древнейшая Правда), окончательный разгром печенегов под Киевом (1036 г.), избрание первого русского митрополита Илариона (1051 г.), расцвет храмового строительства (София Киевская).",
+      theme: "rurik"
+    }
+  ],
+  // ── 2. РАЗДРОБЛЕННОСТЬ ──
+  razdro: [
+    {
+      id: "fig_monomakh",
+      epoch: "razdro",
+      name: "Владимир Мономах",
+      years: "1113–1125 гг.",
+      role: "Великий князь Киевский, государственный деятель, мыслитель",
+      facts: "«Устав Владимира Мономаха» (ограничение произвола ростовщиков после восстания в Киеве), инициатор Любечского съезда (1097 г.), успешные крестовые походы против половцев, автор «Поучения детям».",
+      theme: "razdro"
+    },
+    {
+      id: "fig_bogolyubsky",
+      epoch: "razdro",
+      name: "Андрей Боголюбский",
+      years: "1157–1174 гг.",
+      role: "Великий князь Владимирский",
+      facts: "Перенос столицы Северо-Восточной Руси во Владимир, взятие Киева (1169 г.), строительство Успенского собора и церкви Покрова на Нерли, убит в результате боярского заговора в Боголюбове.",
+      theme: "razdro"
+    },
+    {
+      id: "fig_vsevolod_nest",
+      epoch: "razdro",
+      name: "Всеволод Большое Гнездо",
+      years: "1176–1212 гг.",
+      role: "Великий князь Владимирский",
+      facts: "Наивысший расцвет Владимиро-Суздальского княжества, первым принял титул Великого князя Владимирского, подчинил Рязань и влиял на Новгород.",
+      theme: "razdro"
+    }
+  ],
+  // ── 3. МОСКОВСКОЕ КНЯЖЕСТВО ──
+  moscow: [
+    {
+      id: "fig_kalita",
+      epoch: "moscow",
+      name: "Иван I Калита",
+      years: "1325–1340 гг.",
+      role: "Князь Московский, Великий князь Владимирский",
+      facts: "Подавление антиордынского восстания в Твери (1327 г.) и получение ярлыка на великое княжение, право самостоятельного сбора ордынского выхода, перенос митрополичьей кафедры в Москву (митрополит Пётр).",
+      theme: "moscow"
+    },
+    {
+      id: "fig_dmitry_donskoy",
+      epoch: "moscow",
+      name: "Дмитрий Донской",
+      years: "1359–1389 гг.",
+      role: "Великий князь Московский и Владимирский, полководец",
+      facts: "Строительство белокаменного Московского Кремля (1367 г.), победа на реке Воже (1378 г.) и в Куликовской битве (1380 г.), первая передача великого княжения по наследству без санкции Орды.",
+      theme: "moscow"
+    }
+  ],
+  // ── 4. РУССКОЕ ЦАРСТВО ──
+  tsardom: [],
+  // ── 5. РОССИЙСКАЯ ИМПЕРИЯ ──
+  empire: [],
+  // ── 6. СОВЕТСКИЙ ПЕРИОД ──
+  soviet: []
+};
+
 const ALL_EVENTS = Object.entries(DATA_DATES).flatMap(([epoch, arr]) =>
   arr.map(item => ({ ...item, epoch }))
 );
@@ -3425,12 +3715,15 @@ const ALL_TERMS = Object.entries(DATA_TERMS).flatMap(([epoch, arr]) =>
   arr.map(item => ({ ...item, epoch }))
 );
 const ALL_CULTURE = DATA_CULTURE.map(item => ({ ...item }));
+const ALL_FIGURES = Object.entries(DATA_FIGURES).flatMap(([epoch, arr]) =>
+  arr.map(item => ({ ...item, epoch }))
+);
 
 // =====================================================================
 //  STATE
 // =====================================================================
 let currentEpoch = 'all';
-let currentMode  = 'dates';   // 'dates' | 'terms'
+let currentMode  = 'dates';   // 'dates' | 'terms' | 'culture' | 'figures' | 'bestiary'
 let currentTheme = 'all';
 let filteredEvents = [...ALL_EVENTS];   // base filtered by epoch + mode + theme
 let displayEvents  = [...ALL_EVENTS];   // what actually shows (may be shuffled / with learned hidden)
@@ -3453,12 +3746,86 @@ function saveLearnedLS() {
   localStorage.setItem(LS_KEY, JSON.stringify([...learnedKeys]));
 }
 function getEventKey(e) {
+  if (e.role !== undefined || e.facts !== undefined) return `fig::${e.id || e.name}`;
   if (e.lore !== undefined || e.title !== undefined) return `cult::${e.id || e.title}`;
   return e.term !== undefined ? `term::${e.term}` : `${e.sortYear}::${e.event}`;
 }
 
+function getAcceptableFigureVariants(target) {
+  const variants = new Set();
+  const rawName = typeof target === 'string' ? target : (target?.name || '');
+  const normName = normalizeInputTerm(rawName);
+  if (normName) variants.add(normName);
+
+  const strippedTitle = normName.replace(/^(князь|княгиня|царь|император|великий князь|святой|святая)\s+/i, '').trim();
+  if (strippedTitle) variants.add(strippedTitle);
+
+  const replaceRomans = s => s
+    .replace(/\b1\b|\bi\b/gi, '1')
+    .replace(/\b2\b|\bii\b/gi, '2')
+    .replace(/\b3\b|\biii\b/gi, '3')
+    .replace(/\b4\b|\biv\b/gi, '4');
+
+  variants.add(replaceRomans(normName));
+  variants.add(replaceRomans(strippedTitle));
+
+  const words = strippedTitle.split(/\s+/);
+  if (words.length >= 2) {
+    variants.add(words[0]);
+    variants.add(words.slice(1).join(' '));
+    variants.add(words.slice(1).join(' ') + ' ' + words[0]);
+  }
+
+  const romanWords = {
+    '1': ['первый', 'i', '1'],
+    '2': ['второй', 'ii', '2'],
+    '3': ['третий', 'iii', '3'],
+    '4': ['четвертый', 'iv', '4']
+  };
+  for (const [digit, aliases] of Object.entries(romanWords)) {
+    if (strippedTitle.includes(digit) || strippedTitle.includes(aliases[0]) || strippedTitle.includes(aliases[1])) {
+      aliases.forEach(al => {
+        variants.add(strippedTitle.replace(new RegExp(`\\b(${digit}|${aliases[0]}|${aliases[1]})\\b`, 'gi'), al).trim());
+      });
+      variants.add(strippedTitle.replace(new RegExp(`\\b(${digit}|${aliases[0]}|${aliases[1]})\\b`, 'gi'), '').replace(/\s+/g, ' ').trim());
+    }
+  }
+
+  const figId = (typeof target === 'object' && target) ? target.id : '';
+  if (figId === 'fig_oleg' || normName.includes('олег')) {
+    ['олег', 'вещий олег', 'олег вещий', 'князь олег'].forEach(v => variants.add(v));
+  } else if (figId === 'fig_olga' || normName.includes('ольга')) {
+    ['ольга', 'княгиня ольга', 'святая ольга'].forEach(v => variants.add(v));
+  } else if (figId === 'fig_svyatoslav' || normName.includes('святослав')) {
+    ['святослав', 'святослав игоревич', 'князь святослав'].forEach(v => variants.add(v));
+  } else if (figId === 'fig_vladimir_1' || (normName.includes('владимир') && (normName.includes('1') || normName.includes('святославич') || normName.includes('креститель')))) {
+    ['владимир', 'владимир 1', 'владимир i', 'владимир первый', 'владимир святославич', 'владимир святой', 'владимир креститель', 'владимир красное солнышко'].forEach(v => variants.add(v));
+  } else if (figId === 'fig_yaroslav' || normName.includes('ярослав')) {
+    ['ярослав', 'ярослав мудрый', 'мудрый ярослав', 'князь ярослав', 'ярослав 1', 'ярослав i', 'ярослав владимирович'].forEach(v => variants.add(v));
+  } else if (figId === 'fig_monomakh' || normName.includes('мономах')) {
+    ['владимир мономах', 'мономах', 'владимир 2 мономах', 'владимир 2', 'владимир ii', 'владимир второй'].forEach(v => variants.add(v));
+  } else if (figId === 'fig_bogolyubsky' || normName.includes('боголюбский')) {
+    ['андрей боголюбский', 'боголюбский', 'андрей юрьевич боголюбский', 'андрей юрьевич'].forEach(v => variants.add(v));
+  } else if (figId === 'fig_vsevolod_nest' || normName.includes('большое гнездо')) {
+    ['всеволод большое гнездо', 'большое гнездо', 'всеволод', 'всеволод 3', 'всеволод iii', 'всеволод третий', 'всеволод юрьевич'].forEach(v => variants.add(v));
+  } else if (figId === 'fig_kalita' || normName.includes('калита')) {
+    ['иван калита', 'калита', 'иван 1', 'иван i', 'иван первый', 'иван 1 калита', 'иван данилович', 'иван данилович калита'].forEach(v => variants.add(v));
+  } else if (figId === 'fig_dmitry_donskoy' || normName.includes('донской')) {
+    ['дмитрий донской', 'донской', 'дмитрий иванович', 'дмитрий иванович донской', 'князь дмитрий донской'].forEach(v => variants.add(v));
+  }
+
+  if (target && Array.isArray(target.aliases)) {
+    target.aliases.forEach(a => {
+      const na = normalizeInputTerm(a);
+      if (na) variants.add(na);
+    });
+  }
+
+  return variants;
+}
+
 let cultureTarget = 'title'; // 'title' | 'author' | 'ruler'
-let bestiarySubTab = 'dates'; // 'dates' | 'terms' | 'culture'
+let bestiarySubTab = 'dates'; // 'dates' | 'terms' | 'culture' | 'figures'
 let edTempCultureImage = '';
 
 const LS_CULT_SYNC_KEY = 'rus-trainer-cult-gallery-sync-v1';
@@ -3550,6 +3917,7 @@ const EPOCH_NAMES = {
 const DATE_THEMES = new Set(['rurik', 'razdro', 'mongol', 'moscow', 'culture']);
 const TERM_THEMES = new Set(['soc', 'gov', 'econ', 'cult', 'mil', 'slavs']);
 const CULTURE_THEMES = new Set(['culture', 'cult', 'rurik', 'razdro', 'moscow']);
+const FIGURES_THEMES = new Set(['rurik', 'razdro', 'moscow', 'culture']);
 
 const THEME_NAMES = {
   all: 'Все темы',
@@ -3601,6 +3969,9 @@ function addWrong(question, yourAnswer, correctAnswer){
 
 function getEpochSource(modeOverride) {
   const m = modeOverride || (currentMode === 'bestiary' ? bestiarySubTab : currentMode);
+  if (m === 'figures') {
+    return currentEpoch === 'all' ? ALL_FIGURES : (DATA_FIGURES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+  }
   if (m === 'terms') {
     return currentEpoch === 'all' ? ALL_TERMS : (DATA_TERMS[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
   }
@@ -3612,7 +3983,7 @@ function getEpochSource(modeOverride) {
 
 function updateThemeButtonsVisibility(epochItems) {
   const effMode = currentMode === 'bestiary' ? bestiarySubTab : currentMode;
-  const allowedThemes = effMode === 'terms' ? TERM_THEMES : (effMode === 'culture' ? CULTURE_THEMES : DATE_THEMES);
+  const allowedThemes = effMode === 'figures' ? FIGURES_THEMES : (effMode === 'terms' ? TERM_THEMES : (effMode === 'culture' ? CULTURE_THEMES : DATE_THEMES));
   const presentThemes = new Set(epochItems.map(e => e.theme));
   document.querySelectorAll('.theme-btn').forEach(btn => {
     const t = btn.dataset.theme;
@@ -3655,7 +4026,7 @@ function syncWorkspaceVisibility(epochItems) {
     document.querySelectorAll('.section').forEach(s => {
       if (s.id !== 'sec-review') s.style.display = 'none';
     });
-    const modeLabel = currentMode === 'terms' ? 'Термины' : (currentMode === 'culture' ? 'Культура' : 'Даты');
+    const modeLabel = currentMode === 'figures' ? 'Деятели' : (currentMode === 'terms' ? 'Термины' : (currentMode === 'culture' ? 'Культура' : 'Даты'));
     document.getElementById('ep-sub').textContent =
       `Раздел «${EPOCH_NAMES[currentEpoch]}» (${modeLabel}) пока пуст и готов к наполнению.`;
     placeholder.classList.add('show');
@@ -3692,7 +4063,9 @@ function updateFlipModeBtn() {
     return;
   }
   btn.style.display = '';
-  if (currentMode === 'terms') {
+  if (currentMode === 'figures') {
+    btn.textContent = flipMode ? '📜 Факты → Деятель' : '👑 Деятель → Факты';
+  } else if (currentMode === 'terms') {
     btn.textContent = flipMode ? '📝 Определение → Термин' : '📖 Термин → Определение';
   } else {
     btn.textContent = flipMode ? '📅 Дата → Событие' : '📖 Событие → Дата';
@@ -3711,7 +4084,7 @@ function applyMode(mode) {
   const cardsTabBtn = document.querySelector('.tab-btn[data-tab="cards"]');
 
   if (sortTabBtn && matchTabBtn) {
-    if (mode === 'culture') {
+    if (mode === 'culture' || mode === 'figures') {
       sortTabBtn.style.display = 'none';
       matchTabBtn.style.display = 'none';
       if (sortTabBtn.classList.contains('active') || matchTabBtn.classList.contains('active')) {
@@ -3752,7 +4125,9 @@ function applyTheme(theme){
   const epochItems = getEpochSource();
   filteredEvents = theme === 'all' ? [...epochItems] : epochItems.filter(e => e.theme === theme);
   const effMode = currentMode === 'bestiary' ? bestiarySubTab : currentMode;
-  if (effMode === 'terms') {
+  if (effMode === 'figures') {
+    filteredEvents.sort((a,b) => (a.name || '').localeCompare(b.name || '', 'ru'));
+  } else if (effMode === 'terms') {
     filteredEvents.sort((a,b) => a.term.localeCompare(b.term, 'ru'));
   } else if (effMode === 'culture') {
     filteredEvents.sort((a,b) => a.title.localeCompare(b.title, 'ru'));
@@ -3863,18 +4238,51 @@ function renderCard(){
   const fcContainer = document.getElementById('flashcard');
   const cultFront = document.getElementById('fc-culture-front');
   const cultBack  = document.getElementById('fc-culture-back');
+  const figFront  = document.getElementById('fc-figure-front');
+  const figBack   = document.getElementById('fc-figure-back');
   const isCulture = currentMode === 'culture';
+  const isFigures = currentMode === 'figures';
 
   fcContainer.classList.toggle('culture-card', isCulture);
-  cultFront.style.display = isCulture ? 'flex' : 'none';
-  cultBack.style.display  = isCulture ? 'flex' : 'none';
-  document.getElementById('fc-event').style.display      = isCulture ? 'none' : '';
-  document.getElementById('fc-back-title').style.display = isCulture ? 'none' : '';
-  document.getElementById('fc-year').style.display       = isCulture ? 'none' : '';
-  document.getElementById('fc-detail').style.display     = isCulture ? 'none' : '';
+  fcContainer.classList.toggle('figure-card', isFigures);
+  if (cultFront) cultFront.style.display = isCulture ? 'flex' : 'none';
+  if (cultBack)  cultBack.style.display  = isCulture ? 'flex' : 'none';
+  if (figFront)  figFront.style.display  = isFigures ? 'flex' : 'none';
+  if (figBack)   figBack.style.display   = isFigures ? 'flex' : 'none';
+  document.getElementById('fc-event').style.display       = (isCulture || isFigures) ? 'none' : '';
+  document.getElementById('fc-back-title').style.display  = (isCulture || isFigures) ? 'none' : '';
+  document.getElementById('fc-year').style.display        = (isCulture || isFigures) ? 'none' : '';
+  document.getElementById('fc-detail').style.display      = (isCulture || isFigures) ? 'none' : '';
+  document.getElementById('fc-front-title').style.display = (isCulture || isFigures) ? 'none' : '';
 
   // Flip mode determines which face shows what
-  if (isCulture) {
+  if (isFigures) {
+    if (flipMode) {
+      document.getElementById('fc-fig-emblem').textContent = '📜';
+      document.getElementById('fc-fig-role').textContent = e.years ? `Годы: ${e.years}` : 'Исторический деятель';
+      document.getElementById('fc-fig-name').textContent = e.facts;
+      document.getElementById('fc-fig-name').style.cssText =
+        'font-family:var(--ff-sans);font-size:1.05rem;font-weight:500;line-height:1.55;color:var(--text);background:none;-webkit-text-fill-color:var(--text);text-align:left;max-width:560px';
+      document.getElementById('fc-fig-years-front').style.display = 'none';
+
+      document.getElementById('fc-fig-years').textContent = e.name;
+      document.getElementById('fc-fig-years').style.cssText = 'font-size:2.2rem;line-height:1.2;margin-bottom:6px';
+      document.getElementById('fc-fig-role-back').textContent = `${e.years} · ${e.role || ''}`;
+      document.getElementById('fc-fig-facts').textContent = e.facts;
+    } else {
+      document.getElementById('fc-fig-emblem').textContent = '👑';
+      document.getElementById('fc-fig-role').textContent = e.role || 'Государственный деятель';
+      document.getElementById('fc-fig-name').textContent = e.name;
+      document.getElementById('fc-fig-name').style.cssText = '';
+      document.getElementById('fc-fig-years-front').style.display = e.years ? '' : 'none';
+      document.getElementById('fc-fig-years-front').textContent = e.years || '';
+
+      document.getElementById('fc-fig-years').textContent = e.years || '—';
+      document.getElementById('fc-fig-years').style.cssText = '';
+      document.getElementById('fc-fig-role-back').textContent = e.role || '';
+      document.getElementById('fc-fig-facts').textContent = e.facts || '';
+    }
+  } else if (isCulture) {
     window._activeCultureId = e.id;
     window._pendingCultId = e.id;
     document.getElementById('fc-front-title').textContent = 'Памятник культуры';
@@ -4187,6 +4595,30 @@ function generateQuiz(){
       questionText: `${meta.label}: ${target.title}`,
       detail: `<strong>${target.title}</strong> (${target.year}) · Зодчий: ${target.author} · Правитель: ${target.ruler}<br>${target.lore}`
     };
+  } else if (currentMode === 'figures') {
+    const type = Math.random() < 0.5 ? 'figure' : 'facts';
+    if (type === 'figure') {
+      document.getElementById('qz-label').textContent = `Вопрос ${quizCount} · ${qContext} · Исторический деятель`;
+      document.getElementById('qz-text').textContent = `О каком деятеле идёт речь:\n«${target.facts}»?`;
+      const wrong = [...new Set(ALL_FIGURES.filter(e => e.name !== target.name).map(e => e.name))];
+      options = shuffle([...shuffle(wrong).slice(0, 3), target.name]);
+      quizQuestion = {
+        correct: target.name,
+        questionText: `Деятель: ${target.name}`,
+        detail: `<strong>${target.name}</strong> (${target.years}) — ${target.role}<br>${target.facts}`
+      };
+    } else {
+      isDefOpts = true;
+      document.getElementById('qz-label').textContent = `Вопрос ${quizCount} · ${qContext} · Достижения и факты`;
+      document.getElementById('qz-text').textContent = `Какие ключевые события, реформы и походы связаны с деятелем: «${target.name}» (${target.years})?`;
+      const wrong = [...new Set(ALL_FIGURES.filter(e => e.name !== target.name && e.facts !== target.facts).map(e => e.facts))];
+      options = shuffle([...shuffle(wrong).slice(0, 3), target.facts]);
+      quizQuestion = {
+        correct: target.facts,
+        questionText: `Факты: ${target.name}`,
+        detail: `<strong>${target.name}</strong> (${target.years}) — ${target.role}<br>${target.facts}`
+      };
+    }
   } else if (currentMode === 'terms') {
     const type = Math.random() < 0.5 ? 'term' : 'def';
     if (type === 'term') {
@@ -4669,6 +5101,22 @@ function generateInputQuestion() {
       questionText: `${labels[cultureTarget]} ${target.title}`,
       detail: `<strong>${target.title}</strong> (${target.year}) · Правитель: ${target.ruler} · ${target.lore}`
     };
+  } else if (currentMode === 'figures') {
+    promptLabel.textContent = 'Назовите исторического деятеля:';
+    promptText.textContent = `${target.years} · ${target.role}\n\n${target.facts}`;
+    promptText.style.fontFamily = 'var(--ff-sans)';
+    promptText.style.fontSize = '1.08rem';
+    promptText.style.fontWeight = '500';
+    promptText.style.lineHeight = '1.55';
+    promptText.style.whiteSpace = 'pre-line';
+    inputEl.placeholder = 'Введите имя или прозвище деятеля (напр.: Олег Вещий, Ярослав Мудрый)...';
+    inputQuestion = {
+      type: 'figure',
+      target,
+      canonical: target.name,
+      questionText: `Деятель: ${target.name} (${target.years})`,
+      detail: `<strong>${target.name}</strong> (${target.years}) — ${target.role}<br>${target.facts}`
+    };
   } else if (currentMode === 'terms') {
     promptLabel.textContent = 'Определение термина:';
     promptText.textContent = target.def;
@@ -4719,6 +5167,7 @@ function checkInputAnswer() {
 
   const isTerm = inputQuestion.type === 'term';
   const isCulture = inputQuestion.type === 'culture';
+  const isFigure = inputQuestion.type === 'figure';
   let isCorrect = false;
 
   if (isCulture) {
@@ -4733,6 +5182,10 @@ function checkInputAnswer() {
     const shortTitle = normalizeInputTerm(inputQuestion.target.title.replace(/\s+в[о]?\s+\S+$/i, ''));
     if (shortTitle) acceptable.add(shortTitle);
     isCorrect = acceptable.has(userNorm);
+  } else if (isFigure) {
+    const userNorm = normalizeInputTerm(rawValue);
+    const variants = getAcceptableFigureVariants(inputQuestion.target);
+    isCorrect = variants.has(userNorm);
   } else if (isTerm) {
     const userNorm = normalizeInputTerm(rawValue);
     const variants = getAcceptableTermVariants(inputQuestion.target.term);
@@ -5644,6 +6097,11 @@ function renderBestiary() {
         return (e.year && e.year.toLowerCase().includes(query)) ||
                (e.event && e.event.toLowerCase().includes(query)) ||
                (e.detail && e.detail.toLowerCase().includes(query));
+      } else if (bestiarySubTab === 'figures') {
+        return (e.name && e.name.toLowerCase().includes(query)) ||
+               (e.years && e.years.toLowerCase().includes(query)) ||
+               (e.role && e.role.toLowerCase().includes(query)) ||
+               (e.facts && e.facts.toLowerCase().includes(query));
       } else if (bestiarySubTab === 'terms') {
         return (e.term && e.term.toLowerCase().includes(query)) ||
                (e.def && e.def.toLowerCase().includes(query));
@@ -5659,6 +6117,8 @@ function renderBestiary() {
 
   if (bestiarySubTab === 'dates') {
     list.sort((a, b) => a.sortYear - b.sortYear);
+  } else if (bestiarySubTab === 'figures') {
+    list.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ru'));
   } else if (bestiarySubTab === 'terms') {
     list.sort((a, b) => a.term.localeCompare(b.term, 'ru'));
   } else {
@@ -5673,7 +6133,31 @@ function renderBestiary() {
     return;
   }
 
-  if (bestiarySubTab === 'dates') {
+  if (bestiarySubTab === 'figures') {
+    container.innerHTML = `<div class="bst-figures-grid">${list.map(e => {
+      const key = getEventKey(e);
+      const known = learnedKeys.has(key);
+      const keyEnc = encodeURIComponent(key);
+      return `<div class="bst-fig-card">
+        <div class="bst-fig-header">
+          <div>
+            <span class="theme-badge ${escHtml(e.theme)}" style="margin-bottom:6px">${escHtml(THEME_NAMES[e.theme] || e.theme)}</span>
+            <div class="bst-fig-name">👑 ${escHtml(e.name)}</div>
+          </div>
+          <button class="bst-known-btn ${known ? 'is-known' : ''}" onclick="toggleBestiaryKnown('${keyEnc}')">✓ Знаю</button>
+        </div>
+        <div class="bst-fig-meta">
+          <span class="bst-fig-pill">📅 Годы: <strong>${escHtml(e.years || '—')}</strong></span>
+          <span class="bst-fig-pill">🏷 Статус: <strong>${escHtml(e.role || 'Деятель')}</strong></span>
+          <span class="bst-fig-pill">🏛 Эпоха: <strong>${escHtml(EPOCH_NAMES[e.epoch] || e.epoch)}</strong></span>
+        </div>
+        <div class="bst-fig-facts">
+          <span class="bst-fig-facts-label">📜 Ключевые реформы, походы и факты для ЕГЭ:</span>
+          ${escHtml(e.facts || '')}
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } else if (bestiarySubTab === 'dates') {
     container.innerHTML = `<div class="bst-timeline">${list.map(e => {
       const key = getEventKey(e);
       const known = learnedKeys.has(key);
@@ -6572,6 +7056,7 @@ async function handleCultAngleSlotDrop(event, monumentId, slotIdx) {
 
 let CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
 let CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+let CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
 let CUSTOM_CULTURE = [];
 
 function loadCustomCards() {
@@ -6581,11 +7066,13 @@ function loadCustomCards() {
     epochs.forEach(ep => {
       CUSTOM_DATES[ep] = (saved.dates && saved.dates[ep]) ? saved.dates[ep] : [];
       CUSTOM_TERMS[ep] = (saved.terms && saved.terms[ep]) ? saved.terms[ep] : [];
+      CUSTOM_FIGURES[ep] = (saved.figures && saved.figures[ep]) ? saved.figures[ep] : [];
     });
     CUSTOM_CULTURE = Array.isArray(saved.culture) ? saved.culture : [];
   } catch(e) {
     CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
     CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+    CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
     CUSTOM_CULTURE = [];
   }
   _mergeCustomIntoData();
@@ -6596,8 +7083,10 @@ function _mergeCustomIntoData() {
   epochs.forEach(ep => {
     DATA_DATES[ep] = DATA_DATES[ep].filter(x => !x._custom);
     DATA_TERMS[ep] = DATA_TERMS[ep].filter(x => !x._custom);
+    DATA_FIGURES[ep] = (DATA_FIGURES[ep] || []).filter(x => !x._custom);
     CUSTOM_DATES[ep].forEach(c => DATA_DATES[ep].push({ ...c, _custom: true }));
     CUSTOM_TERMS[ep].forEach(c => DATA_TERMS[ep].push({ ...c, _custom: true }));
+    (CUSTOM_FIGURES[ep] || []).forEach(c => DATA_FIGURES[ep].push({ ...c, _custom: true }));
   });
   for (let i = DATA_CULTURE.length - 1; i >= 0; i--) {
     if (DATA_CULTURE[i]._custom) DATA_CULTURE.splice(i, 1);
@@ -6617,14 +7106,19 @@ function _rebuildAllArrays() {
   );
   ALL_CULTURE.length = 0;
   DATA_CULTURE.forEach(item => ALL_CULTURE.push({ ...item }));
+  ALL_FIGURES.length = 0;
+  Object.entries(DATA_FIGURES).forEach(([epoch, arr]) =>
+    arr.forEach(item => ALL_FIGURES.push({ ...item, epoch }))
+  );
 }
 
 function saveCustomCards() {
-  const data = { dates: {}, terms: {}, culture: CUSTOM_CULTURE };
+  const data = { dates: {}, terms: {}, culture: CUSTOM_CULTURE, figures: {} };
   const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
   epochs.forEach(ep => {
     data.dates[ep] = CUSTOM_DATES[ep];
     data.terms[ep] = CUSTOM_TERMS[ep];
+    data.figures[ep] = CUSTOM_FIGURES[ep];
   });
   localStorage.setItem(LS_CUSTOM_KEY, JSON.stringify(data));
 }
@@ -6635,7 +7129,7 @@ function rebuildAndRefresh() {
 }
 
 // ---- UI State ----
-let edMode = 'dates'; // 'dates' | 'terms' | 'culture'
+let edMode = 'dates'; // 'dates' | 'terms' | 'culture' | 'figures'
 let edActiveTab = 'add';
 
 function openEditor() {
@@ -6666,10 +7160,12 @@ function setEdMode(mode) {
   document.querySelectorAll('.ed-seg-btn').forEach(b => b.classList.toggle('active', b.dataset.edmode === mode));
   const bulkWrap = document.getElementById('ed-bulk-wrap');
   const cultFields = document.getElementById('ed-culture-fields');
-  if (bulkWrap) bulkWrap.style.display = mode === 'culture' ? 'none' : 'flex';
+  const figFields = document.getElementById('ed-figures-fields');
+  if (bulkWrap) bulkWrap.style.display = (mode === 'culture' || mode === 'figures') ? 'none' : 'flex';
   if (cultFields) cultFields.style.display = mode === 'culture' ? 'flex' : 'none';
+  if (figFields) figFields.style.display = mode === 'figures' ? 'flex' : 'none';
 
-  if (mode !== 'culture') {
+  if (mode === 'dates' || mode === 'terms') {
     const label = document.getElementById('ed-textarea-label');
     if (label) label.textContent = mode === 'dates'
       ? 'Данные (каждая строка: дата — событие)'
@@ -6677,8 +7173,14 @@ function setEdMode(mode) {
     document.getElementById('ed-bulk').placeholder = mode === 'dates'
       ? '862 — Призвание варягов\n882 — Объединение Новгорода и Киева Олегом'
       : 'Вотчина — наследственное земельное владение\nПоместье — земля, данная за службу';
-  } else if (!document.getElementById('ed-theme').value) {
-    document.getElementById('ed-theme').value = 'culture';
+  } else if (mode === 'culture') {
+    if (!document.getElementById('ed-theme').value) {
+      document.getElementById('ed-theme').value = 'culture';
+    }
+  } else if (mode === 'figures') {
+    if (!document.getElementById('ed-theme').value) {
+      document.getElementById('ed-theme').value = 'rurik';
+    }
   }
   updateEdThemeAutocomplete();
 }
@@ -6722,8 +7224,12 @@ function handleEdCulturePhoto(event) {
 }
 
 function updateEdThemeAutocomplete() {
-  const allowedSet = edMode === 'dates' ? DATE_THEMES : (edMode === 'terms' ? TERM_THEMES : CULTURE_THEMES);
-  window._edThemes = [...allowedSet].map(k => ({ key: k, name: THEME_NAMES[k] }));
+  const allowedSet = edMode === 'dates'
+    ? DATE_THEMES
+    : (edMode === 'terms'
+        ? TERM_THEMES
+        : (edMode === 'figures' ? FIGURES_THEMES : CULTURE_THEMES));
+  window._edThemes = [...allowedSet].map(k => ({ key: k, name: THEME_NAMES[k] || k }));
 }
 
 function edThemeInput(val) {
@@ -6762,8 +7268,12 @@ function parseSortYear(yearStr) {
 
 function guessTheme(mode, tagInput) {
   const t = tagInput.trim().toLowerCase();
-  if (!t) return mode === 'dates' ? 'rurik' : (mode === 'terms' ? 'soc' : 'culture');
-  const allowed = mode === 'dates' ? [...DATE_THEMES] : (mode === 'terms' ? [...TERM_THEMES] : [...CULTURE_THEMES]);
+  if (!t) return mode === 'dates' ? 'rurik' : (mode === 'terms' ? 'soc' : (mode === 'figures' ? 'rurik' : 'culture'));
+  const allowed = mode === 'dates'
+    ? [...DATE_THEMES]
+    : (mode === 'terms'
+        ? [...TERM_THEMES]
+        : (mode === 'figures' ? [...FIGURES_THEMES] : [...CULTURE_THEMES]));
   if (allowed.includes(t)) return t;
   const match = allowed.find(k => k.startsWith(t) || t.startsWith(k));
   return match || allowed[0];
@@ -6775,6 +7285,32 @@ function parseAndAddCards() {
   const themeRaw = document.getElementById('ed-theme').value;
   const theme = guessTheme(edMode, themeRaw);
   const editKey = document.getElementById('ed-edit-key').value;
+
+  if (edMode === 'figures') {
+    const name = document.getElementById('ed-fig-name').value.trim();
+    const years = document.getElementById('ed-fig-years').value.trim();
+    const role = document.getElementById('ed-fig-role').value.trim() || 'Государственный деятель';
+    const facts = document.getElementById('ed-fig-facts').value.trim();
+    if (!name || !years || !facts) {
+      showEdStatus(statusEl, 'err', 'Укажите имя деятеля, годы и ключевые факты.');
+      return;
+    }
+    if (editKey) _removeCustomByKey(editKey);
+    CUSTOM_FIGURES[epoch].push({
+      id: `fig_custom_${Date.now()}`,
+      epoch,
+      theme,
+      name,
+      years,
+      role,
+      facts
+    });
+    saveCustomCards();
+    rebuildAndRefresh();
+    cancelEditCard();
+    showEdStatus(statusEl, 'ok', editKey ? 'Деятель обновлён!' : 'Деятель сохранён в базу!');
+    return;
+  }
 
   if (edMode === 'culture') {
     const title = document.getElementById('ed-cult-title').value.trim();
@@ -6860,7 +7396,8 @@ function parseAndAddCards() {
 function cancelEditCard() {
   document.getElementById('ed-edit-key').value = '';
   document.getElementById('ed-bulk').value = '';
-  ['ed-cult-title','ed-cult-year','ed-cult-author','ed-cult-ruler','ed-cult-lore'].forEach(id => {
+  ['ed-cult-title','ed-cult-year','ed-cult-author','ed-cult-ruler','ed-cult-lore',
+   'ed-fig-name','ed-fig-years','ed-fig-role','ed-fig-facts'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -6878,6 +7415,7 @@ function renderMyCards() {
   epochs.forEach(ep => {
     CUSTOM_DATES[ep].forEach((c, i) => items.push({ type:'dates', epoch:ep, idx:i, ...c }));
     CUSTOM_TERMS[ep].forEach((c, i) => items.push({ type:'terms', epoch:ep, idx:i, ...c }));
+    (CUSTOM_FIGURES[ep] || []).forEach((c, i) => items.push({ type:'figures', epoch:ep, idx:i, ...c }));
   });
   CUSTOM_CULTURE.forEach((c, i) => items.push({ type:'culture', idx:i, ...c }));
 
@@ -6889,10 +7427,22 @@ function renderMyCards() {
   listEl.innerHTML = items.map(item => {
     const keyStr = item.type === 'dates'
       ? `${item.sortYear}::${item.event}::${item.epoch}`
-      : (item.type === 'terms' ? `term::${item.term}::${item.epoch}` : `cult::${item.id}`);
+      : (item.type === 'terms'
+          ? `term::${item.term}::${item.epoch}`
+          : (item.type === 'figures'
+              ? `fig::${item.id || item.name}::${item.epoch}`
+              : `cult::${item.id}`));
     const keyEnc = encodeURIComponent(keyStr);
-    const left  = item.type === 'dates' ? item.year  : (item.type === 'terms' ? item.term : `🏛 ${item.title}`);
-    const right = item.type === 'dates' ? item.event : (item.type === 'terms' ? item.def  : `${item.year} · ${item.ruler}`);
+    const left  = item.type === 'dates'
+      ? item.year
+      : (item.type === 'terms'
+          ? item.term
+          : (item.type === 'figures' ? `👑 ${item.name}` : `🏛 ${item.title}`));
+    const right = item.type === 'dates'
+      ? item.event
+      : (item.type === 'terms'
+          ? item.def
+          : (item.type === 'figures' ? `${item.years} — ${item.facts}` : `${item.year} · ${item.ruler}`));
     const meta = `${EPOCH_NAMES[item.epoch] || item.epoch} · ${THEME_NAMES[item.theme] || item.theme}`;
     return `<div class="ed-card-item">
       <div class="ed-ci-body">
@@ -6920,6 +7470,11 @@ function _removeCustomByKey(keyEncoded) {
   } else if (key.startsWith('term::')) {
     const [, term, epoch] = key.split('::');
     if (CUSTOM_TERMS[epoch]) CUSTOM_TERMS[epoch] = CUSTOM_TERMS[epoch].filter(c => c.term !== term);
+  } else if (key.startsWith('fig::')) {
+    const [, idOrName, epoch] = key.split('::');
+    if (CUSTOM_FIGURES[epoch]) {
+      CUSTOM_FIGURES[epoch] = CUSTOM_FIGURES[epoch].filter(c => (c.id || c.name) !== idOrName);
+    }
   } else {
     const [sortYearStr, event, epoch] = key.split('::');
     if (CUSTOM_DATES[epoch]) CUSTOM_DATES[epoch] = CUSTOM_DATES[epoch].filter(c => !(String(c.sortYear) === sortYearStr && c.event === event));
@@ -6955,6 +7510,22 @@ function startEditCard(keyEncoded) {
     document.getElementById('ed-cancel-edit-btn').style.display = '';
     return;
   }
+  if (key.startsWith('fig::')) {
+    const [, idOrName, epoch] = key.split('::');
+    const item = (CUSTOM_FIGURES[epoch] || []).find(c => (c.id || c.name) === idOrName);
+    if (!item) return;
+    switchEditorTab('add');
+    setEdMode('figures');
+    document.getElementById('ed-epoch').value = item.epoch || epoch;
+    document.getElementById('ed-theme').value = item.theme || 'rurik';
+    document.getElementById('ed-fig-name').value = item.name || '';
+    document.getElementById('ed-fig-years').value = item.years || '';
+    document.getElementById('ed-fig-role').value = item.role || '';
+    document.getElementById('ed-fig-facts').value = item.facts || '';
+    document.getElementById('ed-edit-key').value = keyEncoded;
+    document.getElementById('ed-cancel-edit-btn').style.display = '';
+    return;
+  }
 
   let found = null;
   if (key.startsWith('term::')) {
@@ -6984,6 +7555,7 @@ function clearAllCustomCards() {
   if (!confirm('Удалить все пользовательские карточки?')) return;
   CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
   CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+  CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
   CUSTOM_CULTURE = [];
   saveCustomCards();
   rebuildAndRefresh();
@@ -7143,6 +7715,7 @@ initCultureGalleryFromStorage();
           <button class="ed-seg-btn active" data-edmode="dates"   onclick="setEdMode('dates')">📅 Даты</button>
           <button class="ed-seg-btn"        data-edmode="terms"   onclick="setEdMode('terms')">📖 Термины</button>
           <button class="ed-seg-btn"        data-edmode="culture" onclick="setEdMode('culture')">🏛 Культура</button>
+          <button class="ed-seg-btn"        data-edmode="figures" onclick="setEdMode('figures')">👑 Деятели</button>
         </div>
       </div>
 
@@ -7210,6 +7783,28 @@ initCultureGalleryFromStorage();
         <div class="ed-field">
           <div class="ed-label">Исторический лор / описание</div>
           <textarea id="ed-cult-lore" class="ed-textarea" style="min-height:76px" placeholder="Краткая история создания, архитектурные особенности и значение..."></textarea>
+        </div>
+      </div>
+
+      <!-- Figures dedicated fields -->
+      <div id="ed-figures-fields" style="display:none;flex-direction:column;gap:10px">
+        <div class="ed-row">
+          <div class="ed-field">
+            <div class="ed-label">Имя и титул деятеля *</div>
+            <input id="ed-fig-name" class="ed-input" placeholder="напр. Князь Олег Вещий">
+          </div>
+          <div class="ed-field">
+            <div class="ed-label">Годы правления / жизни *</div>
+            <input id="ed-fig-years" class="ed-input" placeholder="напр. 879–912 гг.">
+          </div>
+        </div>
+        <div class="ed-field">
+          <div class="ed-label">Роль / статус</div>
+          <input id="ed-fig-role" class="ed-input" placeholder="напр. Великий князь Киевский, объединитель Руси">
+        </div>
+        <div class="ed-field">
+          <div class="ed-label">Ключевые реформы, походы и факты *</div>
+          <textarea id="ed-fig-facts" class="ed-textarea" style="min-height:80px" placeholder="Главные достижения, внешняя и внутренняя политика, реформы..."></textarea>
         </div>
       </div>
 
