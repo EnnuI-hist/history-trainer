@@ -180,126 +180,72 @@ header p {
 /* =========================================================
    DAILY GOAL & STREAK (ОГОНЁК)
    ========================================================= */
+.top-streak-pill,
 .daily-goal-pill {
-  position: relative;
+  height: 36px;
+  padding: 0 13px;
+  border-radius: 99px;
+  background: var(--glass2);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: .8rem;
+  font-weight: 500;
+  letter-spacing: .02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   cursor: pointer;
   user-select: none;
-  gap: 6px;
+  box-shadow: var(--shadow-gold);
+  transition: all .22s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
+.top-streak-pill:hover,
 .daily-goal-pill:hover {
   border-color: var(--border2);
-  box-shadow: 0 0 16px var(--gold-glow);
+  color: var(--text);
+  box-shadow: 0 0 14px var(--gold-glow);
   transform: translateY(-1px);
+}
+.top-streak-pill strong,
+.daily-goal-pill strong {
+  font-family: var(--ff-serif);
+  font-size: .95rem;
+  color: var(--text);
 }
 .streak-flame {
   font-size: 1.05rem;
   line-height: 1;
   display: inline-block;
   transition: all .35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: grayscale(1) opacity(0.42);
+  filter: grayscale(1) opacity(0.45);
 }
+
+/* Day credited golden glowing state */
+.top-streak-pill.completed-today,
+.daily-goal-pill.completed-today {
+  border-color: rgba(245, 166, 35, 0.75);
+  background: linear-gradient(135deg, rgba(32, 24, 14, 0.9), rgba(52, 34, 12, 0.88));
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35), inset 0 0 12px rgba(245, 158, 11, 0.15);
+  color: #fef3c7;
+}
+.top-streak-pill.completed-today strong,
+.daily-goal-pill.completed-today strong {
+  color: #fbbf24;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+.top-streak-pill.completed-today .streak-flame,
 .daily-goal-pill.completed-today .streak-flame {
   filter: none;
-  text-shadow: 0 0 10px rgba(245, 158, 11, 0.9), 0 0 18px rgba(239, 68, 68, 0.7);
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.95), 0 0 18px rgba(239, 68, 68, 0.75);
   animation: flamePulse 2.2s ease-in-out infinite;
 }
 @keyframes flamePulse {
   0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px #f59e0b); }
   50% { transform: scale(1.18); filter: drop-shadow(0 0 10px #f59e0b) drop-shadow(0 0 16px #ef4444); }
-}
-.daily-goal-pill.completed-today {
-  border-color: rgba(245, 166, 35, 0.65);
-  background: linear-gradient(135deg, rgba(20, 28, 52, 0.85), rgba(45, 30, 15, 0.85));
-  box-shadow: 0 0 18px rgba(245, 158, 11, 0.22);
-}
-.pill-divider {
-  color: var(--border2);
-  opacity: 0.55;
-  margin: 0 1px;
-}
-.goal-label {
-  color: var(--text2);
-}
-.goal-mini-bar {
-  display: inline-block;
-  width: 36px;
-  height: 5px;
-  border-radius: 99px;
-  background: rgba(255, 255, 255, 0.12);
-  overflow: hidden;
-  margin-left: 2px;
-  vertical-align: middle;
-}
-.goal-mini-fill {
-  display: block;
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--gold), var(--accent2));
-  border-radius: 99px;
-  transition: width .35s ease;
-}
-.daily-goal-pill.completed-today .goal-mini-fill {
-  background: linear-gradient(90deg, #f59e0b, #ef4444);
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
-}
-
-/* Dropdown popover */
-.goal-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--glass2);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  box-shadow: var(--shadow-gold), 0 8px 32px rgba(0,0,0,.7);
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 1010;
-  min-width: 175px;
-  animation: fadeUp .2s ease;
-}
-.goal-dropdown.open {
-  display: flex;
-}
-.goal-dd-title {
-  font-size: .72rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  text-align: center;
-}
-.goal-dd-options {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-}
-.goal-dd-btn {
-  padding: 4px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: rgba(10, 15, 30, 0.6);
-  color: var(--text2);
-  font-family: var(--ff-sans);
-  font-size: .8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .18s;
-}
-.goal-dd-btn:hover {
-  border-color: var(--gold);
-  color: var(--gold2);
-  transform: translateY(-1px);
-}
-.goal-dd-btn.active {
-  background: var(--gold-glow);
-  border-color: var(--gold);
-  color: var(--gold2);
-  box-shadow: 0 0 10px var(--gold-glow);
 }
 
 /* =========================================================
@@ -1888,7 +1834,9 @@ body.zen-mode #empty-placeholder,
 body.zen-mode #sound-toggle-btn,
 body.zen-mode #editor-toggle-btn,
 body.zen-mode #bg-toggle-btn,
-body.zen-mode #bg-panel {
+body.zen-mode #bg-panel,
+body.zen-mode #daily-goal-pill,
+body.zen-mode .top-streak-pill {
   display: none !important;
 }
 
@@ -1909,6 +1857,8 @@ body.zen-mode .section.active {
 @media (max-width: 768px) {
   #sound-toggle-btn { width: 34px; height: 34px; font-size: .92rem; }
   #editor-toggle-btn { width: 34px; height: 34px; font-size: .92rem; }
+  .top-streak-pill, #daily-goal-pill { height: 34px; padding: 0 9px; font-size: .75rem; }
+  .top-streak-pill strong, #daily-goal-pill strong { font-size: .88rem; }
   #editor-panel { padding: 18px 14px; max-height: 95vh; }
   .ed-title { font-size: 1.1rem; }
   .ed-row { flex-direction: column; }
@@ -2811,6 +2761,10 @@ body.zen-mode .section.active {
 <!-- BG settings panel -->
 <div id="bg-panel-wrap">
   <div class="top-btns">
+    <div class="top-streak-pill" id="daily-goal-pill" onclick="cycleDailyGoal(event)" title="Ударный режим (клик для смены цели: 15 → 25 → 50 → 100)">
+      <span class="streak-flame" id="streak-flame-icon">🔥</span>
+      <strong id="streak-days-count">0</strong>&nbsp;дн. · <span id="goal-progress-text">0/25</span>
+    </div>
     <button id="sound-toggle-btn" onclick="toggleSound()" title="Звуки ASMR (вкл/выкл)" aria-label="Звуковые эффекты">🔊</button>
     <button id="zen-toggle-btn" onclick="toggleZenMode()" title="Режим фокуса / Дзен (F)" aria-label="Режим фокуса"><span class="zen-icon">🧘</span><span class="zen-label">Фокус</span></button>
     <button id="editor-toggle-btn" onclick="openEditor()" title="Редактор карточек">➕</button>
@@ -2856,22 +2810,6 @@ body.zen-mode .section.active {
     <div class="score-pill"><span class="dot dot-wrong"></span>Ошибки:&nbsp;<strong id="s-wrong">0</strong></div>
     <div class="score-pill"><span class="dot dot-streak"></span>Серия:&nbsp;<strong id="s-streak">0</strong></div>
     <div class="score-pill"><span class="dot dot-total"></span>Очки:&nbsp;<strong id="s-total">0</strong></div>
-    <div class="score-pill daily-goal-pill" id="daily-goal-pill" onclick="toggleDailyGoalMenu(event)" title="Дневная цель (нажмите для выбора порога)">
-      <span class="streak-flame" id="streak-flame-icon">🔥</span>
-      <strong id="streak-days-count">0</strong>&nbsp;дн.
-      <span class="pill-divider">·</span>
-      <span class="goal-label">Сегодня:</span>&nbsp;<strong id="goal-progress-text">0 / 25</strong>
-      <span class="goal-mini-bar"><span class="goal-mini-fill" id="goal-mini-fill"></span></span>
-      <div class="goal-dropdown" id="goal-dropdown" onclick="event.stopPropagation()">
-        <div class="goal-dd-title">Цель на день:</div>
-        <div class="goal-dd-options">
-          <button class="goal-dd-btn" data-goal="15" onclick="setDailyGoal(15, event)">15</button>
-          <button class="goal-dd-btn active" data-goal="25" onclick="setDailyGoal(25, event)">25</button>
-          <button class="goal-dd-btn" data-goal="50" onclick="setDailyGoal(50, event)">50</button>
-          <button class="goal-dd-btn" data-goal="100" onclick="setDailyGoal(100, event)">100</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Top-level navigation: Epochs -->
@@ -5361,85 +5299,76 @@ function initStreakDate() {
 }
 
 function updateStreakUI() {
-  const flameEl = document.getElementById('streak-flame-icon');
   const daysEl = document.getElementById('streak-days-count');
   const progText = document.getElementById('goal-progress-text');
-  const miniFill = document.getElementById('goal-mini-fill');
   const pillEl = document.getElementById('daily-goal-pill');
 
-  if (!flameEl || !daysEl || !progText || !miniFill || !pillEl) return;
+  if (!pillEl) return;
 
   const todayStr = getLocalDateStr();
-  const isDoneToday = (streakData.lastCompletedDate === todayStr) || (streakData.todayCount >= streakData.target);
+  const isCountedToday = (streakData.lastCompletedDate === todayStr) || ((streakData.todayCount || 0) > 0);
 
-  daysEl.textContent = streakData.streak || 0;
-  progText.textContent = `${streakData.todayCount || 0} / ${streakData.target}`;
+  if (isCountedToday && (!streakData.streak || streakData.streak <= 0)) {
+    streakData.streak = 1;
+  }
 
-  const pct = Math.min(100, Math.round(((streakData.todayCount || 0) / streakData.target) * 100));
-  miniFill.style.width = pct + '%';
+  if (daysEl) daysEl.textContent = streakData.streak || 0;
+  if (progText) progText.textContent = `${streakData.todayCount || 0}/${streakData.target || 25}`;
 
-  pillEl.classList.toggle('completed-today', isDoneToday);
-
-  // Update active state on dropdown buttons
-  document.querySelectorAll('.goal-dd-btn').forEach(btn => {
-    btn.classList.toggle('active', parseInt(btn.dataset.goal, 10) === streakData.target);
-  });
+  pillEl.classList.toggle('completed-today', Boolean(isCountedToday));
+  pillEl.title = `Ударный режим: ${streakData.streak || 0} дн. подряд\nСегодня: ${streakData.todayCount || 0}/${streakData.target || 25} ответов (клик для смены цели: 15 → 25 → 50 → 100)`;
 }
 
 function registerDailyAction() {
   initStreakDate();
+  const todayStr = getLocalDateStr();
+  const isFirstActionToday = (streakData.lastCompletedDate !== todayStr);
+
   streakData.todayCount = (streakData.todayCount || 0) + 1;
 
-  const todayStr = getLocalDateStr();
-  const wasCompleted = (streakData.lastCompletedDate === todayStr);
-  const nowCompleted = (streakData.todayCount >= streakData.target);
-
-  if (nowCompleted && !wasCompleted) {
+  if (isFirstActionToday) {
+    const diff = streakData.lastCompletedDate ? getDaysDiff(streakData.lastCompletedDate, todayStr) : 999;
+    if (diff === 1) {
+      streakData.streak = (streakData.streak || 0) + 1;
+    } else {
+      streakData.streak = 1;
+    }
     streakData.lastCompletedDate = todayStr;
-    streakData.streak = (streakData.streak || 0) + 1;
+    saveStreakLS();
+    updateStreakUI();
+    showToast(`🔥 День засчитан! Серия: ${streakData.streak} дн.`);
+  }
+
+  if (streakData.todayCount === streakData.target) {
     saveStreakLS();
     updateStreakUI();
     soundVictory();
-  } else {
+    showToast(`🎯 Дневная цель выполнена! (${streakData.target} ответов)`);
+  } else if (!isFirstActionToday) {
     saveStreakLS();
     updateStreakUI();
   }
 }
 
-function toggleDailyGoalMenu(event) {
-  event.stopPropagation();
-  const dd = document.getElementById('goal-dropdown');
-  if (dd) dd.classList.toggle('open');
+function cycleDailyGoal(event) {
+  if (event) event.stopPropagation();
+  soundClick();
+  const goals = [15, 25, 50, 100];
+  const current = streakData.target || 25;
+  const idx = goals.indexOf(current);
+  const nextTarget = (idx !== -1 && idx < goals.length - 1) ? goals[idx + 1] : goals[0];
+  streakData.target = nextTarget;
+  saveStreakLS();
+  updateStreakUI();
+  showToast(`🎯 Дневная цель: ${nextTarget} ответов`);
 }
-
-function closeDailyGoalMenu() {
-  const dd = document.getElementById('goal-dropdown');
-  if (dd) dd.classList.remove('open');
-}
-
-document.addEventListener('click', e => {
-  if (!e.target.closest('#daily-goal-pill')) {
-    closeDailyGoalMenu();
-  }
-});
 
 function setDailyGoal(val, event) {
   if (event) event.stopPropagation();
   soundClick();
   streakData.target = parseInt(val, 10) || 25;
-  const todayStr = getLocalDateStr();
-  const wasCompleted = (streakData.lastCompletedDate === todayStr);
-  const nowCompleted = (streakData.todayCount >= streakData.target);
-
-  if (nowCompleted && !wasCompleted) {
-    streakData.lastCompletedDate = todayStr;
-    streakData.streak = (streakData.streak || 0) + 1;
-    soundVictory();
-  }
-
   saveStreakLS();
   updateStreakUI();
-  closeDailyGoalMenu();
 }
 
 // =====================================================================
