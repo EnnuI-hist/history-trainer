@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="culture-db.js"></script>
 <style>
 /* =========================================================
    RESET & CSS VARS
@@ -2032,6 +2033,199 @@ body.zen-mode .section.active {
   padding: 3px 8px;
   font-size: .68rem;
 }
+
+/* Culture 5-slot angles bar */
+.cult-angles-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 10px auto 4px auto;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  width: fit-content;
+  max-width: 100%;
+  user-select: none;
+  z-index: 5;
+}
+.cult-angle-slot {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+.cult-angle-slot:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+}
+.cult-angle-slot.active {
+  border-color: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.45), inset 0 0 6px rgba(245, 158, 11, 0.3);
+}
+.cult-angle-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+.cult-angle-slot .slot-num {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fbbf24;
+  border-radius: 4px;
+  pointer-events: none;
+}
+.cult-angle-slot .slot-del-btn {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.88);
+  color: #fff;
+  border: none;
+  font-size: 10px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, transform 0.15s;
+  padding: 0;
+  z-index: 2;
+}
+.cult-angle-slot:hover .slot-del-btn {
+  opacity: 1;
+}
+.cult-angle-slot .slot-del-btn:hover {
+  background: #ef4444;
+  transform: scale(1.15);
+}
+.cult-angle-slot.slot-add {
+  border: 2px dashed rgba(245, 158, 11, 0.45);
+  color: #f59e0b;
+  font-size: 17px;
+  font-weight: 700;
+  background: rgba(245, 158, 11, 0.08);
+}
+.cult-angle-slot.slot-add:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+  color: #fbbf24;
+}
+.cult-angle-slot.slot-empty {
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.2);
+  cursor: default;
+}
+
+/* Bestiary thumbnail compact slots */
+.bst-mon-thumb-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.bst-mon-thumb-wrap .cult-angles-bar {
+  margin: 0;
+  padding: 4px 6px;
+  gap: 5px;
+}
+.bst-mon-thumb-wrap .cult-angle-slot {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+}
+.bst-mon-thumb-wrap .cult-angle-slot .slot-num {
+  font-size: 7px;
+  padding: 1px 3px;
+}
+.bst-mon-thumb-wrap .cult-angle-slot.slot-add {
+  font-size: 13px;
+}
+
+/* Lightbox nav buttons & counter */
+.lightbox-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(20, 20, 30, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10001;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.lightbox-nav-btn:hover {
+  background: rgba(245, 158, 11, 0.85);
+  color: #000;
+  border-color: #f59e0b;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+  transform: translateY(-50%) scale(1.1);
+}
+#lightbox-prev { left: 24px; }
+#lightbox-next { right: 24px; }
+
+#lightbox-counter {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.65);
+  color: #f59e0b;
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  z-index: 10001;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .cult-angle-slot {
+    width: 38px;
+    height: 38px;
+  }
+  #lightbox-prev { left: 10px; width: 40px; height: 40px; font-size: 18px; }
+  #lightbox-next { right: 10px; width: 40px; height: 40px; font-size: 18px; }
+}
 .fc-culture-front {
   display: none;
   flex-direction: column;
@@ -2794,6 +2988,7 @@ body.zen-mode .section.active {
               <button class="fc-replace-btn" id="fc-cult-replace" onclick="triggerCulturePhotoUpload(null, event)" title="Загрузить другое фото">📷 Заменить фото</button>
               <span class="fc-zoom-hint" id="fc-cult-zoom">🔍 Во весь экран</span>
             </div>
+            <div class="cult-angles-bar" id="fc-angles-bar" onclick="event.stopPropagation()"></div>
           </div>
         </div>
         <div class="card-face card-back">
@@ -2957,6 +3152,9 @@ body.zen-mode .section.active {
 
 <div id="lightbox-modal" onclick="closeLightbox(event)">
   <button id="lightbox-close" onclick="closeLightbox(event)" title="Закрыть (Esc)">✕</button>
+  <button id="lightbox-prev" class="lightbox-nav-btn" onclick="event.stopPropagation(); if(window.prevLightboxAngle) window.prevLightboxAngle();" title="Предыдущий ракурс (Стрелка влево)">◀</button>
+  <button id="lightbox-next" class="lightbox-nav-btn" onclick="event.stopPropagation(); if(window.nextLightboxAngle) window.nextLightboxAngle();" title="Следующий ракурс (Стрелка вправо)">▶</button>
+  <div id="lightbox-counter"></div>
   <img id="lightbox-img" src="" alt="Просмотр памятника" onclick="event.stopPropagation()">
   <div id="lightbox-caption" onclick="event.stopPropagation()"></div>
 </div>
@@ -3354,15 +3552,34 @@ try {
 } catch(e) {
   CUSTOM_CULTURE_IMAGES = {};
 }
+window.CUSTOM_CULTURE_IMAGES = CUSTOM_CULTURE_IMAGES;
 window._activeCultureId = null;
 window._pendingCultId = null;
+window.getCurrentMode = () => currentMode;
+window.getDisplayEvents = () => displayEvents;
+window.getCardIdx = () => cardIdx;
+window.getCurrentCard = () => (displayEvents && displayEvents[cardIdx]);
+window.getBestiarySubTab = () => bestiarySubTab;
+window.getQuizQuestion = () => quizQuestion;
+window.getInputQuestion = () => inputQuestion;
+window.getCurrentCultureId = () => getCurrentCultureId();
+window.renderCard = () => renderCard();
+window.renderBestiary = () => renderBestiary();
+window.generateQuiz = () => generateQuiz();
+window.generateInputQuestion = () => generateInputQuestion();
+window.refreshCurrentCultureView = (cultId, dataUrl) => refreshCurrentCultureView(cultId, dataUrl);
 
-function getCultureImage(item) {
-  if (!item) return '';
-  if (item.id && CUSTOM_CULTURE_IMAGES && CUSTOM_CULTURE_IMAGES[item.id]) {
-    return CUSTOM_CULTURE_IMAGES[item.id];
+function getCultureImage(item, angleIdx) {
+  if (window.getCultureImageOverride) {
+    return window.getCultureImageOverride(item, angleIdx);
   }
-  return item.image || '';
+  if (!item) return '';
+  const id = typeof item === 'string' ? item : item.id;
+  if (id && CUSTOM_CULTURE_IMAGES && CUSTOM_CULTURE_IMAGES[id]) {
+    const val = CUSTOM_CULTURE_IMAGES[id];
+    return Array.isArray(val) ? (val[0] || '') : val;
+  }
+  return (item && item.image) || '';
 }
 
 const EPOCH_NAMES = {
@@ -3732,7 +3949,14 @@ function renderCard(){
     document.getElementById('fc-cult-author').textContent = e.author || 'Неизвестен';
     document.getElementById('fc-cult-ruler').textContent = e.ruler || '—';
     document.getElementById('fc-cult-lore').textContent = e.lore || '';
-  } else if(currentMode === 'terms') {
+    if (window.renderCardAnglesBar) {
+      window.renderCardAnglesBar(e.id);
+    }
+  } else {
+    const fcBar = document.getElementById('fc-angles-bar');
+    if (fcBar) fcBar.style.display = 'none';
+  }
+  if (currentMode === 'terms') {
     if(flipMode) {
       // Front: DEF, Back: TERM
       document.getElementById('fc-front-title').textContent = 'Определение';
@@ -5308,7 +5532,10 @@ initCultureImagesFromStorage();
 // =====================================================================
 //  LIGHTBOX (ПОЛНОЭКРАННЫЙ ПРОСМОТР ФОТО ПАМЯТНИКОВ)
 // =====================================================================
-function openLightbox(src, title) {
+function openLightbox(src, title, cultId = null, angleIdx = 0) {
+  if (window.openCultureLightbox) {
+    return window.openCultureLightbox(src, title, cultId, angleIdx);
+  }
   if (!src) return;
   soundClick();
   const modal = document.getElementById('lightbox-modal');
@@ -5323,7 +5550,7 @@ function openLightboxFromCard(event) {
   const e = displayEvents[cardIdx];
   const src = getCultureImage(e);
   if (src) {
-    openLightbox(src, `${e.title} (${e.year})`);
+    openLightbox(src, `${e.title} (${e.year})`, e.id);
   }
 }
 
@@ -5454,14 +5681,14 @@ function renderBestiary() {
       if (cultImg) {
         const safeImg = escHtml(cultImg);
         thumbHtml = `
-          <div class="bst-mon-thumb" onclick="openLightbox('${safeImg}', '${safeTitle}')" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Нажмите для увеличения">
+          <div class="bst-mon-thumb" onclick="openLightbox('${safeImg}', '${safeTitle}', '${escHtml(e.id)}')" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'; window.activeCultureMonumentId='${escHtml(e.id)}';" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Нажмите для увеличения">
             <img src="${safeImg}" alt="${escHtml(e.title)}">
             <button class="fc-replace-btn" onclick="triggerCulturePhotoUpload('${escHtml(e.id)}', event)" title="Заменить фото">📷 Заменить</button>
             <span class="fc-zoom-hint">🔍</span>
           </div>`;
       } else {
         thumbHtml = `
-          <div class="bst-mon-thumb" onclick="triggerCulturePhotoUpload('${escHtml(e.id)}', event)" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Загрузить фото памятника">
+          <div class="bst-mon-thumb" onclick="triggerCulturePhotoUpload('${escHtml(e.id)}', event)" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'; window.activeCultureMonumentId='${escHtml(e.id)}';" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Загрузить фото памятника">
             <div class="cult-upload-slot">
               <div class="cult-slot-icon">📷</div>
               <div class="cult-slot-title">Загрузить фото</div>
@@ -5470,8 +5697,13 @@ function renderBestiary() {
           </div>`;
       }
 
-      return `<div class="bst-mon-card">
-        ${thumbHtml}
+      const anglesBarHtml = window.createAnglesBarHtml ? window.createAnglesBarHtml(e.id, 'compact') : '';
+
+      return `<div class="bst-mon-card" data-mon-id="${escHtml(e.id)}">
+        <div class="bst-mon-thumb-wrap">
+          ${thumbHtml}
+          ${anglesBarHtml}
+        </div>
         <div class="bst-mon-body">
           <div class="bst-tl-top" style="margin-bottom:0">
             <div class="bst-mon-title">${escHtml(e.title)}</div>
@@ -5489,6 +5721,9 @@ function renderBestiary() {
         </div>
       </div>`;
     }).join('')}</div>`;
+    if (window.onBestiaryRendered) {
+      try { window.onBestiaryRendered(); } catch(err) {}
+    }
   }
 }
 
@@ -5497,11 +5732,14 @@ function renderBestiary() {
 // =====================================================================
 const LS_CUSTOM_KEY = 'rus-trainer-custom-v1';
 const IDB_CULT_DB = 'RusHistoryTrainerDB';
-const IDB_CULT_STORE = 'cultureImages';
-const IDB_CULT_VER = 1;
+const IDB_CULT_STORE = 'cultureGallery';
+const IDB_CULT_VER = 2;
 
 let _cultIdbPromise = null;
 function getCultureIDB() {
+  if (window.getCultureIDB) {
+    return window.getCultureIDB();
+  }
   if (!_cultIdbPromise) {
     _cultIdbPromise = new Promise((resolve, reject) => {
       if (!window.indexedDB) {
@@ -5512,6 +5750,9 @@ function getCultureIDB() {
         const db = e.target.result;
         if (!db.objectStoreNames.contains(IDB_CULT_STORE)) {
           db.createObjectStore(IDB_CULT_STORE);
+        }
+        if (!db.objectStoreNames.contains('cultureImages')) {
+          db.createObjectStore('cultureImages');
         }
       };
       req.onsuccess = function() {
@@ -5527,6 +5768,9 @@ function getCultureIDB() {
 }
 
 async function idbSaveCultureImage(cultId, dataUrl) {
+  if (window.saveCultureAngle) {
+    return await window.saveCultureAngle(cultId, dataUrl);
+  }
   try {
     const db = await getCultureIDB();
     return new Promise((resolve, reject) => {
@@ -5544,6 +5788,9 @@ async function idbSaveCultureImage(cultId, dataUrl) {
 }
 
 async function idbGetAllCultureImages() {
+  if (window.idbGetAllCultureGallery) {
+    return await window.idbGetAllCultureGallery();
+  }
   try {
     const db = await getCultureIDB();
     return new Promise((resolve, reject) => {
@@ -5613,6 +5860,9 @@ function showToast(msg, icon = '✓') {
 }
 
 async function initCultureImagesFromStorage() {
+  if (window.initCultureGalleryFromDB) {
+    return await window.initCultureGalleryFromDB();
+  }
   // 1. Synchronously ensure localStorage data is present
   loadCultureImages();
 
@@ -5656,7 +5906,7 @@ function getCurrentCultureId() {
   return window._pendingCultId || window._activeCultureId || null;
 }
 
-function compressImageFile(file, maxDim = 1200, quality = 0.82) {
+function compressImageFile(file, maxDim = 900, quality = 0.80) {
   return new Promise((resolve, reject) => {
     if (!file || !(file instanceof Blob)) {
       return reject(new Error('Не изображение'));
@@ -5698,7 +5948,10 @@ function compressImageFile(file, maxDim = 1200, quality = 0.82) {
   });
 }
 
-function triggerCulturePhotoUpload(cultId, event) {
+function triggerCulturePhotoUpload(cultId, event, targetSlotIdx = null) {
+  if (window.triggerCulturePhotoUploadOverride) {
+    return window.triggerCulturePhotoUploadOverride(cultId, event, targetSlotIdx);
+  }
   if (event) {
     event.stopPropagation();
     event.preventDefault();
@@ -5717,6 +5970,9 @@ function triggerCulturePhotoUpload(cultId, event) {
 }
 
 async function handleQuickCultUpload(inputEl) {
+  if (window.handleQuickCultUploadOverride) {
+    return await window.handleQuickCultUploadOverride(inputEl);
+  }
   const file = inputEl && inputEl.files && inputEl.files[0];
   const cultId = window._pendingCultId || getCurrentCultureId();
   if (!file || !cultId) {
@@ -5724,7 +5980,7 @@ async function handleQuickCultUpload(inputEl) {
     return;
   }
   try {
-    const dataUrl = await compressImageFile(file, 1200, 0.82);
+    const dataUrl = await compressImageFile(file, 900, 0.80);
     await saveAndApplyCultureImage(cultId, dataUrl);
   } catch (err) {
     console.error('Ошибка загрузки фото культуры:', err);
@@ -5735,7 +5991,10 @@ async function handleQuickCultUpload(inputEl) {
   }
 }
 
-async function saveAndApplyCultureImage(cultId, dataUrl) {
+async function saveAndApplyCultureImage(cultId, dataUrl, slotIdx = null) {
+  if (window.saveCultureAngle) {
+    return await window.saveCultureAngle(cultId, dataUrl, slotIdx);
+  }
   if (!cultId || !dataUrl) return;
   CUSTOM_CULTURE_IMAGES[cultId] = dataUrl;
 
@@ -5752,7 +6011,7 @@ async function saveAndApplyCultureImage(cultId, dataUrl) {
 
   // 3. Visual toast notification & audio confirmation
   soundCorrect();
-  showToast('✓ Фото сохранено в памяти браузера');
+  showToast('✓ Фото сохранено');
 
   // 4. Instant view refresh
   refreshCurrentCultureView(cultId, dataUrl);
@@ -5822,6 +6081,9 @@ function updateInputCultureImage(cultId, dataUrl) {
 }
 
 function handleCultureSlotClick(event, slotType) {
+  if (window.handleCultureSlotClickOverride) {
+    return window.handleCultureSlotClickOverride(event, slotType);
+  }
   if (event) {
     event.stopPropagation();
   }
@@ -5848,7 +6110,7 @@ function handleCultureSlotClick(event, slotType) {
   }
 
   if (imgSrc) {
-    openLightbox(imgSrc, title);
+    openLightbox(imgSrc, title, cultId);
   } else if (cultId) {
     triggerCulturePhotoUpload(cultId, event);
   }
@@ -5867,6 +6129,9 @@ function handleCultDragLeave(event) {
 }
 
 async function handleCultDrop(event, cultId) {
+  if (window.handleCultDrop) {
+    return await window.handleCultDrop(event, cultId);
+  }
   event.preventDefault();
   event.stopPropagation();
   event.currentTarget.classList.remove('drag-hover');
@@ -5879,7 +6144,7 @@ async function handleCultDrop(event, cultId) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 1200, 0.82);
+    const dataUrl = await compressImageFile(file, 900, 0.80);
     await saveAndApplyCultureImage(targetId, dataUrl);
   } catch(err) {
     console.error('Ошибка Drag & Drop изображения:', err);
@@ -5888,6 +6153,9 @@ async function handleCultDrop(event, cultId) {
 }
 
 async function handleCultureSlotDrop(event, slotType) {
+  if (window.handleCultureSlotDrop) {
+    return await window.handleCultureSlotDrop(event, slotType);
+  }
   event.preventDefault();
   event.stopPropagation();
   event.currentTarget.classList.remove('drag-hover');
@@ -5909,7 +6177,7 @@ async function handleCultureSlotDrop(event, slotType) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 1200, 0.82);
+    const dataUrl = await compressImageFile(file, 900, 0.80);
     await saveAndApplyCultureImage(cultId, dataUrl);
   } catch(err) {
     console.error('Ошибка Drag & Drop изображения:', err);
@@ -6338,6 +6606,9 @@ function clearAllCustomCards() {
 }
 
 async function exportBackup() {
+  if (window.exportCultureBackup) {
+    return await window.exportCultureBackup();
+  }
   const statusEl = document.getElementById('ed-export-status');
   let allCultImages = { ...CUSTOM_CULTURE_IMAGES };
   try {
@@ -6364,6 +6635,9 @@ async function exportBackup() {
 }
 
 function importBackup(event) {
+  if (window.importCultureBackup) {
+    return window.importCultureBackup(event);
+  }
   const statusEl = document.getElementById('ed-export-status');
   const file = event.target.files[0];
   if (!file) return;
@@ -6436,7 +6710,7 @@ document.addEventListener('paste', async function(e) {
 
   e.preventDefault();
   try {
-    const dataUrl = await compressImageFile(imageFile, 1200, 0.82);
+    const dataUrl = await compressImageFile(imageFile, 900, 0.80);
     await saveAndApplyCultureImage(targetId, dataUrl);
   } catch(err) {
     console.error('Ошибка вставки фото культуры:', err);
@@ -6586,7 +6860,5 @@ if (document.readyState === 'loading') {
 </div>
 
 <div id="app-toast"><span class="toast-icon">✓</span><span id="toast-text"></span></div>
-
-<script src="culture-db.js"></script>
 </body>
 </html>
