@@ -3877,7 +3877,7 @@ function renderCard(){
     if (activeCultureAngle >= gallery.length) {
       activeCultureAngle = Math.max(0, gallery.length - 1);
     }
-    const cultImg = gallery[activeCultureAngle] || gallery[0] || e.image || '';
+    const cultImg = getCultureImage(e, activeCultureAngle);
     const imgEl = document.getElementById('fc-cult-img');
     const placeholderEl = document.getElementById('fc-cult-placeholder');
     const replaceBtn = document.getElementById('fc-cult-replace');
@@ -4136,9 +4136,9 @@ function generateQuiz(){
     if (gallery.length > 0) {
       const randomIdx = Math.floor(Math.random() * gallery.length);
       target._quizAngle = randomIdx;
-      cultImg = gallery[randomIdx];
+      cultImg = getCultureImage(target, randomIdx);
     } else {
-      cultImg = target.image || '';
+      cultImg = getCultureImage(target);
     }
     if (qzMedia) {
       qzMedia.classList.add('show');
@@ -4616,9 +4616,9 @@ function generateInputQuestion() {
     if (gallery.length > 0) {
       const randomIdx = Math.floor(Math.random() * gallery.length);
       target._inpAngle = randomIdx;
-      cultImg = gallery[randomIdx];
+      cultImg = getCultureImage(target, randomIdx);
     } else {
-      cultImg = target.image || '';
+      cultImg = getCultureImage(target);
     }
     if (inpMedia) {
       inpMedia.classList.add('show');
@@ -5499,7 +5499,6 @@ applyBgState();
 updateSoundUI();
 loadStreakLS();
 
-initCultureGalleryFromStorage();
 applyEpoch('all');
 initCardSwipe();
 document.getElementById('learned-count').textContent = learnedKeys.size;
@@ -5718,7 +5717,7 @@ function renderBestiary() {
       const safeTitle = escHtml(`${e.title} (${e.year})`);
       const bstAngle = _bestiaryAngles[e.id] || 0;
       const gallery = getCultureGallery(e);
-      const cultImg = gallery[bstAngle] || gallery[0] || e.image || '';
+      const cultImg = getCultureImage(e, bstAngle);
 
       let thumbHtml = '';
       if (cultImg) {
@@ -5794,8 +5793,10 @@ function showToast(msg, isError = false) {
   }, 2800);
 }
 
+let _cultureDbPromise = null;
 function openCultureDB() {
-  return new Promise((resolve, reject) => {
+  if (_cultureDbPromise) return _cultureDbPromise;
+  _cultureDbPromise = new Promise((resolve, reject) => {
     if (!window.indexedDB) {
       const err = new Error('IndexedDB не поддерживается вашим браузером');
       console.error(err);
@@ -5809,14 +5810,24 @@ function openCultureDB() {
       }
     };
     req.onsuccess = (e) => {
-      resolve(e.target.result);
+      const db = e.target.result;
+      db.onversionchange = () => {
+        try { db.close(); } catch(err) {}
+        _cultureDbPromise = null;
+      };
+      resolve(db);
     };
     req.onerror = (e) => {
+      _cultureDbPromise = null;
       const err = e.target?.error || new Error('Ошибка открытия базы EnnuiCultureGalleryDB');
       console.error('IndexedDB open error:', err);
       reject(err);
     };
+    req.onblocked = () => {
+      console.warn('IndexedDB open blocked');
+    };
   });
+  return _cultureDbPromise;
 }
 
 function idbSaveCultureGallery(cultId, urlsArray) {
@@ -5888,8 +5899,11 @@ function idbGetAllCultureGallery() {
         req.onsuccess = () => {
           const res = {};
           (req.result || []).forEach(item => {
-            if (item && item.id && Array.isArray(item.images)) {
+            if (!item) return;
+            if (item.id && Array.isArray(item.images)) {
               res[String(item.id)] = item.images.filter(Boolean).slice(0, 3);
+            } else if (item.id && typeof item.image === 'string') {
+              res[String(item.id)] = [item.image];
             }
           });
           resolve(res);
@@ -5905,8 +5919,13 @@ function idbGetAllCultureGallery() {
           const cursor = e.target.result;
           if (cursor) {
             const item = cursor.value;
+            const key = cursor.key || item?.id;
             if (item && item.id && Array.isArray(item.images)) {
               res[String(item.id)] = item.images.filter(Boolean).slice(0, 3);
+            } else if (item && Array.isArray(item) && key) {
+              res[String(key)] = item.filter(Boolean).slice(0, 3);
+            } else if (item && typeof item === 'string' && key) {
+              res[String(key)] = [item];
             }
             cursor.continue();
           } else {
@@ -5923,6 +5942,142 @@ function idbGetAllCultureGallery() {
       resolve({});
     }
   });
+}
+
+function getCultureGallery(item) {
+  if (!item) return [];
+  let id = null;
+  if (typeof item === 'string' || typeof item === 'number') {
+    id = String(item);
+  } else if (typeof item === 'object') {
+    id = item.id || item.cultId || item.key;
+  }
+  if (id) {
+    const strId = String(id);
+    const customList = CUSTOM_CULTURE_GALLERY[strId] || CUSTOM_CULTURE_GALLERY[id];
+    if (Array.isArray(customList)) {
+      const valid = customList.filter(Boolean);
+      if (valid.length > 0) return valid;
+    }
+    const single = CUSTOM_CULTURE_IMAGES[strId] || CUSTOM_CULTURE_IMAGES[id];
+    if (single) return [single];
+  }
+  if (typeof item === 'object' && item && item.image) {
+    return [item.image];
+  }
+  return [];
+}
+
+function getCultureImage(item, angleIdx = null) {
+  if (!item) return '';
+  const gallery = getCultureGallery(item);
+  if (!gallery.length) {
+    return (typeof item === 'object' && item && item.image) ? item.image : '';
+  }
+  if (angleIdx === null || angleIdx === undefined) {
+    const idx = Math.min(Math.max(0, activeCultureAngle || 0), gallery.length - 1);
+    return gallery[idx] || gallery[0] || '';
+  }
+  const idx = Math.min(Math.max(0, angleIdx), gallery.length - 1);
+  return gallery[idx] || gallery[0] || '';
+}
+
+function getCultureImages(item) {
+  return getCultureGallery(item);
+}
+
+function getCultureImageOverride(item, angleIdx = null) {
+  return getCultureImage(item, angleIdx);
+}
+
+// Aliases for backwards compatibility
+function loadCultureImages() {
+  return initCultureGalleryFromStorage();
+}
+function initCultureImagesFromStorage() {
+  return initCultureGalleryFromStorage();
+}
+
+function updateActiveCultureDom() {
+  let targetMon = null;
+  if (currentMode === 'culture' && displayEvents && displayEvents[cardIdx]) {
+    targetMon = displayEvents[cardIdx];
+  } else if (window._activeCultureId && typeof DATA_CULTURE !== 'undefined') {
+    targetMon = DATA_CULTURE.find(c => c.id === window._activeCultureId);
+  }
+  if (!targetMon && typeof DATA_CULTURE !== 'undefined' && DATA_CULTURE.length > 0) {
+    targetMon = DATA_CULTURE[0];
+  }
+
+  // 1. #fc-cult-img and controls
+  if (targetMon) {
+    const gallery = getCultureGallery(targetMon);
+    const angle = Math.min(Math.max(0, activeCultureAngle || 0), Math.max(0, gallery.length - 1));
+    const cultImg = getCultureImage(targetMon, angle);
+
+    const fcImg = document.getElementById('fc-cult-img');
+    const fcPlaceholder = document.getElementById('fc-cult-placeholder');
+    const fcReplace = document.getElementById('fc-cult-replace');
+    const fcZoom = document.getElementById('fc-cult-zoom');
+    const fcAnglesBar = document.getElementById('fc-angles-bar');
+
+    if (fcImg) {
+      if (cultImg) {
+        fcImg.src = cultImg;
+        fcImg.style.display = 'block';
+        if (fcPlaceholder) fcPlaceholder.style.display = 'none';
+        if (fcReplace) fcReplace.style.display = '';
+        if (fcZoom) fcZoom.style.display = '';
+      } else {
+        fcImg.src = '';
+        fcImg.style.display = 'none';
+        if (fcPlaceholder) fcPlaceholder.style.display = 'flex';
+        if (fcReplace) fcReplace.style.display = 'none';
+        if (fcZoom) fcZoom.style.display = 'none';
+      }
+    }
+    if (fcAnglesBar && targetMon.id) {
+      renderCultureAnglesBar(targetMon.id, fcAnglesBar);
+    }
+  }
+
+  // 2. #qz-img and controls
+  const qzTarget = quizQuestion?.target || (currentMode === 'culture' ? targetMon : null);
+  if (qzTarget) {
+    updateQuizCultureImage(qzTarget.id);
+  } else if (targetMon) {
+    const qzImg = document.getElementById('qz-img');
+    const qzPlaceholder = document.getElementById('qz-placeholder');
+    const qzReplace = document.getElementById('qz-replace');
+    const qzZoom = document.getElementById('qz-zoom');
+    const g = getCultureGallery(targetMon);
+    if (qzImg && g.length > 0) {
+      qzImg.src = g[0];
+      qzImg.style.display = 'block';
+      if (qzPlaceholder) qzPlaceholder.style.display = 'none';
+      if (qzReplace) qzReplace.style.display = '';
+      if (qzZoom) qzZoom.style.display = '';
+    }
+  }
+
+  // 3. #inp-img and controls
+  const inpTarget = inputQuestion?.target || (currentMode === 'culture' ? targetMon : null);
+  if (inpTarget) {
+    updateInputCultureImage(inpTarget.id);
+  } else if (targetMon) {
+    const inpImg = document.getElementById('inp-img');
+    const inpPlaceholder = document.getElementById('inp-placeholder');
+    const inpReplace = document.getElementById('inp-replace');
+    const inpZoom = document.getElementById('inp-zoom');
+    const g = getCultureGallery(targetMon);
+    if (inpImg && g.length > 0) {
+      inpImg.src = g[0];
+      inpImg.style.display = 'block';
+      if (inpPlaceholder) inpPlaceholder.style.display = 'none';
+      if (inpReplace) inpReplace.style.display = '';
+      if (inpZoom) inpZoom.style.display = '';
+    }
+  }
 }
 
 async function initCultureGalleryFromStorage() {
@@ -5975,55 +6130,15 @@ async function initCultureGalleryFromStorage() {
     console.error('initCultureGalleryFromStorage IDB error:', e);
   }
 
-  // 3. Immediately re-render active screen after reading
+  // 3. Log loaded galleries
+  console.log('[CultureDB] Loaded galleries:', Object.keys(CUSTOM_CULTURE_GALLERY).length);
+
+  // 4. Force re-render active cards and bestiary
   renderCard();
   renderBestiary();
 
-  if (currentMode === 'culture') {
-    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
-    if (activeTab === 'quiz') {
-      const qId = quizQuestion?.target?.id;
-      if (qId) updateQuizCultureImage(qId);
-    } else if (activeTab === 'input') {
-      const iId = inputQuestion?.target?.id;
-      if (iId) updateInputCultureImage(iId);
-    }
-  }
-}
-
-// Aliases for compatibility
-function loadCultureImages() {
-  return initCultureGalleryFromStorage();
-}
-function initCultureImagesFromStorage() {
-  return initCultureGalleryFromStorage();
-}
-
-function getCultureGallery(item) {
-  if (!item) return [];
-  const id = (typeof item === 'string') ? item : item.id;
-  if (id && CUSTOM_CULTURE_GALLERY[id] && Array.isArray(CUSTOM_CULTURE_GALLERY[id])) {
-    const list = CUSTOM_CULTURE_GALLERY[id].filter(Boolean);
-    if (list.length > 0) return list;
-  }
-  if (typeof item === 'object' && item.image) {
-    return [item.image];
-  }
-  return [];
-}
-
-function getCultureImage(item, angleIdx = null) {
-  if (!item) return '';
-  const gallery = getCultureGallery(item);
-  if (!gallery.length) {
-    return (typeof item === 'object' && item.image) ? item.image : '';
-  }
-  if (angleIdx === null || angleIdx === undefined) {
-    const idx = Math.min(Math.max(0, activeCultureAngle || 0), gallery.length - 1);
-    return gallery[idx] || gallery[0] || '';
-  }
-  const idx = Math.min(Math.max(0, angleIdx), gallery.length - 1);
-  return gallery[idx] || gallery[0] || '';
+  // 5. Force update DOM elements #fc-cult-img, #qz-img and #inp-img
+  updateActiveCultureDom();
 }
 
 function getCurrentCultureId() {
@@ -6268,11 +6383,12 @@ function refreshCurrentCultureView(cultId) {
   } else if (currentMode === 'bestiary') {
     renderBestiary();
   }
+  updateActiveCultureDom();
 }
 
 function updateQuizCultureImage(cultId) {
   const target = quizQuestion?.target;
-  if (!target || target.id !== cultId) return;
+  if (!target || (cultId && target.id !== cultId)) return;
   const gallery = getCultureGallery(target);
   const qzImg = document.getElementById('qz-img');
   const qzPlaceholder = document.getElementById('qz-placeholder');
@@ -6284,7 +6400,7 @@ function updateQuizCultureImage(cultId) {
   if (gallery.length > 0) {
     const curIdx = target._quizAngle !== undefined && target._quizAngle < gallery.length ? target._quizAngle : (gallery.length - 1);
     target._quizAngle = curIdx;
-    const cultImg = gallery[curIdx];
+    const cultImg = getCultureImage(target, curIdx);
     if (qzImg) { qzImg.src = cultImg; qzImg.style.display = 'block'; }
     if (qzPlaceholder) qzPlaceholder.style.display = 'none';
     if (qzReplace) qzReplace.style.display = '';
@@ -6295,11 +6411,15 @@ function updateQuizCultureImage(cultId) {
     if (qzReplace) qzReplace.style.display = 'none';
     if (qzZoom) qzZoom.style.display = 'none';
   }
+  const qzAnglesBar = document.getElementById('qz-angles-bar');
+  if (qzAnglesBar && target.id) {
+    renderCultureAnglesBar(target.id, qzAnglesBar);
+  }
 }
 
 function updateInputCultureImage(cultId) {
   const target = inputQuestion?.target;
-  if (!target || target.id !== cultId) return;
+  if (!target || (cultId && target.id !== cultId)) return;
   const gallery = getCultureGallery(target);
   const inpImg = document.getElementById('inp-img');
   const inpPlaceholder = document.getElementById('inp-placeholder');
@@ -6311,7 +6431,7 @@ function updateInputCultureImage(cultId) {
   if (gallery.length > 0) {
     const curIdx = target._inpAngle !== undefined && target._inpAngle < gallery.length ? target._inpAngle : (gallery.length - 1);
     target._inpAngle = curIdx;
-    const cultImg = gallery[curIdx];
+    const cultImg = getCultureImage(target, curIdx);
     if (inpImg) { inpImg.src = cultImg; inpImg.style.display = 'block'; }
     if (inpPlaceholder) inpPlaceholder.style.display = 'none';
     if (inpReplace) inpReplace.style.display = '';
@@ -6321,6 +6441,10 @@ function updateInputCultureImage(cultId) {
     if (inpPlaceholder) inpPlaceholder.style.display = 'flex';
     if (inpReplace) inpReplace.style.display = 'none';
     if (inpZoom) inpZoom.style.display = 'none';
+  }
+  const inpAnglesBar = document.getElementById('inp-angles-bar');
+  if (inpAnglesBar && target.id) {
+    renderCultureAnglesBar(target.id, inpAnglesBar);
   }
 }
 
@@ -6990,9 +7114,9 @@ document.addEventListener('paste', async function(e) {
 });
 
 // ---- Init ----
-initCultureGalleryFromStorage();
 loadCustomCards();
 updateEdThemeAutocomplete();
+initCultureGalleryFromStorage();
 </script>
 
 <!-- ============================================================
