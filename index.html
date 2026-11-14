@@ -2873,9 +2873,161 @@ body.zen-mode .section.active {
   line-height: 1.55;
 }
 
+/* Flashcard Maps */
+.card-container.map-card {
+  height: 440px;
+}
+.fc-map-front,
+.fc-map-back {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  animation: fadeIn .25s ease;
+}
+.fc-map-img-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  height: 270px;
+  background: rgba(8, 12, 22, 0.7);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .25s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+.fc-map-img-wrap:hover {
+  border-color: var(--gold);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45), 0 0 16px rgba(201, 168, 76, 0.2);
+}
+.fc-map-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #060911;
+  transition: transform .3s ease;
+}
+.fc-map-img-wrap:hover img {
+  transform: scale(1.02);
+}
+.fc-map-title {
+  font-family: var(--ff-serif);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1.25;
+  text-align: center;
+  margin-bottom: 2px;
+}
+.fc-map-period-pill {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 99px;
+  background: rgba(245, 166, 35, 0.12);
+  border: 1px solid rgba(245, 166, 35, 0.35);
+  color: var(--gold);
+  font-weight: 600;
+  font-size: .95rem;
+  letter-spacing: .02em;
+}
+.fc-map-markers-wrap {
+  width: 100%;
+  max-width: 580px;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+.fc-map-markers-title {
+  font-size: .8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.fc-map-markers-body {
+  font-size: .94rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+/* Bestiary Maps Grid */
+.bst-maps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+.bst-map-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg, rgba(20, 26, 42, 0.65));
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all .25s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+.bst-map-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.38), 0 0 16px rgba(201, 168, 76, 0.15);
+}
+.bst-map-thumb {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: #0c111d;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bst-map-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s ease;
+}
+.bst-map-thumb:hover img {
+  transform: scale(1.04);
+}
+.bst-map-thumb.bst-map-empty {
+  border-bottom: 1px dashed var(--border2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  gap: 6px;
+}
+.bst-map-info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
 @media (max-width: 768px) {
   .card-container.culture-card { height: 420px; }
   .card-container.figure-card { height: 420px; }
+  .card-container.map-card { height: 440px; }
+  .fc-map-img-wrap { height: 230px; }
+  .fc-map-title { font-size: 1.7rem; }
+  .bst-maps-grid { grid-template-columns: 1fr; }
   .fc-fig-name { font-size: 1.8rem; }
   .fc-culture-img-wrap { height: 195px; }
   .fc-cult-meta { grid-template-columns: 1fr; gap: 5px; }
@@ -2995,6 +3147,7 @@ body.zen-mode .section.active {
       <button class="mode-btn" data-mode="terms">📖 Термины</button>
       <button class="mode-btn" data-mode="culture">🏛 Культура</button>
       <button class="mode-btn" data-mode="figures">👑 Деятели</button>
+      <button class="mode-btn" data-mode="maps">🗺 Карты</button>
       <button class="mode-btn" data-mode="bestiary">📚 Бестиарий</button>
     </div>
   </div>
@@ -3077,6 +3230,25 @@ body.zen-mode .section.active {
             <div class="fc-fig-name" id="fc-fig-name"></div>
             <div class="fc-fig-years-pill" id="fc-fig-years-front"></div>
           </div>
+          <div class="fc-map-front" id="fc-map-front" style="display:none">
+            <div class="fc-map-img-wrap" id="fc-map-wrap" onclick="handleMapSlotClick(event, 'fc')" ondragover="handleMapDragOver(event)" ondragleave="handleMapDragLeave(event)" ondrop="handleMapSlotDrop(event, 'fc')" title="Историческая карта">
+              <img id="fc-map-img" src="" alt="Историческая карта">
+              <div id="fc-map-placeholder" class="cult-upload-slot">
+                <div class="cult-slot-icon">🗺</div>
+                <div class="cult-slot-title">Прикрепить фото карты</div>
+                <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
+              </div>
+              <button class="fc-replace-btn" id="fc-map-replace" onclick="triggerMapPhotoUpload(null, event)" title="Загрузить другое фото карты">📷 Заменить карту</button>
+              <span class="fc-zoom-hint" id="fc-map-zoom" onclick="openMapLightbox(null, event)">🔍 Во весь экран</span>
+            </div>
+            <div id="fc-map-front-desc" style="display:none;width:100%;flex-direction:column;align-items:center;gap:12px">
+              <div class="fc-map-period-pill" id="fc-map-front-period"></div>
+              <div class="fc-map-markers-wrap" style="max-width:540px">
+                <div class="fc-map-markers-title">📍 Ключевые маркеры и ориентиры карты:</div>
+                <div class="fc-map-markers-body" id="fc-map-front-markers"></div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="card-face card-back">
           <div class="theme-badge" id="fc-badge2"></div>
@@ -3098,6 +3270,24 @@ body.zen-mode .section.active {
             <div class="fc-fig-facts-wrap">
               <div class="fc-fig-facts-title">📜 Ключевые реформы, походы и факты для ЕГЭ и олимпиад:</div>
               <div class="fc-fig-facts-body" id="fc-fig-facts"></div>
+            </div>
+          </div>
+          <div class="fc-map-back" id="fc-map-back" style="display:none">
+            <div class="fc-map-title" id="fc-map-title"></div>
+            <div class="fc-map-period-pill" id="fc-map-period"></div>
+            <div class="fc-map-markers-wrap" id="fc-map-markers-wrap">
+              <div class="fc-map-markers-title">📍 Ключевые маркеры и ориентиры для ЕГЭ:</div>
+              <div class="fc-map-markers-body" id="fc-map-markers"></div>
+            </div>
+            <div class="fc-map-img-wrap" id="fc-map-wrap-back" style="display:none" onclick="handleMapSlotClick(event, 'fc')" ondragover="handleMapDragOver(event)" ondragleave="handleMapDragLeave(event)" ondrop="handleMapSlotDrop(event, 'fc')" title="Историческая карта">
+              <img id="fc-map-img-back" src="" alt="Историческая карта">
+              <div id="fc-map-placeholder-back" class="cult-upload-slot">
+                <div class="cult-slot-icon">🗺</div>
+                <div class="cult-slot-title">Прикрепить фото карты</div>
+                <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
+              </div>
+              <button class="fc-replace-btn" id="fc-map-replace-back" onclick="triggerMapPhotoUpload(null, event)" title="Загрузить другое фото карты">📷 Заменить карту</button>
+              <span class="fc-zoom-hint" id="fc-map-zoom-back" onclick="openMapLightbox(null, event)">🔍 Во весь экран</span>
             </div>
           </div>
         </div>
@@ -3225,6 +3415,7 @@ body.zen-mode .section.active {
         <button class="bst-subtab-btn" data-bst="terms" onclick="setBestiaryTab('terms')">📖 Глоссарий (Термины)</button>
         <button class="bst-subtab-btn" data-bst="culture" onclick="setBestiaryTab('culture')">🏛 Памятники архитектуры</button>
         <button class="bst-subtab-btn" data-bst="figures" onclick="setBestiaryTab('figures')">👑 Деятели</button>
+        <button class="bst-subtab-btn" data-bst="maps" onclick="setBestiaryTab('maps')">🗺 Исторические карты</button>
       </div>
       <div class="bst-search-bar">
         <div class="bst-search-wrap">
@@ -3245,6 +3436,7 @@ body.zen-mode .section.active {
 
 <!-- Fullscreen Lightbox Modal -->
 <input type="file" id="quick-cult-upload" accept="image/*" style="display:none" onchange="handleQuickCultUpload(this)">
+<input type="file" id="quick-map-upload" accept="image/*" style="display:none" onchange="handleQuickMapUpload(this)">
 
 <div id="lightbox-modal" onclick="closeLightbox(event)">
   <button id="lightbox-close" onclick="closeLightbox(event)" title="Закрыть (Esc)">✕</button>
@@ -3720,6 +3912,52 @@ const ALL_FIGURES = Object.entries(DATA_FIGURES).flatMap(([epoch, arr]) =>
 );
 
 // =====================================================================
+//  DATABASE: HISTORICAL MAPS (КАРТЫ)
+// =====================================================================
+const DATA_MAPS = {
+  ancient: [
+    {
+      id: "map_svyatoslav",
+      epoch: "ancient",
+      theme: "maps",
+      image: "",
+      title: "Походы князя Святослава",
+      period: "964–972 гг.",
+      markers: "Стрелки походов из Киева на Волжскую Булгарию (Булгар), разгром Хазарского каганата (Итиль, Саркел / Белая Вежа), Тмутаракань; бросок на Дунай (Переяславец на Дунае), оборона Доростола (971 г., осада византийцами Иоанна Цимисхия), гибель на Днепровских порогах от печенегов хана Кури (972 г.)."
+    }
+  ],
+  razdro: [
+    {
+      id: "map_baty",
+      epoch: "razdro",
+      theme: "maps",
+      image: "",
+      title: "Нашествие Батыя на Русь",
+      period: "1237–1240 гг.",
+      markers: "Зимний поход на Северо-Восточную Русь (1237–1238): Рязань (декабрь 1237), Коломна, Москва, Владимир (февраль 1238), битва на реке Сити (март 1238, гибель Юрия Всеволодовича), Торжок (2 недели осады), поворот от Игнач-креста (не дошли до Новгорода 100 верст), 7-недельная оборона Козельска («злой город»). Южный поход (1239–1240): Переяславль, Чернигов, падение Киева (декабрь 1240), разорение Галицко-Волынской Руси."
+    }
+  ],
+  moscow: [
+    {
+      id: "map_kulikovo",
+      epoch: "moscow",
+      theme: "maps",
+      image: "",
+      title: "Куликовская битва",
+      period: "1380 г.",
+      markers: "Слияние рек Непрядва и Дон (Куликово поле). Построение русских войск: Сторожевой полк, Передовой полк, Большой полк, полки Правой и Левой руки, Засадный полк в дубраве (Владимир Серпуховской и Дмитрий Боброк-Волынский). Маршрут войск темника Мамая, не успевшие соединиться союзники: литовский князь Ягайло и рязанский князь Олег."
+    }
+  ],
+  tsardom: [],
+  empire: [],
+  soviet: []
+};
+
+const ALL_MAPS = Object.entries(DATA_MAPS).flatMap(([epoch, arr]) =>
+  arr.map(item => ({ ...item, epoch }))
+);
+
+// =====================================================================
 //  STATE
 // =====================================================================
 let currentEpoch = 'all';
@@ -3746,6 +3984,7 @@ function saveLearnedLS() {
   localStorage.setItem(LS_KEY, JSON.stringify([...learnedKeys]));
 }
 function getEventKey(e) {
+  if (e.markers !== undefined) return `map::${e.id || e.title}`;
   if (e.role !== undefined || e.facts !== undefined) return `fig::${e.id || e.name}`;
   if (e.lore !== undefined || e.title !== undefined) return `cult::${e.id || e.title}`;
   return e.term !== undefined ? `term::${e.term}` : `${e.sortYear}::${e.event}`;
@@ -3824,9 +4063,73 @@ function getAcceptableFigureVariants(target) {
   return variants;
 }
 
+function getAcceptableMapVariants(target) {
+  const variants = new Set();
+  const rawTitle = typeof target === 'string' ? target : (target?.title || '');
+  const norm = normalizeInputTerm(rawTitle);
+  if (norm) variants.add(norm);
+
+  const stripped = norm.replace(/^(походы|поход|битва|нашествие|война|сражение|осада)\s+(князя|царя)?\s*/i, '').trim();
+  if (stripped) variants.add(stripped);
+
+  const words = norm.split(/\s+/);
+  if (words.length >= 2) {
+    variants.add(words[0]);
+    variants.add(words.slice(1).join(' '));
+  }
+
+  const mapId = (typeof target === 'object' && target) ? target.id : '';
+  if (mapId === 'map_svyatoslav' || norm.includes('святослав')) {
+    ['походы святослава', 'походы князя святослава', 'святослав', 'поход святослава', 'дунайские походы святослава'].forEach(v => variants.add(v));
+  } else if (mapId === 'map_baty' || norm.includes('баты')) {
+    ['нашествие батыя', 'нашествие батыя на русь', 'поход батыя', 'батыево нашествие', 'батыя', 'батый', 'монгольское нашествие'].forEach(v => variants.add(v));
+  } else if (mapId === 'map_kulikovo' || norm.includes('куликов')) {
+    ['куликовская битва', 'битва на куликовом поле', 'куликово', 'куликовская'].forEach(v => variants.add(v));
+  }
+
+  if (target && Array.isArray(target.aliases)) {
+    target.aliases.forEach(a => {
+      const na = normalizeInputTerm(a);
+      if (na) variants.add(na);
+    });
+  }
+
+  return variants;
+}
+
 let cultureTarget = 'title'; // 'title' | 'author' | 'ruler'
-let bestiarySubTab = 'dates'; // 'dates' | 'terms' | 'culture' | 'figures'
+let bestiarySubTab = 'dates'; // 'dates' | 'terms' | 'culture' | 'figures' | 'maps'
 let edTempCultureImage = '';
+let edTempMapImage = '';
+window._activeMapId = null;
+window._targetMapId = null;
+
+const LS_MAPS_SYNC_KEY = 'rus-trainer-maps-sync-v1';
+function _readMapsImagesSync() {
+  const result = {};
+  try {
+    const raw = localStorage.getItem(LS_MAPS_SYNC_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        for (const [k, v] of Object.entries(parsed)) {
+          if (v && typeof v === 'string') result[String(k)] = v;
+        }
+      }
+    }
+  } catch(e) {}
+  return result;
+}
+
+function _syncMapsImagesToLocalStorage() {
+  try {
+    localStorage.setItem(LS_MAPS_SYNC_KEY, JSON.stringify(CUSTOM_MAPS_IMAGES));
+  } catch(e) {
+    console.warn('localStorage maps sync warning:', e);
+  }
+}
+
+let CUSTOM_MAPS_IMAGES = _readMapsImagesSync();
 
 const LS_CULT_SYNC_KEY = 'rus-trainer-cult-gallery-sync-v1';
 const LS_CULT_GALLERY_KEY = 'rus-trainer-cult-gallery-v1';
@@ -3918,9 +4221,11 @@ const DATE_THEMES = new Set(['rurik', 'razdro', 'mongol', 'moscow', 'culture']);
 const TERM_THEMES = new Set(['soc', 'gov', 'econ', 'cult', 'mil', 'slavs']);
 const CULTURE_THEMES = new Set(['culture', 'cult', 'rurik', 'razdro', 'moscow']);
 const FIGURES_THEMES = new Set(['rurik', 'razdro', 'moscow', 'culture']);
+const MAPS_THEMES = new Set(['maps', 'all', 'rurik', 'razdro', 'mongol', 'moscow']);
 
 const THEME_NAMES = {
   all: 'Все темы',
+  maps: 'Исторические карты',
   rurik: 'Первые Рюриковичи',
   razdro: 'Раздробленность',
   mongol: 'Монгольское нашествие',
@@ -3969,6 +4274,9 @@ function addWrong(question, yourAnswer, correctAnswer){
 
 function getEpochSource(modeOverride) {
   const m = modeOverride || (currentMode === 'bestiary' ? bestiarySubTab : currentMode);
+  if (m === 'maps') {
+    return currentEpoch === 'all' ? ALL_MAPS : (DATA_MAPS[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+  }
   if (m === 'figures') {
     return currentEpoch === 'all' ? ALL_FIGURES : (DATA_FIGURES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
   }
@@ -3983,6 +4291,13 @@ function getEpochSource(modeOverride) {
 
 function updateThemeButtonsVisibility(epochItems) {
   const effMode = currentMode === 'bestiary' ? bestiarySubTab : currentMode;
+  if (effMode === 'maps') {
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.style.display = btn.dataset.theme === 'all' ? (epochItems.length > 0 ? '' : 'none') : 'none';
+    });
+    currentTheme = 'all';
+    return;
+  }
   const allowedThemes = effMode === 'figures' ? FIGURES_THEMES : (effMode === 'terms' ? TERM_THEMES : (effMode === 'culture' ? CULTURE_THEMES : DATE_THEMES));
   const presentThemes = new Set(epochItems.map(e => e.theme));
   document.querySelectorAll('.theme-btn').forEach(btn => {
@@ -4026,7 +4341,7 @@ function syncWorkspaceVisibility(epochItems) {
     document.querySelectorAll('.section').forEach(s => {
       if (s.id !== 'sec-review') s.style.display = 'none';
     });
-    const modeLabel = currentMode === 'figures' ? 'Деятели' : (currentMode === 'terms' ? 'Термины' : (currentMode === 'culture' ? 'Культура' : 'Даты'));
+    const modeLabel = currentMode === 'maps' ? 'Карты' : (currentMode === 'figures' ? 'Деятели' : (currentMode === 'terms' ? 'Термины' : (currentMode === 'culture' ? 'Культура' : 'Даты')));
     document.getElementById('ep-sub').textContent =
       `Раздел «${EPOCH_NAMES[currentEpoch]}» (${modeLabel}) пока пуст и готов к наполнению.`;
     placeholder.classList.add('show');
@@ -4063,7 +4378,9 @@ function updateFlipModeBtn() {
     return;
   }
   btn.style.display = '';
-  if (currentMode === 'figures') {
+  if (currentMode === 'maps') {
+    btn.textContent = flipMode ? '📍 Описание → Карта' : '🗺 Карта → Описание';
+  } else if (currentMode === 'figures') {
     btn.textContent = flipMode ? '📜 Факты → Деятель' : '👑 Деятель → Факты';
   } else if (currentMode === 'terms') {
     btn.textContent = flipMode ? '📝 Определение → Термин' : '📖 Термин → Определение';
@@ -4084,7 +4401,7 @@ function applyMode(mode) {
   const cardsTabBtn = document.querySelector('.tab-btn[data-tab="cards"]');
 
   if (sortTabBtn && matchTabBtn) {
-    if (mode === 'culture' || mode === 'figures') {
+    if (mode === 'culture' || mode === 'figures' || mode === 'maps') {
       sortTabBtn.style.display = 'none';
       matchTabBtn.style.display = 'none';
       if (sortTabBtn.classList.contains('active') || matchTabBtn.classList.contains('active')) {
@@ -4125,7 +4442,9 @@ function applyTheme(theme){
   const epochItems = getEpochSource();
   filteredEvents = theme === 'all' ? [...epochItems] : epochItems.filter(e => e.theme === theme);
   const effMode = currentMode === 'bestiary' ? bestiarySubTab : currentMode;
-  if (effMode === 'figures') {
+  if (effMode === 'maps') {
+    filteredEvents.sort((a,b) => (a.title || '').localeCompare(b.title || '', 'ru'));
+  } else if (effMode === 'figures') {
     filteredEvents.sort((a,b) => (a.name || '').localeCompare(b.name || '', 'ru'));
   } else if (effMode === 'terms') {
     filteredEvents.sort((a,b) => a.term.localeCompare(b.term, 'ru'));
@@ -4240,23 +4559,95 @@ function renderCard(){
   const cultBack  = document.getElementById('fc-culture-back');
   const figFront  = document.getElementById('fc-figure-front');
   const figBack   = document.getElementById('fc-figure-back');
+  const mapFront  = document.getElementById('fc-map-front');
+  const mapBack   = document.getElementById('fc-map-back');
   const isCulture = currentMode === 'culture';
   const isFigures = currentMode === 'figures';
+  const isMaps    = currentMode === 'maps';
 
   fcContainer.classList.toggle('culture-card', isCulture);
   fcContainer.classList.toggle('figure-card', isFigures);
+  fcContainer.classList.toggle('map-card', isMaps);
   if (cultFront) cultFront.style.display = isCulture ? 'flex' : 'none';
   if (cultBack)  cultBack.style.display  = isCulture ? 'flex' : 'none';
   if (figFront)  figFront.style.display  = isFigures ? 'flex' : 'none';
   if (figBack)   figBack.style.display   = isFigures ? 'flex' : 'none';
-  document.getElementById('fc-event').style.display       = (isCulture || isFigures) ? 'none' : '';
+  if (mapFront)  mapFront.style.display  = isMaps ? 'flex' : 'none';
+  if (mapBack)   mapBack.style.display   = isMaps ? 'flex' : 'none';
+  document.getElementById('fc-event').style.display       = (isCulture || isFigures || isMaps) ? 'none' : '';
   document.getElementById('fc-back-title').style.display  = (isCulture || isFigures) ? 'none' : '';
-  document.getElementById('fc-year').style.display        = (isCulture || isFigures) ? 'none' : '';
-  document.getElementById('fc-detail').style.display      = (isCulture || isFigures) ? 'none' : '';
+  document.getElementById('fc-year').style.display        = (isCulture || isFigures || isMaps) ? 'none' : '';
+  document.getElementById('fc-detail').style.display      = (isCulture || isFigures || isMaps) ? 'none' : '';
   document.getElementById('fc-front-title').style.display = (isCulture || isFigures) ? 'none' : '';
 
   // Flip mode determines which face shows what
-  if (isFigures) {
+  if (isMaps) {
+    window._activeMapId = e.id;
+    window._targetMapId = e.id;
+    const mapImg = getMapImage(e);
+
+    const wrapFront = document.getElementById('fc-map-wrap');
+    const descFront = document.getElementById('fc-map-front-desc');
+    const wrapBack  = document.getElementById('fc-map-wrap-back');
+    const markersWrapBack = document.getElementById('fc-map-markers-wrap');
+
+    const imgFront = document.getElementById('fc-map-img');
+    const plFront  = document.getElementById('fc-map-placeholder');
+    const repFront = document.getElementById('fc-map-replace');
+    const zoomFront= document.getElementById('fc-map-zoom');
+
+    const imgBack  = document.getElementById('fc-map-img-back');
+    const plBack   = document.getElementById('fc-map-placeholder-back');
+    const repBack  = document.getElementById('fc-map-replace-back');
+    const zoomBack = document.getElementById('fc-map-zoom-back');
+
+    [
+      { img: imgFront, pl: plFront, rep: repFront, zoom: zoomFront },
+      { img: imgBack,  pl: plBack,  rep: repBack,  zoom: zoomBack }
+    ].forEach(slot => {
+      if (!slot.img) return;
+      if (mapImg) {
+        slot.img.src = mapImg;
+        slot.img.style.display = 'block';
+        if (slot.pl) slot.pl.style.display = 'none';
+        if (slot.rep) slot.rep.style.display = '';
+        if (slot.zoom) slot.zoom.style.display = '';
+      } else {
+        slot.img.src = '';
+        slot.img.style.display = 'none';
+        if (slot.pl) slot.pl.style.display = 'flex';
+        if (slot.rep) slot.rep.style.display = 'none';
+        if (slot.zoom) slot.zoom.style.display = 'none';
+      }
+    });
+
+    if (flipMode) {
+      document.getElementById('fc-front-title').textContent = 'Описание и маркеры';
+      if (wrapFront) wrapFront.style.display = 'none';
+      if (descFront) {
+        descFront.style.display = 'flex';
+        document.getElementById('fc-map-front-period').textContent = e.period || '—';
+        document.getElementById('fc-map-front-markers').textContent = e.markers || '';
+      }
+
+      document.getElementById('fc-back-title').textContent = 'Событие и карта';
+      document.getElementById('fc-map-title').textContent = e.title || '';
+      document.getElementById('fc-map-period').textContent = e.period || '';
+      if (markersWrapBack) markersWrapBack.style.display = 'none';
+      if (wrapBack) wrapBack.style.display = 'flex';
+    } else {
+      document.getElementById('fc-front-title').textContent = 'Историческая карта';
+      if (wrapFront) wrapFront.style.display = 'flex';
+      if (descFront) descFront.style.display = 'none';
+
+      document.getElementById('fc-back-title').textContent = 'Событие';
+      document.getElementById('fc-map-title').textContent = e.title || '';
+      document.getElementById('fc-map-period').textContent = e.period || '';
+      document.getElementById('fc-map-markers').textContent = e.markers || '';
+      if (markersWrapBack) markersWrapBack.style.display = '';
+      if (wrapBack) wrapBack.style.display = 'none';
+    }
+  } else if (isFigures) {
     if (flipMode) {
       document.getElementById('fc-fig-emblem').textContent = '📜';
       document.getElementById('fc-fig-role').textContent = e.years ? `Годы: ${e.years}` : 'Исторический деятель';
@@ -4371,8 +4762,8 @@ function renderCard(){
 
   ['fc-badge','fc-badge2'].forEach(id => {
     const b = document.getElementById(id);
-    b.className = 'theme-badge ' + e.theme;
-    b.textContent = THEME_NAMES[e.theme];
+    b.className = 'theme-badge ' + (e.theme || 'maps');
+    b.textContent = THEME_NAMES[e.theme] || (currentMode === 'maps' ? 'Исторические карты' : 'Все темы');
   });
 
   // Known stamp
@@ -4521,7 +4912,7 @@ function setCultureTarget(targetField) {
 
 function generateQuiz(){
   const pool = filteredEvents.length >= 1 ? filteredEvents : getEpochSource();
-  const minRequired = currentMode === 'culture' ? 1 : 4;
+  const minRequired = (currentMode === 'culture' || currentMode === 'maps') ? 1 : 4;
   const qzMedia = document.getElementById('qz-media');
   if (qzMedia) qzMedia.classList.remove('show');
 
@@ -4542,7 +4933,56 @@ function generateQuiz(){
   let options = [];
   let isDefOpts = false;
 
-  if (currentMode === 'culture') {
+  if (currentMode === 'maps') {
+    window._activeMapId = target.id;
+    window._targetMapId = target.id;
+    const mapImg = getMapImage(target);
+    if (qzMedia) {
+      qzMedia.classList.add('show');
+      const qzImg = document.getElementById('qz-img');
+      const qzPlaceholder = document.getElementById('qz-placeholder');
+      const qzReplace = document.getElementById('qz-replace');
+      const qzZoom = document.getElementById('qz-zoom');
+      if (mapImg) {
+        qzImg.src = mapImg;
+        qzImg.style.display = 'block';
+        if (qzPlaceholder) qzPlaceholder.style.display = 'none';
+        if (qzReplace) qzReplace.style.display = '';
+        if (qzZoom) qzZoom.style.display = '';
+      } else {
+        qzImg.src = '';
+        qzImg.style.display = 'none';
+        if (qzPlaceholder) qzPlaceholder.style.display = 'flex';
+        if (qzReplace) qzReplace.style.display = 'none';
+        if (qzZoom) qzZoom.style.display = 'none';
+      }
+    }
+    document.getElementById('qz-label').textContent = `Вопрос ${quizCount} · ${qContext} · Историческая карта`;
+    document.getElementById('qz-text').textContent  = 'Какое историческое событие, война или поход представлены на карте?';
+
+    const fallbackDistractors = [
+      'Походы князя Святослава',
+      'Нашествие Батыя на Русь',
+      'Куликовская битва',
+      'Ледовое побоище',
+      'Невская битва',
+      'Стояние на реке Угре',
+      'Ливонская война',
+      'Смутное время',
+      'Северная война',
+      'Отечественная война 1812 года'
+    ];
+    const poolDistractors = ALL_MAPS.map(x => x.title).filter(v => v && v !== target.title);
+    const combinedWrong = [...new Set([...poolDistractors, ...fallbackDistractors.filter(v => v !== target.title)])];
+    options = shuffle([...shuffle(combinedWrong).slice(0, 3), target.title]);
+
+    quizQuestion = {
+      correct: target.title,
+      target: target,
+      questionText: `Карта: ${target.title}`,
+      detail: `<strong>${target.title}</strong> (${target.period})<br>📍 <em>Маркеры:</em> ${target.markers}`
+    };
+  } else if (currentMode === 'culture') {
     window._activeCultureId = target.id;
     window._pendingCultId = target.id;
     const gallery = getCultureGallery(target);
@@ -5045,7 +5485,46 @@ function generateInputQuestion() {
   const inpMedia = document.getElementById('inp-media');
   if (inpMedia) inpMedia.classList.remove('show');
 
-  if (currentMode === 'culture') {
+  if (currentMode === 'maps') {
+    window._activeMapId = target.id;
+    window._targetMapId = target.id;
+    const mapImg = getMapImage(target);
+    if (inpMedia) {
+      inpMedia.classList.add('show');
+      const inpImg = document.getElementById('inp-img');
+      const inpPlaceholder = document.getElementById('inp-placeholder');
+      const inpReplace = document.getElementById('inp-replace');
+      const inpZoom = document.getElementById('inp-zoom');
+      if (mapImg) {
+        inpImg.src = mapImg;
+        inpImg.style.display = 'block';
+        if (inpPlaceholder) inpPlaceholder.style.display = 'none';
+        if (inpReplace) inpReplace.style.display = '';
+        if (inpZoom) inpZoom.style.display = '';
+      } else {
+        inpImg.src = '';
+        inpImg.style.display = 'none';
+        if (inpPlaceholder) inpPlaceholder.style.display = 'flex';
+        if (inpReplace) inpReplace.style.display = 'none';
+        if (inpZoom) inpZoom.style.display = 'none';
+      }
+    }
+    promptLabel.textContent = 'Назовите историческое событие, войну или поход по карте:';
+    promptText.textContent = `${target.period}\n\n📍 Ключевые маркеры:\n${target.markers}`;
+    promptText.style.fontFamily = 'var(--ff-sans)';
+    promptText.style.fontSize = '1.05rem';
+    promptText.style.fontWeight = '500';
+    promptText.style.lineHeight = '1.55';
+    promptText.style.whiteSpace = 'pre-line';
+    inputEl.placeholder = 'Введите название события (напр.: Походы Святослава, Куликовская битва)...';
+    inputQuestion = {
+      type: 'map',
+      target,
+      canonical: target.title,
+      questionText: `Карта: ${target.title} (${target.period})`,
+      detail: `<strong>${target.title}</strong> (${target.period})<br>📍 <em>Маркеры:</em> ${target.markers}`
+    };
+  } else if (currentMode === 'culture') {
     activeCultureMonumentId = target.id;
     window._activeCultureId = target.id;
     window._pendingCultId = target.id;
@@ -5168,9 +5647,14 @@ function checkInputAnswer() {
   const isTerm = inputQuestion.type === 'term';
   const isCulture = inputQuestion.type === 'culture';
   const isFigure = inputQuestion.type === 'figure';
+  const isMap = inputQuestion.type === 'map';
   let isCorrect = false;
 
-  if (isCulture) {
+  if (isMap) {
+    const userNorm = normalizeInputTerm(rawValue);
+    const variants = getAcceptableMapVariants(inputQuestion.target);
+    isCorrect = variants.has(userNorm);
+  } else if (isCulture) {
     const userNorm = normalizeInputTerm(rawValue);
     const acceptable = new Set([
       ...getAcceptableTermVariants(inputQuestion.canonical),
@@ -6102,6 +6586,10 @@ function renderBestiary() {
                (e.years && e.years.toLowerCase().includes(query)) ||
                (e.role && e.role.toLowerCase().includes(query)) ||
                (e.facts && e.facts.toLowerCase().includes(query));
+      } else if (bestiarySubTab === 'maps') {
+        return (e.title && e.title.toLowerCase().includes(query)) ||
+               (e.period && e.period.toLowerCase().includes(query)) ||
+               (e.markers && e.markers.toLowerCase().includes(query));
       } else if (bestiarySubTab === 'terms') {
         return (e.term && e.term.toLowerCase().includes(query)) ||
                (e.def && e.def.toLowerCase().includes(query));
@@ -6119,6 +6607,8 @@ function renderBestiary() {
     list.sort((a, b) => a.sortYear - b.sortYear);
   } else if (bestiarySubTab === 'figures') {
     list.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ru'));
+  } else if (bestiarySubTab === 'maps') {
+    list.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ru'));
   } else if (bestiarySubTab === 'terms') {
     list.sort((a, b) => a.term.localeCompare(b.term, 'ru'));
   } else {
@@ -6190,6 +6680,50 @@ function renderBestiary() {
         </div>
       </div>`;
     }).join('')}</div>`;
+  } else if (bestiarySubTab === 'maps') {
+    container.innerHTML = `<div class="bst-maps-grid">${list.map(e => {
+      const key = getEventKey(e);
+      const known = learnedKeys.has(key);
+      const keyEnc = encodeURIComponent(key);
+      const mapImg = getMapImage(e);
+
+      let thumbHtml = '';
+      if (mapImg) {
+        thumbHtml = `
+          <div class="bst-map-thumb" onclick="openMapLightbox('${escHtml(e.id)}', event)" ondragover="handleMapDragOver(event)" ondragleave="handleMapDragLeave(event)" ondrop="handleMapSlotDrop(event, '${escHtml(e.id)}')" title="Нажмите для увеличения карты">
+            <img src="${escHtml(mapImg)}" alt="${escHtml(e.title)}">
+            <button class="fc-replace-btn" onclick="triggerMapPhotoUpload('${escHtml(e.id)}', event)" title="Заменить карту">📷 Заменить</button>
+            <span class="fc-zoom-hint">🔍</span>
+          </div>`;
+      } else {
+        thumbHtml = `
+          <div class="bst-map-thumb bst-map-empty" onclick="triggerMapPhotoUpload('${escHtml(e.id)}', event)" ondragover="handleMapDragOver(event)" ondragleave="handleMapDragLeave(event)" ondrop="handleMapSlotDrop(event, '${escHtml(e.id)}')" title="Загрузить изображение карты">
+            <div class="cult-upload-slot">
+              <div class="cult-slot-icon">🗺</div>
+              <div class="cult-slot-title">Загрузить карту</div>
+              <div class="cult-slot-hint">Клик, перенос или Ctrl+V</div>
+            </div>
+          </div>`;
+      }
+
+      return `<div class="bst-map-card">
+        ${thumbHtml}
+        <div class="bst-map-info">
+          <div class="bst-tl-top" style="margin-bottom:0">
+            <div class="bst-mon-title">🗺 ${escHtml(e.title)}</div>
+            <button class="bst-known-btn ${known ? 'is-known' : ''}" onclick="toggleBestiaryKnown('${keyEnc}')">✓ Знаю</button>
+          </div>
+          <div class="bst-mon-meta">
+            <span class="bst-mon-pill">📅 Период: <strong>${escHtml(e.period || '—')}</strong></span>
+            <span class="bst-mon-pill">🏛 Эпоха: <strong>${escHtml(EPOCH_NAMES[e.epoch] || e.epoch)}</strong></span>
+          </div>
+          <div class="fc-map-markers-wrap" style="max-width:none">
+            <div class="fc-map-markers-title">📍 Ключевые маркеры и ориентиры для ЕГЭ:</div>
+            <div class="fc-map-markers-body">${escHtml(e.markers || '')}</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
   } else {
     container.innerHTML = `<div class="bst-monuments-list">${list.map(e => {
       const key = getEventKey(e);
@@ -6254,6 +6788,408 @@ const LS_CUSTOM_KEY = 'rus-trainer-custom-v1';
 const IDB_NAME = 'EnnuiCultureGalleryDB';
 const IDB_STORE = 'galleries';
 const IDB_VERSION = 1;
+
+const IDB_MAPS_NAME = 'EnnuiMapsGalleryDB';
+const IDB_MAPS_STORE = 'maps';
+const IDB_MAPS_VERSION = 1;
+
+let _mapsDbPromise = null;
+function openMapsDB() {
+  if (_mapsDbPromise) return _mapsDbPromise;
+  _mapsDbPromise = new Promise((resolve, reject) => {
+    if (!window.indexedDB) {
+      const err = new Error('IndexedDB не поддерживается вашим браузером');
+      console.error(err);
+      return reject(err);
+    }
+    const req = indexedDB.open(IDB_MAPS_NAME, IDB_MAPS_VERSION);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(IDB_MAPS_STORE)) {
+        db.createObjectStore(IDB_MAPS_STORE, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = (e) => {
+      const db = e.target.result;
+      db.onversionchange = () => {
+        try { db.close(); } catch(err) {}
+        _mapsDbPromise = null;
+      };
+      resolve(db);
+    };
+    req.onerror = (e) => {
+      _mapsDbPromise = null;
+      const err = e.target?.error || new Error('Ошибка открытия базы EnnuiMapsGalleryDB');
+      console.error('IndexedDB maps open error:', err);
+      reject(err);
+    };
+  });
+  return _mapsDbPromise;
+}
+
+function idbSaveMapImage(mapId, dataUrl) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!dataUrl) {
+        await idbDeleteMapImage(mapId);
+        return resolve(true);
+      }
+      const db = await openMapsDB();
+      const record = { id: String(mapId), image: dataUrl };
+      const tx = db.transaction(IDB_MAPS_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_MAPS_STORE);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = (e) => {
+        console.error('idbSaveMapImage error:', e.target?.error);
+        reject(e.target?.error);
+      };
+      store.put(record);
+    } catch(err) {
+      console.error('idbSaveMapImage catch error:', err);
+      reject(err);
+    }
+  });
+}
+
+function idbDeleteMapImage(mapId) {
+  return new Promise(async (resolve) => {
+    try {
+      const db = await openMapsDB();
+      const tx = db.transaction(IDB_MAPS_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_MAPS_STORE);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+      store.delete(String(mapId));
+    } catch(err) {
+      resolve(false);
+    }
+  });
+}
+
+function idbGetAllMapImages() {
+  return new Promise(async (resolve) => {
+    try {
+      const db = await openMapsDB();
+      const tx = db.transaction(IDB_MAPS_STORE, 'readonly');
+      const store = tx.objectStore(IDB_MAPS_STORE);
+      const req = store.getAll ? store.getAll() : null;
+      if (req) {
+        req.onsuccess = () => {
+          const res = {};
+          (req.result || []).forEach(item => {
+            if (item && item.id && item.image) res[String(item.id)] = item.image;
+          });
+          resolve(res);
+        };
+        req.onerror = () => resolve({});
+      } else {
+        const cursorReq = store.openCursor();
+        const res = {};
+        cursorReq.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (cursor) {
+            const item = cursor.value;
+            if (item && item.id && item.image) res[String(item.id)] = item.image;
+            cursor.continue();
+          } else {
+            resolve(res);
+          }
+        };
+        cursorReq.onerror = () => resolve({});
+      }
+    } catch(err) {
+      resolve({});
+    }
+  });
+}
+
+async function initMapsStorage() {
+  try {
+    const idbData = await idbGetAllMapImages();
+    let updated = false;
+    if (idbData && typeof idbData === 'object') {
+      for (const [id, url] of Object.entries(idbData)) {
+        if (id && url && !CUSTOM_MAPS_IMAGES[id]) {
+          CUSTOM_MAPS_IMAGES[id] = url;
+          updated = true;
+        }
+      }
+      if (updated) {
+        _syncMapsImagesToLocalStorage();
+        if (currentMode === 'maps') {
+          renderCard();
+        } else if (currentMode === 'bestiary' && bestiarySubTab === 'maps') {
+          renderBestiary();
+        }
+      }
+    }
+  } catch(e) {
+    console.warn('initMapsStorage error:', e);
+  }
+}
+
+function getMapImage(item) {
+  if (!item) return '';
+  let id = '';
+  if (typeof item === 'string') id = item;
+  else if (typeof item === 'object') id = item.id || item.mapId || '';
+  if (id && CUSTOM_MAPS_IMAGES[String(id)]) {
+    return CUSTOM_MAPS_IMAGES[String(id)];
+  }
+  if (typeof item === 'object' && item && item.image) {
+    return item.image;
+  }
+  return '';
+}
+
+function getCurrentMapId() {
+  if (currentMode === 'maps' && displayEvents && displayEvents[cardIdx]) {
+    return displayEvents[cardIdx].id;
+  }
+  if (currentMode === 'maps' && quizQuestion?.target?.id) {
+    return quizQuestion.target.id;
+  }
+  if (currentMode === 'maps' && inputQuestion?.target?.id) {
+    return inputQuestion.target.id;
+  }
+  if (window._activeMapId) return window._activeMapId;
+  if (window._targetMapId) return window._targetMapId;
+  return null;
+}
+
+async function saveMapImage(mapId, fileOrDataUrl) {
+  if (!mapId || !fileOrDataUrl) return;
+  const targetId = String(mapId);
+  try {
+    const compressedUrl = await compressImageFile(fileOrDataUrl, 1100, 0.80);
+    CUSTOM_MAPS_IMAGES[targetId] = compressedUrl;
+    _syncMapsImagesToLocalStorage();
+    soundCorrect();
+    showToast('✓ Изображение карты сохранено');
+    updateActiveMapUI(targetId);
+    idbSaveMapImage(targetId, compressedUrl).catch(e => console.warn('IDB map save err:', e));
+  } catch(err) {
+    console.error('Ошибка сохранения карты:', err);
+    showToast('Ошибка обработки изображения карты: ' + (err.message || err), true);
+  }
+}
+
+async function deleteMapImage(mapId, event) {
+  if (event) { event.stopPropagation(); event.preventDefault(); }
+  if (!mapId) return;
+  const targetId = String(mapId);
+  delete CUSTOM_MAPS_IMAGES[targetId];
+  _syncMapsImagesToLocalStorage();
+  idbDeleteMapImage(targetId).catch(() => {});
+  soundClick();
+  showToast('✕ Изображение карты удалено');
+  updateActiveMapUI(targetId);
+}
+
+function updateActiveMapUI(mapId) {
+  if (currentMode === 'maps') {
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+    if (activeTab === 'cards') renderCard();
+    else if (activeTab === 'quiz') updateQuizMapImage(mapId);
+    else if (activeTab === 'input') updateInputMapImage(mapId);
+  } else if (bestiarySubTab === 'maps' || currentMode === 'bestiary') {
+    renderBestiary();
+  }
+}
+
+function updateQuizMapImage(mapId) {
+  const target = quizQuestion?.target;
+  if (!target || (mapId && target.id !== mapId)) return;
+  const mapImg = getMapImage(target);
+  const qzImg = document.getElementById('qz-img');
+  const qzPlaceholder = document.getElementById('qz-placeholder');
+  const qzReplace = document.getElementById('qz-replace');
+  const qzZoom = document.getElementById('qz-zoom');
+  const qzMedia = document.getElementById('qz-media');
+
+  if (qzMedia) qzMedia.classList.add('show');
+  if (mapImg) {
+    if (qzImg) { qzImg.src = mapImg; qzImg.style.display = 'block'; }
+    if (qzPlaceholder) qzPlaceholder.style.display = 'none';
+    if (qzReplace) qzReplace.style.display = '';
+    if (qzZoom) qzZoom.style.display = '';
+  } else {
+    if (qzImg) { qzImg.src = ''; qzImg.style.display = 'none'; }
+    if (qzPlaceholder) qzPlaceholder.style.display = 'flex';
+    if (qzReplace) qzReplace.style.display = 'none';
+    if (qzZoom) qzZoom.style.display = 'none';
+  }
+}
+
+function updateInputMapImage(mapId) {
+  const target = inputQuestion?.target;
+  if (!target || (mapId && target.id !== mapId)) return;
+  const mapImg = getMapImage(target);
+  const inpImg = document.getElementById('inp-img');
+  const inpPlaceholder = document.getElementById('inp-placeholder');
+  const inpReplace = document.getElementById('inp-replace');
+  const inpZoom = document.getElementById('inp-zoom');
+  const inpMedia = document.getElementById('inp-media');
+
+  if (inpMedia) inpMedia.classList.add('show');
+  if (mapImg) {
+    if (inpImg) { inpImg.src = mapImg; inpImg.style.display = 'block'; }
+    if (inpPlaceholder) inpPlaceholder.style.display = 'none';
+    if (inpReplace) inpReplace.style.display = '';
+    if (inpZoom) inpZoom.style.display = '';
+  } else {
+    if (inpImg) { inpImg.src = ''; inpImg.style.display = 'none'; }
+    if (inpPlaceholder) inpPlaceholder.style.display = 'flex';
+    if (inpReplace) inpReplace.style.display = 'none';
+    if (inpZoom) inpZoom.style.display = 'none';
+  }
+}
+
+function triggerMapPhotoUpload(mapId, event) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  const target = mapId || getCurrentMapId();
+  if (!target) {
+    showToast('Выберите карту для загрузки фото', true);
+    return;
+  }
+  window._targetMapId = String(target);
+  const inp = document.getElementById('quick-map-upload');
+  if (inp) {
+    inp.value = '';
+    inp.click();
+  }
+}
+
+async function handleQuickMapUpload(inputEl) {
+  const file = inputEl && inputEl.files && inputEl.files[0];
+  const mapId = window._targetMapId || getCurrentMapId();
+  if (!file || !mapId) {
+    if (inputEl) inputEl.value = '';
+    return;
+  }
+  try {
+    await saveMapImage(mapId, file);
+  } catch(err) {
+    console.error('Ошибка загрузки карты:', err);
+    showToast('Не удалось загрузить изображение: ' + (err.message || err), true);
+  } finally {
+    window._targetMapId = null;
+    if (inputEl) inputEl.value = '';
+  }
+}
+
+function handleMapDragOver(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.add('drag-hover');
+}
+
+function handleMapDragLeave(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.remove('drag-hover');
+}
+
+async function handleMapSlotDrop(event, slotTypeOrId) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.remove('drag-hover');
+
+  let mapId = null;
+  if (slotTypeOrId === 'fc' || slotTypeOrId === 'quiz' || slotTypeOrId === 'inp') {
+    mapId = getCurrentMapId();
+  } else if (slotTypeOrId) {
+    mapId = slotTypeOrId;
+  } else {
+    mapId = getCurrentMapId();
+  }
+
+  if (!mapId) return;
+
+  const dt = event.dataTransfer;
+  if (!dt || !dt.files || !dt.files.length) return;
+  const file = dt.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+
+  await saveMapImage(mapId, file);
+}
+
+function handleMapSlotClick(event, slotType) {
+  if (event) event.stopPropagation();
+  let mapId = null;
+  let title = '';
+  let img = '';
+
+  if (slotType === 'fc') {
+    if (!displayEvents.length) return;
+    const e = displayEvents[cardIdx];
+    mapId = e.id;
+    img = getMapImage(e);
+    title = `${e.title} (${e.period})`;
+  } else if (slotType === 'quiz') {
+    if (!quizQuestion || !quizQuestion.target) return;
+    mapId = quizQuestion.target.id;
+    img = getMapImage(quizQuestion.target);
+    title = `${quizQuestion.target.title} (${quizQuestion.target.period})`;
+  } else if (slotType === 'inp') {
+    if (!inputQuestion || !inputQuestion.target) return;
+    mapId = inputQuestion.target.id;
+    img = getMapImage(inputQuestion.target);
+    title = `${inputQuestion.target.title} (${inputQuestion.target.period})`;
+  }
+
+  if (img) {
+    openLightbox(img, title);
+  } else if (mapId) {
+    triggerMapPhotoUpload(mapId, event);
+  }
+}
+
+function openMapLightbox(mapIdOrItem, event) {
+  if (event) event.stopPropagation();
+  let item = null;
+  if (!mapIdOrItem) {
+    if (currentMode === 'maps' && displayEvents && displayEvents[cardIdx]) {
+      item = displayEvents[cardIdx];
+    } else if (quizQuestion && quizQuestion.target) {
+      item = quizQuestion.target;
+    } else if (inputQuestion && inputQuestion.target) {
+      item = inputQuestion.target;
+    }
+  } else if (typeof mapIdOrItem === 'object') {
+    item = mapIdOrItem;
+  } else {
+    item = ALL_MAPS.find(m => m.id === String(mapIdOrItem)) || { id: String(mapIdOrItem) };
+  }
+  if (!item) return;
+  const img = getMapImage(item);
+  if (img) {
+    openLightbox(img, `${item.title || 'Историческая карта'} (${item.period || ''})`);
+  } else {
+    triggerMapPhotoUpload(item.id, event);
+  }
+}
+
+async function handleEdMapPhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  try {
+    const dataUrl = await compressImageFile(file, 1100, 0.80);
+    edTempMapImage = dataUrl;
+    const prev = document.getElementById('ed-map-preview');
+    if (prev) {
+      prev.src = dataUrl;
+      prev.classList.add('show');
+    }
+  } catch(err) {
+    console.error('Ошибка обработки фото карты в редакторе:', err);
+    showToast('Не удалось обработать фото: ' + (err.message || err), true);
+  }
+  event.target.value = '';
+}
 
 let _toastTimer = null;
 function showToast(msg, isError = false) {
@@ -6812,6 +7748,9 @@ function triggerCulturePhotoUploadSlot(cultId, slotIdx = null, event = null) {
     event.stopPropagation();
     event.preventDefault();
   }
+  if (currentMode === 'maps') {
+    return triggerMapPhotoUpload(cultId, event);
+  }
   const targetId = cultId || getCurrentCultureId();
   if (!targetId) {
     console.warn('triggerCulturePhotoUploadSlot: monument id not determined');
@@ -6937,6 +7876,9 @@ function handleCultureSlotClick(event, slotType) {
   if (event) {
     event.stopPropagation();
   }
+  if (currentMode === 'maps') {
+    return handleMapSlotClick(event, slotType);
+  }
   let cultId = null;
   let title = '';
   let gallery = [];
@@ -6986,6 +7928,9 @@ async function handleCultDrop(event, cultId) {
   event.preventDefault();
   event.stopPropagation();
   event.currentTarget.classList.remove('drag-hover');
+  if (currentMode === 'maps') {
+    return handleMapSlotDrop(event, cultId);
+  }
   const targetId = cultId || getCurrentCultureId();
   if (!targetId) return;
 
@@ -7007,6 +7952,9 @@ async function handleCultureSlotDrop(event, slotType) {
   event.preventDefault();
   event.stopPropagation();
   event.currentTarget.classList.remove('drag-hover');
+  if (currentMode === 'maps') {
+    return handleMapSlotDrop(event, slotType);
+  }
 
   let cultId = null;
   if (slotType === 'fc') {
@@ -7057,6 +8005,7 @@ async function handleCultAngleSlotDrop(event, monumentId, slotIdx) {
 let CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
 let CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
 let CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+let CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
 let CUSTOM_CULTURE = [];
 
 function loadCustomCards() {
@@ -7067,12 +8016,14 @@ function loadCustomCards() {
       CUSTOM_DATES[ep] = (saved.dates && saved.dates[ep]) ? saved.dates[ep] : [];
       CUSTOM_TERMS[ep] = (saved.terms && saved.terms[ep]) ? saved.terms[ep] : [];
       CUSTOM_FIGURES[ep] = (saved.figures && saved.figures[ep]) ? saved.figures[ep] : [];
+      CUSTOM_MAPS[ep] = (saved.maps && saved.maps[ep]) ? saved.maps[ep] : [];
     });
     CUSTOM_CULTURE = Array.isArray(saved.culture) ? saved.culture : [];
   } catch(e) {
     CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
     CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
     CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+    CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
     CUSTOM_CULTURE = [];
   }
   _mergeCustomIntoData();
@@ -7084,9 +8035,11 @@ function _mergeCustomIntoData() {
     DATA_DATES[ep] = DATA_DATES[ep].filter(x => !x._custom);
     DATA_TERMS[ep] = DATA_TERMS[ep].filter(x => !x._custom);
     DATA_FIGURES[ep] = (DATA_FIGURES[ep] || []).filter(x => !x._custom);
+    DATA_MAPS[ep] = (DATA_MAPS[ep] || []).filter(x => !x._custom);
     CUSTOM_DATES[ep].forEach(c => DATA_DATES[ep].push({ ...c, _custom: true }));
     CUSTOM_TERMS[ep].forEach(c => DATA_TERMS[ep].push({ ...c, _custom: true }));
     (CUSTOM_FIGURES[ep] || []).forEach(c => DATA_FIGURES[ep].push({ ...c, _custom: true }));
+    (CUSTOM_MAPS[ep] || []).forEach(c => DATA_MAPS[ep].push({ ...c, _custom: true }));
   });
   for (let i = DATA_CULTURE.length - 1; i >= 0; i--) {
     if (DATA_CULTURE[i]._custom) DATA_CULTURE.splice(i, 1);
@@ -7110,15 +8063,20 @@ function _rebuildAllArrays() {
   Object.entries(DATA_FIGURES).forEach(([epoch, arr]) =>
     arr.forEach(item => ALL_FIGURES.push({ ...item, epoch }))
   );
+  ALL_MAPS.length = 0;
+  Object.entries(DATA_MAPS).forEach(([epoch, arr]) =>
+    arr.forEach(item => ALL_MAPS.push({ ...item, epoch }))
+  );
 }
 
 function saveCustomCards() {
-  const data = { dates: {}, terms: {}, culture: CUSTOM_CULTURE, figures: {} };
+  const data = { dates: {}, terms: {}, culture: CUSTOM_CULTURE, figures: {}, maps: {} };
   const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
   epochs.forEach(ep => {
     data.dates[ep] = CUSTOM_DATES[ep];
     data.terms[ep] = CUSTOM_TERMS[ep];
     data.figures[ep] = CUSTOM_FIGURES[ep];
+    data.maps[ep] = CUSTOM_MAPS[ep];
   });
   localStorage.setItem(LS_CUSTOM_KEY, JSON.stringify(data));
 }
@@ -7161,9 +8119,11 @@ function setEdMode(mode) {
   const bulkWrap = document.getElementById('ed-bulk-wrap');
   const cultFields = document.getElementById('ed-culture-fields');
   const figFields = document.getElementById('ed-figures-fields');
-  if (bulkWrap) bulkWrap.style.display = (mode === 'culture' || mode === 'figures') ? 'none' : 'flex';
+  const mapFields = document.getElementById('ed-maps-fields');
+  if (bulkWrap) bulkWrap.style.display = (mode === 'culture' || mode === 'figures' || mode === 'maps') ? 'none' : 'flex';
   if (cultFields) cultFields.style.display = mode === 'culture' ? 'flex' : 'none';
   if (figFields) figFields.style.display = mode === 'figures' ? 'flex' : 'none';
+  if (mapFields) mapFields.style.display = mode === 'maps' ? 'flex' : 'none';
 
   if (mode === 'dates' || mode === 'terms') {
     const label = document.getElementById('ed-textarea-label');
@@ -7180,6 +8140,10 @@ function setEdMode(mode) {
   } else if (mode === 'figures') {
     if (!document.getElementById('ed-theme').value) {
       document.getElementById('ed-theme').value = 'rurik';
+    }
+  } else if (mode === 'maps') {
+    if (!document.getElementById('ed-theme').value) {
+      document.getElementById('ed-theme').value = 'maps';
     }
   }
   updateEdThemeAutocomplete();
@@ -7228,7 +8192,7 @@ function updateEdThemeAutocomplete() {
     ? DATE_THEMES
     : (edMode === 'terms'
         ? TERM_THEMES
-        : (edMode === 'figures' ? FIGURES_THEMES : CULTURE_THEMES));
+        : (edMode === 'figures' ? FIGURES_THEMES : (edMode === 'maps' ? MAPS_THEMES : CULTURE_THEMES)));
   window._edThemes = [...allowedSet].map(k => ({ key: k, name: THEME_NAMES[k] || k }));
 }
 
@@ -7268,12 +8232,12 @@ function parseSortYear(yearStr) {
 
 function guessTheme(mode, tagInput) {
   const t = tagInput.trim().toLowerCase();
-  if (!t) return mode === 'dates' ? 'rurik' : (mode === 'terms' ? 'soc' : (mode === 'figures' ? 'rurik' : 'culture'));
+  if (!t) return mode === 'dates' ? 'rurik' : (mode === 'terms' ? 'soc' : (mode === 'figures' ? 'rurik' : (mode === 'maps' ? 'maps' : 'culture')));
   const allowed = mode === 'dates'
     ? [...DATE_THEMES]
     : (mode === 'terms'
         ? [...TERM_THEMES]
-        : (mode === 'figures' ? [...FIGURES_THEMES] : [...CULTURE_THEMES]));
+        : (mode === 'figures' ? [...FIGURES_THEMES] : (mode === 'maps' ? [...MAPS_THEMES] : [...CULTURE_THEMES])));
   if (allowed.includes(t)) return t;
   const match = allowed.find(k => k.startsWith(t) || t.startsWith(k));
   return match || allowed[0];
@@ -7285,6 +8249,38 @@ function parseAndAddCards() {
   const themeRaw = document.getElementById('ed-theme').value;
   const theme = guessTheme(edMode, themeRaw);
   const editKey = document.getElementById('ed-edit-key').value;
+
+  if (edMode === 'maps') {
+    const title = document.getElementById('ed-map-title').value.trim();
+    const period = document.getElementById('ed-map-period').value.trim();
+    const markers = document.getElementById('ed-map-markers').value.trim();
+    if (!title || !period || !markers) {
+      showEdStatus(statusEl, 'err', 'Укажите название карты, период и ключевые маркеры.');
+      return;
+    }
+    if (editKey) _removeCustomByKey(editKey);
+    const newId = `map_custom_${Date.now()}`;
+    const mapObj = {
+      id: newId,
+      epoch,
+      theme: theme || 'maps',
+      image: edTempMapImage || '',
+      title,
+      period,
+      markers
+    };
+    if (edTempMapImage) {
+      CUSTOM_MAPS_IMAGES[newId] = edTempMapImage;
+      _syncMapsImagesToLocalStorage();
+      idbSaveMapImage(newId, edTempMapImage).catch(() => {});
+    }
+    CUSTOM_MAPS[epoch].push(mapObj);
+    saveCustomCards();
+    rebuildAndRefresh();
+    cancelEditCard();
+    showEdStatus(statusEl, 'ok', editKey ? 'Карта обновлена!' : 'Карта сохранена в базу!');
+    return;
+  }
 
   if (edMode === 'figures') {
     const name = document.getElementById('ed-fig-name').value.trim();
@@ -7397,13 +8393,17 @@ function cancelEditCard() {
   document.getElementById('ed-edit-key').value = '';
   document.getElementById('ed-bulk').value = '';
   ['ed-cult-title','ed-cult-year','ed-cult-author','ed-cult-ruler','ed-cult-lore',
-   'ed-fig-name','ed-fig-years','ed-fig-role','ed-fig-facts'].forEach(id => {
+   'ed-fig-name','ed-fig-years','ed-fig-role','ed-fig-facts',
+   'ed-map-title','ed-map-period','ed-map-markers'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   edTempCultureImage = '';
+  edTempMapImage = '';
   const prev = document.getElementById('ed-cult-preview');
   if (prev) { prev.src = ''; prev.classList.remove('show'); }
+  const prevMap = document.getElementById('ed-map-preview');
+  if (prevMap) { prevMap.src = ''; prevMap.classList.remove('show'); }
   document.getElementById('ed-cancel-edit-btn').style.display = 'none';
 }
 
@@ -7416,6 +8416,7 @@ function renderMyCards() {
     CUSTOM_DATES[ep].forEach((c, i) => items.push({ type:'dates', epoch:ep, idx:i, ...c }));
     CUSTOM_TERMS[ep].forEach((c, i) => items.push({ type:'terms', epoch:ep, idx:i, ...c }));
     (CUSTOM_FIGURES[ep] || []).forEach((c, i) => items.push({ type:'figures', epoch:ep, idx:i, ...c }));
+    (CUSTOM_MAPS[ep] || []).forEach((c, i) => items.push({ type:'maps', epoch:ep, idx:i, ...c }));
   });
   CUSTOM_CULTURE.forEach((c, i) => items.push({ type:'culture', idx:i, ...c }));
 
@@ -7431,18 +8432,20 @@ function renderMyCards() {
           ? `term::${item.term}::${item.epoch}`
           : (item.type === 'figures'
               ? `fig::${item.id || item.name}::${item.epoch}`
-              : `cult::${item.id}`));
+              : (item.type === 'maps'
+                  ? `map::${item.id || item.title}::${item.epoch}`
+                  : `cult::${item.id}`)));
     const keyEnc = encodeURIComponent(keyStr);
     const left  = item.type === 'dates'
       ? item.year
       : (item.type === 'terms'
           ? item.term
-          : (item.type === 'figures' ? `👑 ${item.name}` : `🏛 ${item.title}`));
+          : (item.type === 'figures' ? `👑 ${item.name}` : (item.type === 'maps' ? `🗺 ${item.title}` : `🏛 ${item.title}`)));
     const right = item.type === 'dates'
       ? item.event
       : (item.type === 'terms'
           ? item.def
-          : (item.type === 'figures' ? `${item.years} — ${item.facts}` : `${item.year} · ${item.ruler}`));
+          : (item.type === 'figures' ? `${item.years} — ${item.facts}` : (item.type === 'maps' ? `${item.period} · ${item.markers}` : `${item.year} · ${item.ruler}`)));
     const meta = `${EPOCH_NAMES[item.epoch] || item.epoch} · ${THEME_NAMES[item.theme] || item.theme}`;
     return `<div class="ed-card-item">
       <div class="ed-ci-body">
@@ -7475,6 +8478,11 @@ function _removeCustomByKey(keyEncoded) {
     if (CUSTOM_FIGURES[epoch]) {
       CUSTOM_FIGURES[epoch] = CUSTOM_FIGURES[epoch].filter(c => (c.id || c.name) !== idOrName);
     }
+  } else if (key.startsWith('map::')) {
+    const [, idOrTitle, epoch] = key.split('::');
+    if (CUSTOM_MAPS[epoch]) {
+      CUSTOM_MAPS[epoch] = CUSTOM_MAPS[epoch].filter(c => (c.id || c.title) !== idOrTitle);
+    }
   } else {
     const [sortYearStr, event, epoch] = key.split('::');
     if (CUSTOM_DATES[epoch]) CUSTOM_DATES[epoch] = CUSTOM_DATES[epoch].filter(c => !(String(c.sortYear) === sortYearStr && c.event === event));
@@ -7490,6 +8498,26 @@ function deleteCustomCard(keyEncoded) {
 
 function startEditCard(keyEncoded) {
   const key = decodeURIComponent(keyEncoded);
+  if (key.startsWith('map::')) {
+    const [, idOrTitle, epoch] = key.split('::');
+    const item = (CUSTOM_MAPS[epoch] || []).find(c => (c.id || c.title) === idOrTitle);
+    if (!item) return;
+    switchEditorTab('add');
+    setEdMode('maps');
+    document.getElementById('ed-epoch').value = item.epoch || epoch;
+    document.getElementById('ed-theme').value = item.theme || 'maps';
+    document.getElementById('ed-map-title').value = item.title || '';
+    document.getElementById('ed-map-period').value = item.period || '';
+    document.getElementById('ed-map-markers').value = item.markers || '';
+    const img = getMapImage(item);
+    edTempMapImage = img || '';
+    const prev = document.getElementById('ed-map-preview');
+    if (prev && img) { prev.src = img; prev.classList.add('show'); }
+    else if (prev) { prev.src = ''; prev.classList.remove('show'); }
+    document.getElementById('ed-edit-key').value = keyEncoded;
+    document.getElementById('ed-cancel-edit-btn').style.display = '';
+    return;
+  }
   if (key.startsWith('cult::')) {
     const [, id] = key.split('::');
     const item = CUSTOM_CULTURE.find(c => c.id === id);
@@ -7556,6 +8584,7 @@ function clearAllCustomCards() {
   CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
   CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
   CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+  CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
   CUSTOM_CULTURE = [];
   saveCustomCards();
   rebuildAndRefresh();
@@ -7570,14 +8599,21 @@ async function exportBackup() {
       Object.assign(CUSTOM_CULTURE_GALLERY, idbGallery);
     }
   } catch(e) {}
+  try {
+    const idbMaps = await idbGetAllMapImages();
+    if (idbMaps && Object.keys(idbMaps).length > 0) {
+      Object.assign(CUSTOM_MAPS_IMAGES, idbMaps);
+    }
+  } catch(e) {}
   const payload = {
-    version: 3,
+    version: 4,
     exportedAt: new Date().toISOString(),
     custom: JSON.parse(localStorage.getItem(LS_CUSTOM_KEY) || '{}'),
     learned: JSON.parse(localStorage.getItem(LS_KEY) || '[]'),
     streak: JSON.parse(localStorage.getItem(STREAK_LS_KEY) || '{}'),
     cultGallery: CUSTOM_CULTURE_GALLERY,
     cultImages: CUSTOM_CULTURE_IMAGES,
+    mapImages: CUSTOM_MAPS_IMAGES,
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -7627,6 +8663,15 @@ function importBackup(event) {
         }
         _syncCultureGalleryToLocalStorage();
       }
+      if (payload.mapImages && typeof payload.mapImages === 'object') {
+        for (const [id, url] of Object.entries(payload.mapImages)) {
+          if (id && url) {
+            CUSTOM_MAPS_IMAGES[id] = url;
+            await idbSaveMapImage(id, url);
+          }
+        }
+        _syncMapsImagesToLocalStorage();
+      }
       loadCustomCards();
       rebuildAndRefresh();
       showEdStatus(statusEl, 'ok', 'Данные восстановлены успешно!');
@@ -7666,6 +8711,23 @@ document.addEventListener('paste', async function(e) {
 
   if (!imageFile) return;
 
+  if (currentMode === 'maps') {
+    const targetId = getCurrentMapId();
+    if (!targetId) {
+      showToast('Выберите карточку карты для вставки фото', true);
+      return;
+    }
+    e.preventDefault();
+    try {
+      const dataUrl = await compressImageFile(imageFile, 1100, 0.80);
+      await saveMapImage(targetId, dataUrl);
+    } catch(err) {
+      console.error('Ошибка вставки фото карты:', err);
+      showToast('Не удалось вставить изображение карты: ' + (err.message || err), true);
+    }
+    return;
+  }
+
   const targetId = getCurrentCultureId();
   if (!targetId) {
     showToast('Выберите карточку памятника для вставки фото', true);
@@ -7689,6 +8751,7 @@ document.addEventListener('paste', async function(e) {
 loadCustomCards();
 updateEdThemeAutocomplete();
 initCultureGalleryFromStorage();
+initMapsStorage();
 </script>
 
 <!-- ============================================================
@@ -7716,6 +8779,7 @@ initCultureGalleryFromStorage();
           <button class="ed-seg-btn"        data-edmode="terms"   onclick="setEdMode('terms')">📖 Термины</button>
           <button class="ed-seg-btn"        data-edmode="culture" onclick="setEdMode('culture')">🏛 Культура</button>
           <button class="ed-seg-btn"        data-edmode="figures" onclick="setEdMode('figures')">👑 Деятели</button>
+          <button class="ed-seg-btn"        data-edmode="maps"    onclick="setEdMode('maps')">🗺 Карты</button>
         </div>
       </div>
 
@@ -7805,6 +8869,32 @@ initCultureGalleryFromStorage();
         <div class="ed-field">
           <div class="ed-label">Ключевые реформы, походы и факты *</div>
           <textarea id="ed-fig-facts" class="ed-textarea" style="min-height:80px" placeholder="Главные достижения, внешняя и внутренняя политика, реформы..."></textarea>
+        </div>
+      </div>
+
+      <!-- Maps dedicated fields -->
+      <div id="ed-maps-fields" style="display:none;flex-direction:column;gap:10px">
+        <div class="ed-field">
+          <div class="ed-label">Фото карты (автосжатие до 1100px WebP)</div>
+          <div class="bg-upload-row">
+            <label class="bg-upload-btn" for="ed-map-file">📷 Загрузить изображение карты…</label>
+            <input type="file" id="ed-map-file" accept="image/*" style="display:none" onchange="handleEdMapPhoto(event)">
+          </div>
+          <img id="ed-map-preview" class="ed-photo-preview" alt="Превью карты">
+        </div>
+        <div class="ed-row">
+          <div class="ed-field">
+            <div class="ed-label">Название карты / события *</div>
+            <input id="ed-map-title" class="ed-input" placeholder="напр. Походы князя Святослава">
+          </div>
+          <div class="ed-field">
+            <div class="ed-label">Период / век / годы *</div>
+            <input id="ed-map-period" class="ed-input" placeholder="напр. 964–972 гг.">
+          </div>
+        </div>
+        <div class="ed-field">
+          <div class="ed-label">Ключевые маркеры и ориентиры *</div>
+          <textarea id="ed-map-markers" class="ed-textarea" style="min-height:80px" placeholder="Стрелки походов, осажденные города, реки, места сражений..."></textarea>
         </div>
       </div>
 
