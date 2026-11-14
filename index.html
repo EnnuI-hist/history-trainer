@@ -2039,13 +2039,13 @@ body.zen-mode .section.active {
   justify-content: center;
   width: 100%;
   height: 100%;
-  gap: 10px;
+  gap: 8px;
 }
 .fc-culture-img-wrap {
   position: relative;
   width: 100%;
   max-width: 460px;
-  height: 245px;
+  height: 220px;
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid var(--border2);
@@ -2203,7 +2203,7 @@ body.zen-mode .section.active {
   position: fixed;
   inset: 0;
   z-index: 3000;
-  background: rgba(5, 8, 15, 0.88);
+  background: rgba(5, 8, 15, 0.92);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   display: none;
@@ -2213,13 +2213,22 @@ body.zen-mode .section.active {
   padding: 24px;
   cursor: zoom-out;
   animation: fadeUp .2s ease;
+  user-select: none;
 }
 #lightbox-modal.open {
   display: flex;
 }
+.lightbox-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: min(92vw, 960px);
+  cursor: default;
+}
 #lightbox-img {
   max-width: min(92vw, 960px);
-  max-height: 78vh;
+  max-height: 75vh;
   border-radius: var(--radius-lg);
   border: 1.5px solid var(--border2);
   box-shadow: 0 0 50px rgba(201,168,76,.18), 0 16px 48px rgba(0,0,0,.8);
@@ -2250,11 +2259,184 @@ body.zen-mode .section.active {
   align-items: center;
   justify-content: center;
   transition: all .2s;
+  z-index: 3010;
 }
 #lightbox-close:hover {
   border-color: var(--gold2);
   color: var(--gold2);
   transform: scale(1.08);
+}
+.lightbox-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: rgba(14, 20, 36, 0.78);
+  backdrop-filter: blur(10px);
+  color: var(--gold2);
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s ease;
+  z-index: 3010;
+  user-select: none;
+}
+.lightbox-arrow:hover {
+  border-color: var(--gold2);
+  background: rgba(20, 28, 48, 0.95);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 0 16px var(--gold-glow);
+}
+.lightbox-arrow.lb-prev { left: 24px; }
+.lightbox-arrow.lb-next { right: 24px; }
+.lightbox-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: center;
+}
+.lb-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.lb-dot.active {
+  background: var(--gold2);
+  transform: scale(1.25);
+  box-shadow: 0 0 8px var(--gold-glow);
+}
+@media (max-width: 600px) {
+  .lightbox-arrow {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+  .lightbox-arrow.lb-prev { left: 10px; }
+  .lightbox-arrow.lb-next { right: 10px; }
+}
+
+/* 3-angle gallery bar & slots */
+.cult-angles-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 6px;
+  user-select: none;
+}
+.cult-angle-slot {
+  position: relative;
+  width: 50px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: rgba(14, 20, 36, 0.7);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+.cult-angle-slot:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.cult-angle-slot.active {
+  border: 2px solid var(--gold2);
+  box-shadow: 0 0 12px var(--gold-glow);
+  transform: translateY(-2px);
+}
+.cult-angle-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cult-angle-num {
+  position: absolute;
+  bottom: 2px;
+  left: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 0 4px;
+  border-radius: 3px;
+  pointer-events: none;
+  line-height: 1.2;
+}
+.cult-angle-slot.empty .cult-angle-num {
+  background: transparent;
+  color: var(--muted);
+  bottom: 2px;
+  left: auto;
+  right: 4px;
+}
+.cult-angle-plus {
+  font-size: 15px;
+  line-height: 1;
+  color: var(--gold);
+  opacity: 0.85;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.cult-angle-slot.empty:hover .cult-angle-plus {
+  transform: scale(1.2);
+  opacity: 1;
+}
+.cult-angle-del {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: rgba(220, 38, 38, 0.85);
+  color: #fff;
+  border: none;
+  font-size: 10px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+  padding: 0;
+  z-index: 2;
+}
+.cult-angle-slot:hover .cult-angle-del {
+  opacity: 1;
+}
+.cult-angle-del:hover {
+  background: #ef4444;
+  transform: scale(1.15);
+}
+.cult-angle-slot.drag-hover {
+  border-color: #4ecca3 !important;
+  background: rgba(78, 204, 163, 0.2) !important;
+}
+.bst-mon-media-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.bst-angles-bar .cult-angle-slot {
+  width: 44px;
+  height: 38px;
 }
 
 /* =========================================================
@@ -2783,6 +2965,7 @@ body.zen-mode .section.active {
               <button class="fc-replace-btn" id="fc-cult-replace" onclick="triggerCulturePhotoUpload(null, event)" title="Загрузить другое фото">📷 Заменить фото</button>
               <span class="fc-zoom-hint" id="fc-cult-zoom">🔍 Во весь экран</span>
             </div>
+            <div class="cult-angles-bar" id="fc-angles-bar" onclick="event.stopPropagation()"></div>
           </div>
         </div>
         <div class="card-face card-back">
@@ -2946,8 +3129,13 @@ body.zen-mode .section.active {
 
 <div id="lightbox-modal" onclick="closeLightbox(event)">
   <button id="lightbox-close" onclick="closeLightbox(event)" title="Закрыть (Esc)">✕</button>
-  <img id="lightbox-img" src="" alt="Просмотр памятника" onclick="event.stopPropagation()">
-  <div id="lightbox-caption" onclick="event.stopPropagation()"></div>
+  <button class="lightbox-arrow lb-prev" id="lightbox-prev" onclick="prevLightboxAngle(event)" title="Предыдущий ракурс (←)" style="display:none">◀</button>
+  <button class="lightbox-arrow lb-next" id="lightbox-next" onclick="nextLightboxAngle(event)" title="Следующий ракурс (→)" style="display:none">▶</button>
+  <div class="lightbox-content" onclick="event.stopPropagation()">
+    <img id="lightbox-img" src="" alt="Просмотр памятника">
+    <div id="lightbox-caption"></div>
+    <div class="lightbox-dots" id="lightbox-dots"></div>
+  </div>
 </div>
 
 <script>
@@ -3334,9 +3522,13 @@ function getEventKey(e) {
 let cultureTarget = 'title'; // 'title' | 'author' | 'ruler'
 let bestiarySubTab = 'dates'; // 'dates' | 'terms' | 'culture'
 let edTempCultureImage = '';
+let CUSTOM_CULTURE_GALLERY = {};
 let CUSTOM_CULTURE_IMAGES = {};
+let activeCultureAngle = 0;
+let _bestiaryAngles = {};
 window._activeCultureId = null;
 window._pendingCultId = null;
+window._targetAngleSlot = null;
 let activeCultureMonumentId = null;
 
 const EPOCH_NAMES = {
@@ -3681,7 +3873,11 @@ function renderCard(){
     window._pendingCultId = e.id;
     document.getElementById('fc-front-title').textContent = 'Памятник культуры';
 
-    const cultImg = getCultureImage(e);
+    const gallery = getCultureGallery(e);
+    if (activeCultureAngle >= gallery.length) {
+      activeCultureAngle = Math.max(0, gallery.length - 1);
+    }
+    const cultImg = gallery[activeCultureAngle] || gallery[0] || e.image || '';
     const imgEl = document.getElementById('fc-cult-img');
     const placeholderEl = document.getElementById('fc-cult-placeholder');
     const replaceBtn = document.getElementById('fc-cult-replace');
@@ -3700,6 +3896,8 @@ function renderCard(){
       if (replaceBtn) replaceBtn.style.display = 'none';
       if (zoomHint) zoomHint.style.display = 'none';
     }
+
+    renderCultureAnglesBar(e.id, document.getElementById('fc-angles-bar'));
 
     document.getElementById('fc-cult-title').textContent = e.title || '';
     document.getElementById('fc-cult-year').textContent = e.year || '—';
@@ -3933,7 +4131,15 @@ function generateQuiz(){
   if (currentMode === 'culture') {
     window._activeCultureId = target.id;
     window._pendingCultId = target.id;
-    const cultImg = getCultureImage(target);
+    const gallery = getCultureGallery(target);
+    let cultImg = '';
+    if (gallery.length > 0) {
+      const randomIdx = Math.floor(Math.random() * gallery.length);
+      target._quizAngle = randomIdx;
+      cultImg = gallery[randomIdx];
+    } else {
+      cultImg = target.image || '';
+    }
     if (qzMedia) {
       qzMedia.classList.add('show');
       const qzImg = document.getElementById('qz-img');
@@ -4403,7 +4609,17 @@ function generateInputQuestion() {
 
   if (currentMode === 'culture') {
     activeCultureMonumentId = target.id;
-    const cultImg = getCultureImage(target);
+    window._activeCultureId = target.id;
+    window._pendingCultId = target.id;
+    const gallery = getCultureGallery(target);
+    let cultImg = '';
+    if (gallery.length > 0) {
+      const randomIdx = Math.floor(Math.random() * gallery.length);
+      target._inpAngle = randomIdx;
+      cultImg = gallery[randomIdx];
+    } else {
+      cultImg = target.image || '';
+    }
     if (inpMedia) {
       inpMedia.classList.add('show');
       const inpImg = document.getElementById('inp-img');
@@ -5198,12 +5414,24 @@ document.addEventListener('keydown', e => {
     return;
   }
 
-  // Close Lightbox on Escape
+  // Lightbox keyboard navigation (Escape to close, Left/Right arrows to flip angles)
   const lb = document.getElementById('lightbox-modal');
-  if (e.key === 'Escape' && lb && lb.classList.contains('open')) {
-    e.preventDefault();
-    closeLightbox();
-    return;
+  if (lb && lb.classList.contains('open')) {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeLightbox();
+      return;
+    }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevLightboxAngle();
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextLightboxAngle();
+      return;
+    }
   }
 
   if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) {
@@ -5271,31 +5499,99 @@ applyBgState();
 updateSoundUI();
 loadStreakLS();
 
-loadCultureImages();
-initCultureImagesFromStorage();
+initCultureGalleryFromStorage();
 applyEpoch('all');
 initCardSwipe();
 document.getElementById('learned-count').textContent = learnedKeys.size;
 
 // =====================================================================
-//  LIGHTBOX (ПОЛНОЭКРАННЫЙ ПРОСМОТР ФОТО ПАМЯТНИКОВ)
+//  LIGHTBOX (ПОЛНОЭКРАННЫЙ ПРОСМОТР ФОТО ПАМЯТНИКОВ С ЛИСТАНИЕМ РАКУРСОВ)
 // =====================================================================
-function openLightbox(src, title) {
-  if (!src) return;
+let lightboxGallery = [];
+let lightboxCurrentIndex = 0;
+let lightboxTitle = '';
+
+function openLightbox(srcOrList, title, startIndex = 0) {
+  let list = [];
+  if (Array.isArray(srcOrList)) {
+    list = srcOrList.filter(Boolean);
+  } else if (typeof srcOrList === 'string' && srcOrList) {
+    list = [srcOrList];
+  }
+  if (!list.length) return;
+
+  lightboxGallery = list;
+  lightboxCurrentIndex = Math.min(Math.max(0, startIndex), list.length - 1);
+  lightboxTitle = title || '';
+
   soundClick();
+  updateLightboxView();
   const modal = document.getElementById('lightbox-modal');
-  document.getElementById('lightbox-img').src = src;
-  document.getElementById('lightbox-caption').textContent = title || '';
-  modal.classList.add('open');
+  if (modal) modal.classList.add('open');
+}
+
+function updateLightboxView() {
+  const img = document.getElementById('lightbox-img');
+  const caption = document.getElementById('lightbox-caption');
+  const prevBtn = document.getElementById('lightbox-prev');
+  const nextBtn = document.getElementById('lightbox-next');
+  const dots = document.getElementById('lightbox-dots');
+
+  if (img) img.src = lightboxGallery[lightboxCurrentIndex] || '';
+
+  const total = lightboxGallery.length;
+  const countBadge = total > 1 ? ` <span style="font-size:0.95rem;opacity:0.8;font-weight:normal">(${lightboxCurrentIndex + 1}/${total})</span>` : '';
+  if (caption) caption.innerHTML = (lightboxTitle || '') + countBadge;
+
+  const showNav = total > 1;
+  if (prevBtn) prevBtn.style.display = showNav ? 'flex' : 'none';
+  if (nextBtn) nextBtn.style.display = showNav ? 'flex' : 'none';
+  if (dots) {
+    dots.style.display = showNav ? 'flex' : 'none';
+    dots.innerHTML = lightboxGallery.map((_, i) =>
+      `<span class="lb-dot ${i === lightboxCurrentIndex ? 'active' : ''}" onclick="setLightboxIndex(${i})"></span>`
+    ).join('');
+  }
+}
+
+function prevLightboxAngle(event) {
+  if (event) event.stopPropagation();
+  if (lightboxGallery.length <= 1) return;
+  lightboxCurrentIndex = (lightboxCurrentIndex - 1 + lightboxGallery.length) % lightboxGallery.length;
+  soundClick();
+  updateLightboxView();
+}
+
+function nextLightboxAngle(event) {
+  if (event) event.stopPropagation();
+  if (lightboxGallery.length <= 1) return;
+  lightboxCurrentIndex = (lightboxCurrentIndex + 1) % lightboxGallery.length;
+  soundClick();
+  updateLightboxView();
+}
+
+function setLightboxIndex(idx) {
+  if (idx < 0 || idx >= lightboxGallery.length) return;
+  lightboxCurrentIndex = idx;
+  soundClick();
+  updateLightboxView();
 }
 
 function openLightboxFromCard(event) {
   if (event) event.stopPropagation();
   if (!displayEvents.length) return;
   const e = displayEvents[cardIdx];
-  const src = getCultureImage(e);
-  if (src) {
-    openLightbox(src, `${e.title} (${e.year})`);
+  const gallery = getCultureGallery(e);
+  if (gallery.length) {
+    openLightbox(gallery, `${e.title} (${e.year})`, activeCultureAngle);
+  }
+}
+
+function openLightboxFromBestiary(monumentId, title) {
+  const gallery = getCultureGallery(monumentId);
+  const startIdx = _bestiaryAngles[monumentId] || 0;
+  if (gallery.length) {
+    openLightbox(gallery, title, startIdx);
   }
 }
 
@@ -5420,20 +5716,22 @@ function renderBestiary() {
       const known = learnedKeys.has(key);
       const keyEnc = encodeURIComponent(key);
       const safeTitle = escHtml(`${e.title} (${e.year})`);
-      const cultImg = getCultureImage(e);
+      const bstAngle = _bestiaryAngles[e.id] || 0;
+      const gallery = getCultureGallery(e);
+      const cultImg = gallery[bstAngle] || gallery[0] || e.image || '';
 
       let thumbHtml = '';
       if (cultImg) {
         const safeImg = escHtml(cultImg);
         thumbHtml = `
-          <div class="bst-mon-thumb" onclick="openLightbox('${safeImg}', '${safeTitle}')" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Нажмите для увеличения">
+          <div class="bst-mon-thumb" onclick="openLightboxFromBestiary('${escHtml(e.id)}', '${safeTitle}')" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Нажмите для увеличения">
             <img src="${safeImg}" alt="${escHtml(e.title)}">
-            <button class="fc-replace-btn" onclick="triggerCulturePhotoUpload('${escHtml(e.id)}', event)" title="Заменить фото">📷 Заменить</button>
+            <button class="fc-replace-btn" onclick="triggerCulturePhotoUploadSlot('${escHtml(e.id)}', ${bstAngle}, event)" title="Заменить текущий ракурс">📷 Заменить</button>
             <span class="fc-zoom-hint">🔍</span>
           </div>`;
       } else {
         thumbHtml = `
-          <div class="bst-mon-thumb" onclick="triggerCulturePhotoUpload('${escHtml(e.id)}', event)" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Загрузить фото памятника">
+          <div class="bst-mon-thumb" onclick="triggerCulturePhotoUploadSlot('${escHtml(e.id)}', 0, event)" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Загрузить фото памятника">
             <div class="cult-upload-slot">
               <div class="cult-slot-icon">📷</div>
               <div class="cult-slot-title">Загрузить фото</div>
@@ -5443,7 +5741,12 @@ function renderBestiary() {
       }
 
       return `<div class="bst-mon-card">
-        ${thumbHtml}
+        <div class="bst-mon-media-col" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'">
+          ${thumbHtml}
+          <div class="cult-angles-bar bst-angles-bar" onclick="event.stopPropagation()">
+            ${renderCultureAnglesBarHtml(e.id, bstAngle, 'bestiary')}
+          </div>
+        </div>
         <div class="bst-mon-body">
           <div class="bst-tl-top" style="margin-bottom:0">
             <div class="bst-mon-title">${escHtml(e.title)}</div>
@@ -5468,10 +5771,12 @@ function renderBestiary() {
 //  CUSTOM CARDS — EDITOR (DATES, TERMS, CULTURE)
 // =====================================================================
 const LS_CUSTOM_KEY = 'rus-trainer-custom-v1';
+const LS_CULT_GALLERY_KEY = 'rus-trainer-cult-gallery-v1';
 const LS_CULT_IMGS_KEY = 'rus-trainer-cult-imgs-v1';
 const IDB_NAME = 'RusHistoryTrainerDB';
-const IDB_STORE = 'cultureImages';
-const IDB_VERSION = 2;
+const IDB_STORE = 'cultureGallery';
+const IDB_STORE_OLD = 'cultureImages';
+const IDB_VERSION = 3;
 
 let _toastTimer = null;
 function showToast(msg, isError = false) {
@@ -5511,24 +5816,25 @@ function openCultureDB() {
   });
 }
 
-async function idbSaveCultureImage(id, dataUrl) {
+async function idbSaveCultureGallery(id, urlsArray) {
   try {
     const db = await openCultureDB();
     if (!db) return false;
+    const cleanArray = (Array.isArray(urlsArray) ? urlsArray : [urlsArray]).filter(Boolean).slice(0, 3);
     return new Promise((resolve) => {
       const tx = db.transaction(IDB_STORE, 'readwrite');
       tx.oncomplete = () => resolve(true);
       tx.onerror = () => resolve(false);
       tx.onabort = () => resolve(false);
-      tx.objectStore(IDB_STORE).put(dataUrl, id);
+      tx.objectStore(IDB_STORE).put(cleanArray, id);
     });
   } catch(e) {
-    console.error('idbSaveCultureImage error:', e);
+    console.error('idbSaveCultureGallery error:', e);
     return false;
   }
 }
 
-async function idbGetAllCultureImages() {
+async function idbGetAllCultureGallery() {
   try {
     const db = await openCultureDB();
     if (!db) return {};
@@ -5540,7 +5846,7 @@ async function idbGetAllCultureImages() {
         const cursor = e.target.result;
         if (cursor) {
           const val = cursor.value;
-          res[cursor.key] = Array.isArray(val) ? (val[0] || '') : (val || '');
+          res[cursor.key] = (Array.isArray(val) ? val : [val]).filter(Boolean).slice(0, 3);
           cursor.continue();
         } else {
           resolve(res);
@@ -5549,61 +5855,151 @@ async function idbGetAllCultureImages() {
       req.onerror = () => resolve({});
     });
   } catch(e) {
-    console.error('idbGetAllCultureImages error:', e);
+    console.error('idbGetAllCultureGallery error:', e);
     return {};
   }
 }
 
-function loadCultureImages() {
+async function initCultureGalleryFromStorage() {
+  // 1. Fast synchronous cache & legacy localStorage migration
   try {
-    const saved = JSON.parse(localStorage.getItem(LS_CULT_IMGS_KEY) || '{}');
+    const saved = JSON.parse(localStorage.getItem(LS_CULT_GALLERY_KEY) || '{}');
     if (saved && typeof saved === 'object') {
-      CUSTOM_CULTURE_IMAGES = Object.assign({}, saved, CUSTOM_CULTURE_IMAGES);
+      for (const [k, v] of Object.entries(saved)) {
+        const arr = (Array.isArray(v) ? v : [v]).filter(Boolean).slice(0, 3);
+        if (arr.length) {
+          CUSTOM_CULTURE_GALLERY[k] = arr;
+          CUSTOM_CULTURE_IMAGES[k] = arr[0] || '';
+        }
+      }
+    }
+    const oldImgs = JSON.parse(localStorage.getItem(LS_CULT_IMGS_KEY) || '{}');
+    if (oldImgs && typeof oldImgs === 'object') {
+      for (const [k, v] of Object.entries(oldImgs)) {
+        if (v && (!CUSTOM_CULTURE_GALLERY[k] || !CUSTOM_CULTURE_GALLERY[k].length)) {
+          CUSTOM_CULTURE_GALLERY[k] = [v];
+          CUSTOM_CULTURE_IMAGES[k] = v;
+        }
+      }
     }
   } catch(e) {}
-}
 
-async function initCultureImagesFromStorage() {
-  loadCultureImages();
+  // 2. Read from IndexedDB ('RusHistoryTrainerDB', version 3, store 'cultureGallery')
   try {
-    const idbImgs = await idbGetAllCultureImages();
-    if (idbImgs && Object.keys(idbImgs).length > 0) {
-      Object.assign(CUSTOM_CULTURE_IMAGES, idbImgs);
-    } else if (Object.keys(CUSTOM_CULTURE_IMAGES).length > 0) {
-      for (const [id, url] of Object.entries(CUSTOM_CULTURE_IMAGES)) {
-        if (id && url) idbSaveCultureImage(id, url);
+    const db = await openCultureDB();
+    if (db) {
+      // Migrate from old store 'cultureImages' if present
+      if (db.objectStoreNames.contains(IDB_STORE_OLD)) {
+        const oldRecords = await new Promise((res) => {
+          try {
+            const tx = db.transaction(IDB_STORE_OLD, 'readonly');
+            const store = tx.objectStore(IDB_STORE_OLD);
+            const req = store.openCursor();
+            const items = {};
+            req.onsuccess = (ev) => {
+              const cur = ev.target.result;
+              if (cur) {
+                if (cur.value) items[cur.key] = cur.value;
+                cur.continue();
+              } else res(items);
+            };
+            req.onerror = () => res({});
+          } catch(err) { res({}); }
+        });
+
+        for (const [k, val] of Object.entries(oldRecords)) {
+          const norm = (Array.isArray(val) ? val : [val]).filter(Boolean).slice(0, 3);
+          if (norm.length && (!CUSTOM_CULTURE_GALLERY[k] || !CUSTOM_CULTURE_GALLERY[k].length)) {
+            CUSTOM_CULTURE_GALLERY[k] = norm;
+            CUSTOM_CULTURE_IMAGES[k] = norm[0] || '';
+            await idbSaveCultureGallery(k, norm);
+          }
+        }
+      }
+
+      // Read all records from 'cultureGallery'
+      const galleryRecords = await new Promise((res) => {
+        try {
+          const tx = db.transaction(IDB_STORE, 'readonly');
+          const store = tx.objectStore(IDB_STORE);
+          const req = store.openCursor();
+          const items = {};
+          req.onsuccess = (ev) => {
+            const cur = ev.target.result;
+            if (cur) {
+              const val = cur.value;
+              items[cur.key] = (Array.isArray(val) ? val : [val]).filter(Boolean).slice(0, 3);
+              cur.continue();
+            } else res(items);
+          };
+          req.onerror = () => res({});
+        } catch(err) { res({}); }
+      });
+
+      for (const [k, arr] of Object.entries(galleryRecords)) {
+        if (arr && arr.length) {
+          CUSTOM_CULTURE_GALLERY[k] = arr;
+          CUSTOM_CULTURE_IMAGES[k] = arr[0] || '';
+        }
+      }
+
+      for (const [k, arr] of Object.entries(CUSTOM_CULTURE_GALLERY)) {
+        if (!galleryRecords[k] && arr && arr.length) {
+          await idbSaveCultureGallery(k, arr);
+        }
       }
     }
   } catch(e) {
-    console.warn('IDB load error:', e);
+    console.warn('IDB init error:', e);
   }
-  if (currentMode === 'culture') {
-    renderCard();
-    const curId = getCurrentCultureId();
-    if (curId && CUSTOM_CULTURE_IMAGES[curId]) {
-      refreshCurrentCultureView(curId, CUSTOM_CULTURE_IMAGES[curId]);
-    }
-  } else if (currentMode === 'bestiary') {
-    renderBestiary();
+
+  // 3. Immediately re-render active view after reading
+  renderCard();
+  renderBestiary();
+
+  const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+  if (activeTab === 'quiz') {
+    const qId = quizQuestion?.target?.id;
+    if (qId) updateQuizCultureImage(qId);
+  } else if (activeTab === 'input') {
+    const iId = inputQuestion?.target?.id;
+    if (iId) updateInputCultureImage(iId);
   }
 }
 
-function saveCultureImages() {
-  try {
-    localStorage.setItem(LS_CULT_IMGS_KEY, JSON.stringify(CUSTOM_CULTURE_IMAGES));
-  } catch(e) {}
-  for (const [id, url] of Object.entries(CUSTOM_CULTURE_IMAGES)) {
-    if (id && url) idbSaveCultureImage(id, url);
-  }
-  return true;
+// Aliases for compatibility
+function loadCultureImages() {
+  return initCultureGalleryFromStorage();
+}
+function initCultureImagesFromStorage() {
+  return initCultureGalleryFromStorage();
 }
 
-function getCultureImage(item) {
+function getCultureGallery(item) {
+  if (!item) return [];
+  const id = (typeof item === 'string') ? item : item.id;
+  if (id && CUSTOM_CULTURE_GALLERY[id] && Array.isArray(CUSTOM_CULTURE_GALLERY[id])) {
+    const list = CUSTOM_CULTURE_GALLERY[id].filter(Boolean);
+    if (list.length > 0) return list;
+  }
+  if (typeof item === 'object' && item.image) {
+    return [item.image];
+  }
+  return [];
+}
+
+function getCultureImage(item, angleIdx = null) {
   if (!item) return '';
-  if (item.id && CUSTOM_CULTURE_IMAGES[item.id]) {
-    return CUSTOM_CULTURE_IMAGES[item.id];
+  const gallery = getCultureGallery(item);
+  if (!gallery.length) {
+    return (typeof item === 'object' && item.image) ? item.image : '';
   }
-  return item.image || '';
+  if (angleIdx === null || angleIdx === undefined) {
+    const idx = Math.min(Math.max(0, activeCultureAngle || 0), gallery.length - 1);
+    return gallery[idx] || gallery[0] || '';
+  }
+  const idx = Math.min(Math.max(0, angleIdx), gallery.length - 1);
+  return gallery[idx] || gallery[0] || '';
 }
 
 function getCurrentCultureId() {
@@ -5624,7 +6020,7 @@ function getCurrentCultureId() {
   return null;
 }
 
-function compressImageFile(file, maxDim = 800, quality = 0.80) {
+function compressImageFile(file, maxDim = 900, quality = 0.80) {
   return new Promise((resolve, reject) => {
     if (!file || !(file instanceof Blob)) {
       return reject(new Error('Не изображение'));
@@ -5666,17 +6062,126 @@ function compressImageFile(file, maxDim = 800, quality = 0.80) {
   });
 }
 
-function triggerCulturePhotoUpload(cultId, event) {
+function renderCultureAnglesBar(monumentId, targetEl) {
+  if (!targetEl || !monumentId) return;
+  targetEl.innerHTML = renderCultureAnglesBarHtml(monumentId, activeCultureAngle, 'fc');
+}
+
+function renderCultureAnglesBarHtml(monumentId, currentAngle = 0, context = 'fc') {
+  const gallery = getCultureGallery(monumentId);
+  let html = '';
+  for (let i = 0; i < 3; i++) {
+    if (i < gallery.length) {
+      const isAct = (i === currentAngle);
+      const onSelect = context === 'bestiary'
+        ? `selectBestiaryAngle('${escHtml(monumentId)}', ${i}, event)`
+        : `selectCultureAngle('${escHtml(monumentId)}', ${i}, event)`;
+      html += `
+        <div class="cult-angle-slot filled ${isAct ? 'active' : ''}"
+             onclick="${onSelect}"
+             title="Ракурс ${i + 1}">
+          <img src="${escHtml(gallery[i])}" alt="Ракурс ${i + 1}">
+          <span class="cult-angle-num">${i + 1}</span>
+          <button class="cult-angle-del" onclick="deleteCultureAngle('${escHtml(monumentId)}', ${i}, event)" title="Удалить этот ракурс">✕</button>
+        </div>`;
+    } else {
+      html += `
+        <div class="cult-angle-slot empty"
+             onclick="triggerCulturePhotoUploadSlot('${escHtml(monumentId)}', ${i}, event)"
+             ondragover="handleCultDragOver(event)"
+             ondragleave="handleCultDragLeave(event)"
+             ondrop="handleCultAngleSlotDrop(event, '${escHtml(monumentId)}', ${i})"
+             title="Загрузить ракурс ${i + 1}">
+          <span class="cult-angle-plus">➕</span>
+          <span class="cult-angle-num">${i + 1}</span>
+        </div>`;
+    }
+  }
+  return html;
+}
+
+function selectCultureAngle(monumentId, idx, event) {
+  if (event) event.stopPropagation();
+  activeCultureAngle = idx;
+  soundClick();
+  renderCard();
+}
+
+function selectBestiaryAngle(monumentId, idx, event) {
+  if (event) event.stopPropagation();
+  _bestiaryAngles[monumentId] = idx;
+  soundClick();
+  renderBestiary();
+}
+
+async function addCultureAngle(id, dataUrl, slotIdx = null) {
+  if (!id || !dataUrl) return;
+  let gallery = [...getCultureGallery(id)];
+  if (slotIdx !== null && slotIdx !== undefined && slotIdx >= 0 && slotIdx < gallery.length) {
+    gallery[slotIdx] = dataUrl;
+    activeCultureAngle = slotIdx;
+  } else if (gallery.length < 3) {
+    gallery.push(dataUrl);
+    activeCultureAngle = gallery.length - 1;
+  } else {
+    gallery[activeCultureAngle] = dataUrl;
+  }
+  gallery = gallery.slice(0, 3);
+  CUSTOM_CULTURE_GALLERY[id] = gallery;
+  CUSTOM_CULTURE_IMAGES[id] = gallery[0] || '';
+
+  await idbSaveCultureGallery(id, gallery);
+  try {
+    localStorage.setItem(LS_CULT_GALLERY_KEY, JSON.stringify(CUSTOM_CULTURE_GALLERY));
+  } catch(e) {}
+
+  soundCorrect();
+  showToast(`✓ Ракурс сохранён (${gallery.length}/3)`);
+  refreshCurrentCultureView(id);
+}
+
+async function deleteCultureAngle(id, angleIdx, event) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  if (!id) return;
+  const gallery = getCultureGallery(id);
+  if (!gallery.length || angleIdx < 0 || angleIdx >= gallery.length) return;
+
+  gallery.splice(angleIdx, 1);
+  CUSTOM_CULTURE_GALLERY[id] = gallery;
+  CUSTOM_CULTURE_IMAGES[id] = gallery[0] || '';
+
+  await idbSaveCultureGallery(id, gallery);
+  try {
+    localStorage.setItem(LS_CULT_GALLERY_KEY, JSON.stringify(CUSTOM_CULTURE_GALLERY));
+  } catch(e) {}
+
+  if (activeCultureAngle >= gallery.length) {
+    activeCultureAngle = Math.max(0, gallery.length - 1);
+  }
+  if (_bestiaryAngles[id] >= gallery.length) {
+    _bestiaryAngles[id] = Math.max(0, gallery.length - 1);
+  }
+
+  soundClick();
+  showToast('✕ Ракурс удалён');
+  refreshCurrentCultureView(id);
+}
+
+function triggerCulturePhotoUploadSlot(cultId, slotIdx = null, event = null) {
   if (event) {
     event.stopPropagation();
     event.preventDefault();
   }
   const targetId = cultId || getCurrentCultureId();
   if (!targetId) {
-    console.warn('triggerCulturePhotoUpload: monument id not determined');
+    console.warn('triggerCulturePhotoUploadSlot: monument id not determined');
     return;
   }
   window._pendingCultId = targetId;
+  window._targetAngleSlot = (slotIdx !== null && slotIdx !== undefined) ? slotIdx : null;
   const inp = document.getElementById('quick-cult-upload');
   if (inp) {
     inp.value = '';
@@ -5684,58 +6189,54 @@ function triggerCulturePhotoUpload(cultId, event) {
   }
 }
 
+function triggerCulturePhotoUpload(cultId, event) {
+  triggerCulturePhotoUploadSlot(cultId, null, event);
+}
+
 async function handleQuickCultUpload(inputEl) {
   const file = inputEl && inputEl.files && inputEl.files[0];
   const cultId = window._pendingCultId || getCurrentCultureId();
+  const slotIdx = window._targetAngleSlot;
   if (!file || !cultId) {
     if (inputEl) inputEl.value = '';
     return;
   }
   try {
-    const dataUrl = await compressImageFile(file, 800, 0.80);
-    await saveAndApplyCultureImage(cultId, dataUrl);
+    const dataUrl = await compressImageFile(file, 900, 0.80);
+    await addCultureAngle(cultId, dataUrl, slotIdx);
   } catch (err) {
     console.error('Ошибка загрузки фото культуры:', err);
     showToast('Не удалось обработать изображение: ' + (err.message || err), true);
   } finally {
     window._pendingCultId = null;
+    window._targetAngleSlot = null;
     if (inputEl) inputEl.value = '';
   }
 }
 
-async function saveAndApplyCultureImage(cultId, dataUrl) {
-  if (!cultId || !dataUrl) return;
-  CUSTOM_CULTURE_IMAGES[cultId] = dataUrl;
-
-  idbSaveCultureImage(cultId, dataUrl);
-
-  try {
-    localStorage.setItem(LS_CULT_IMGS_KEY, JSON.stringify(CUSTOM_CULTURE_IMAGES));
-  } catch(e) {}
-
-  soundCorrect();
-  showToast('✓ Фото памятника сохранено');
-
-  // Принудительное мгновенное обновление текущего экрана
-  refreshCurrentCultureView(cultId, dataUrl);
+function saveAndApplyCultureImage(cultId, dataUrl) {
+  addCultureAngle(cultId, dataUrl, activeCultureAngle);
 }
 
-function refreshCurrentCultureView(cultId, dataUrl) {
+function refreshCurrentCultureView(cultId) {
   if (currentMode === 'culture') {
     const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
     if (activeTab === 'cards') {
       renderCard();
     } else if (activeTab === 'quiz') {
-      updateQuizCultureImage(cultId, dataUrl);
+      updateQuizCultureImage(cultId);
     } else if (activeTab === 'input') {
-      updateInputCultureImage(cultId, dataUrl);
+      updateInputCultureImage(cultId);
     }
   } else if (currentMode === 'bestiary') {
     renderBestiary();
   }
 }
 
-function updateQuizCultureImage(cultId, dataUrl) {
+function updateQuizCultureImage(cultId) {
+  const target = quizQuestion?.target;
+  if (!target || target.id !== cultId) return;
+  const gallery = getCultureGallery(target);
   const qzImg = document.getElementById('qz-img');
   const qzPlaceholder = document.getElementById('qz-placeholder');
   const qzReplace = document.getElementById('qz-replace');
@@ -5743,8 +6244,11 @@ function updateQuizCultureImage(cultId, dataUrl) {
   const qzMedia = document.getElementById('qz-media');
 
   if (qzMedia) qzMedia.classList.add('show');
-  if (dataUrl) {
-    if (qzImg) { qzImg.src = dataUrl; qzImg.style.display = 'block'; }
+  if (gallery.length > 0) {
+    const curIdx = target._quizAngle !== undefined && target._quizAngle < gallery.length ? target._quizAngle : (gallery.length - 1);
+    target._quizAngle = curIdx;
+    const cultImg = gallery[curIdx];
+    if (qzImg) { qzImg.src = cultImg; qzImg.style.display = 'block'; }
     if (qzPlaceholder) qzPlaceholder.style.display = 'none';
     if (qzReplace) qzReplace.style.display = '';
     if (qzZoom) qzZoom.style.display = '';
@@ -5756,7 +6260,10 @@ function updateQuizCultureImage(cultId, dataUrl) {
   }
 }
 
-function updateInputCultureImage(cultId, dataUrl) {
+function updateInputCultureImage(cultId) {
+  const target = inputQuestion?.target;
+  if (!target || target.id !== cultId) return;
+  const gallery = getCultureGallery(target);
   const inpImg = document.getElementById('inp-img');
   const inpPlaceholder = document.getElementById('inp-placeholder');
   const inpReplace = document.getElementById('inp-replace');
@@ -5764,8 +6271,11 @@ function updateInputCultureImage(cultId, dataUrl) {
   const inpMedia = document.getElementById('inp-media');
 
   if (inpMedia) inpMedia.classList.add('show');
-  if (dataUrl) {
-    if (inpImg) { inpImg.src = dataUrl; inpImg.style.display = 'block'; }
+  if (gallery.length > 0) {
+    const curIdx = target._inpAngle !== undefined && target._inpAngle < gallery.length ? target._inpAngle : (gallery.length - 1);
+    target._inpAngle = curIdx;
+    const cultImg = gallery[curIdx];
+    if (inpImg) { inpImg.src = cultImg; inpImg.style.display = 'block'; }
     if (inpPlaceholder) inpPlaceholder.style.display = 'none';
     if (inpReplace) inpReplace.style.display = '';
     if (inpZoom) inpZoom.style.display = '';
@@ -5782,31 +6292,35 @@ function handleCultureSlotClick(event, slotType) {
     event.stopPropagation();
   }
   let cultId = null;
-  let imgSrc = null;
   let title = '';
+  let gallery = [];
+  let startIdx = 0;
 
   if (slotType === 'fc') {
     if (!displayEvents.length) return;
     const e = displayEvents[cardIdx];
     cultId = e.id;
-    imgSrc = getCultureImage(e);
+    gallery = getCultureGallery(e);
+    startIdx = activeCultureAngle;
     title = `${e.title} (${e.year})`;
   } else if (slotType === 'quiz') {
     if (!quizQuestion || !quizQuestion.target) return;
     cultId = quizQuestion.target.id;
-    imgSrc = getCultureImage(quizQuestion.target);
+    gallery = getCultureGallery(quizQuestion.target);
+    startIdx = quizQuestion.target._quizAngle || 0;
     title = `${quizQuestion.target.title} (${quizQuestion.target.year})`;
   } else if (slotType === 'inp') {
     if (!inputQuestion || !inputQuestion.target) return;
     cultId = inputQuestion.target.id;
-    imgSrc = getCultureImage(inputQuestion.target);
+    gallery = getCultureGallery(inputQuestion.target);
+    startIdx = inputQuestion.target._inpAngle || 0;
     title = `${inputQuestion.target.title} (${inputQuestion.target.year})`;
   }
 
-  if (imgSrc) {
-    openLightbox(imgSrc, title);
+  if (gallery.length) {
+    openLightbox(gallery, title, startIdx);
   } else if (cultId) {
-    triggerCulturePhotoUpload(cultId, event);
+    triggerCulturePhotoUploadSlot(cultId, 0, event);
   }
 }
 
@@ -5835,8 +6349,8 @@ async function handleCultDrop(event, cultId) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 800, 0.80);
-    await saveAndApplyCultureImage(targetId, dataUrl);
+    const dataUrl = await compressImageFile(file, 900, 0.80);
+    await addCultureAngle(targetId, dataUrl);
   } catch(err) {
     console.error('Ошибка Drag & Drop изображения:', err);
     showToast('Не удалось обработать перетащенное изображение: ' + (err.message || err), true);
@@ -5865,8 +6379,29 @@ async function handleCultureSlotDrop(event, slotType) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 800, 0.80);
-    await saveAndApplyCultureImage(cultId, dataUrl);
+    const dataUrl = await compressImageFile(file, 900, 0.80);
+    const slotIdx = (slotType === 'fc') ? activeCultureAngle : null;
+    await addCultureAngle(cultId, dataUrl, slotIdx);
+  } catch(err) {
+    console.error('Ошибка Drag & Drop изображения:', err);
+    showToast('Не удалось обработать перетащенное изображение: ' + (err.message || err), true);
+  }
+}
+
+async function handleCultAngleSlotDrop(event, monumentId, slotIdx) {
+  event.preventDefault();
+  event.stopPropagation();
+  event.currentTarget.classList.remove('drag-hover');
+  if (!monumentId) return;
+
+  const dt = event.dataTransfer;
+  if (!dt || !dt.files || !dt.files.length) return;
+  const file = dt.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+
+  try {
+    const dataUrl = await compressImageFile(file, 900, 0.80);
+    await addCultureAngle(monumentId, dataUrl, slotIdx);
   } catch(err) {
     console.error('Ошибка Drag & Drop изображения:', err);
     showToast('Не удалось обработать перетащенное изображение: ' + (err.message || err), true);
@@ -6296,9 +6831,9 @@ function clearAllCustomCards() {
 async function exportBackup() {
   const statusEl = document.getElementById('ed-export-status');
   try {
-    const idbImgs = await idbGetAllCultureImages();
-    if (idbImgs && Object.keys(idbImgs).length > 0) {
-      Object.assign(CUSTOM_CULTURE_IMAGES, idbImgs);
+    const idbGallery = await idbGetAllCultureGallery();
+    if (idbGallery && Object.keys(idbGallery).length > 0) {
+      Object.assign(CUSTOM_CULTURE_GALLERY, idbGallery);
     }
   } catch(e) {}
   const payload = {
@@ -6307,6 +6842,7 @@ async function exportBackup() {
     custom: JSON.parse(localStorage.getItem(LS_CUSTOM_KEY) || '{}'),
     learned: JSON.parse(localStorage.getItem(LS_KEY) || '[]'),
     streak: JSON.parse(localStorage.getItem(STREAK_LS_KEY) || '{}'),
+    cultGallery: CUSTOM_CULTURE_GALLERY,
     cultImages: CUSTOM_CULTURE_IMAGES,
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -6336,14 +6872,27 @@ function importBackup(event) {
         localStorage.setItem(STREAK_LS_KEY, JSON.stringify(payload.streak));
         loadStreakLS();
       }
-      if (payload.cultImages && typeof payload.cultImages === 'object') {
-        Object.assign(CUSTOM_CULTURE_IMAGES, payload.cultImages);
-        for (const [id, url] of Object.entries(payload.cultImages)) {
-          if (id && url) idbSaveCultureImage(id, url);
+      if (payload.cultGallery && typeof payload.cultGallery === 'object') {
+        for (const [id, val] of Object.entries(payload.cultGallery)) {
+          const arr = (Array.isArray(val) ? val : [val]).filter(Boolean).slice(0, 3);
+          if (arr.length) {
+            CUSTOM_CULTURE_GALLERY[id] = arr;
+            CUSTOM_CULTURE_IMAGES[id] = arr[0] || '';
+            await idbSaveCultureGallery(id, arr);
+          }
         }
         try {
-          localStorage.setItem(LS_CULT_IMGS_KEY, JSON.stringify(CUSTOM_CULTURE_IMAGES));
+          localStorage.setItem(LS_CULT_GALLERY_KEY, JSON.stringify(CUSTOM_CULTURE_GALLERY));
         } catch(e) {}
+      } else if (payload.cultImages && typeof payload.cultImages === 'object') {
+        for (const [id, url] of Object.entries(payload.cultImages)) {
+          if (id && url) {
+            const arr = [url];
+            CUSTOM_CULTURE_GALLERY[id] = arr;
+            CUSTOM_CULTURE_IMAGES[id] = url;
+            await idbSaveCultureGallery(id, arr);
+          }
+        }
       }
       loadCustomCards();
       rebuildAndRefresh();
@@ -6392,17 +6941,19 @@ document.addEventListener('paste', async function(e) {
 
   e.preventDefault();
   try {
-    const dataUrl = await compressImageFile(imageFile, 800, 0.80);
-    await saveAndApplyCultureImage(targetId, dataUrl);
+    const dataUrl = await compressImageFile(imageFile, 900, 0.80);
+    const slotIdx = window._targetAngleSlot;
+    await addCultureAngle(targetId, dataUrl, slotIdx);
   } catch(err) {
     console.error('Ошибка вставки фото культуры:', err);
     showToast('Не удалось вставить изображение: ' + (err.message || err), true);
+  } finally {
+    window._targetAngleSlot = null;
   }
 });
 
 // ---- Init ----
-loadCultureImages();
-initCultureImagesFromStorage();
+initCultureGalleryFromStorage();
 loadCustomCards();
 updateEdThemeAutocomplete();
 </script>
