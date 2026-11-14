@@ -2315,12 +2315,13 @@ body.zen-mode .section.active {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: min(92vw, 960px);
+  max-width: min(94vw, 1400px);
   cursor: default;
 }
 #lightbox-img {
-  max-width: min(92vw, 960px);
-  max-height: 75vh;
+  min-width: min(680px, 88vw);
+  max-width: 90vw;
+  max-height: 82vh;
   border-radius: var(--radius-lg);
   border: 1.5px solid var(--border2);
   box-shadow: 0 0 50px rgba(201,168,76,.18), 0 16px 48px rgba(0,0,0,.8);
@@ -11513,10 +11514,15 @@ function idbGetAllCultureGallery() {
 function getCultureGallery(item) {
   if (!item) return [];
   let id = null;
+  let monObj = null;
   if (typeof item === 'string' || typeof item === 'number') {
     id = String(item);
-  } else if (typeof item === 'object') {
+    if (typeof DATA_CULTURE !== 'undefined') {
+      monObj = DATA_CULTURE.find(c => c && c.id === id);
+    }
+  } else if (typeof item === 'object' && item) {
     id = String(item.id || item.cultId || item.key || '');
+    monObj = item;
   }
   if (id) {
     const customList = CUSTOM_CULTURE_GALLERY[id];
@@ -11527,8 +11533,8 @@ function getCultureGallery(item) {
     const single = CUSTOM_CULTURE_IMAGES[id];
     if (single) return [single];
   }
-  if (typeof item === 'object' && item && item.image) {
-    return [item.image];
+  if (monObj && monObj.image) {
+    return [monObj.image];
   }
   return [];
 }
@@ -11824,20 +11830,49 @@ async function addCultureAngle(id, dataUrl, slotIdx = null) {
 
   let compressedUrl = dataUrl;
   try {
-    compressedUrl = await compressImageFile(dataUrl, 700, 0.75);
+    compressedUrl = await compressImageFile(dataUrl, 1000, 0.85);
   } catch(e) {
     console.warn('compressImageFile error, using original:', e);
   }
 
-  let gallery = [...getCultureGallery(cultKey)];
-  if (slotIdx !== null && slotIdx !== undefined && slotIdx >= 0 && slotIdx < gallery.length) {
-    gallery[slotIdx] = compressedUrl;
-    activeCultureAngle = slotIdx;
-  } else if (gallery.length < 3) {
-    gallery.push(compressedUrl);
-    activeCultureAngle = gallery.length - 1;
+  // Find monument to get item.image
+  let monObj = null;
+  if (typeof DATA_CULTURE !== 'undefined') {
+    monObj = DATA_CULTURE.find(c => c && c.id === cultKey);
+  }
+  const baseImg = monObj && monObj.image ? monObj.image : '';
+
+  const hasCustom = Array.isArray(CUSTOM_CULTURE_GALLERY[cultKey]) && CUSTOM_CULTURE_GALLERY[cultKey].filter(Boolean).length > 0;
+
+  let gallery = [];
+  if (hasCustom) {
+    gallery = [...CUSTOM_CULTURE_GALLERY[cultKey].filter(Boolean)];
+    if (slotIdx !== null && slotIdx !== undefined && slotIdx >= 0 && slotIdx < gallery.length) {
+      gallery[slotIdx] = compressedUrl;
+      activeCultureAngle = slotIdx;
+    } else if (gallery.length < 3) {
+      gallery.push(compressedUrl);
+      activeCultureAngle = gallery.length - 1;
+    } else {
+      gallery[activeCultureAngle] = compressedUrl;
+    }
   } else {
-    gallery[activeCultureAngle] = compressedUrl;
+    // If CUSTOM_CULTURE_GALLERY[id] doesn't exist yet:
+    if (baseImg) {
+      if (slotIdx === 0) {
+        // Explicitly replacing the base photo in slot 0
+        gallery = [compressedUrl];
+        activeCultureAngle = 0;
+      } else {
+        // User is adding a new angle (clicked "+", slot 1, slot 2):
+        // Preserves base image in slot 0, and places user's new photo in slot 1!
+        gallery = [baseImg, compressedUrl];
+        activeCultureAngle = 1;
+      }
+    } else {
+      gallery = [compressedUrl];
+      activeCultureAngle = 0;
+    }
   }
   gallery = gallery.slice(0, 3);
 
@@ -11868,8 +11903,18 @@ async function deleteCultureAngle(id, angleIdx, event) {
   const gallery = [...getCultureGallery(cultKey)];
   if (!gallery.length || angleIdx < 0 || angleIdx >= gallery.length) return;
 
+  // Find monument
+  let monObj = null;
+  if (typeof DATA_CULTURE !== 'undefined') {
+    monObj = DATA_CULTURE.find(c => c && c.id === cultKey);
+  }
+  const baseImg = monObj && monObj.image ? monObj.image : '';
+
   gallery.splice(angleIdx, 1);
-  if (gallery.length === 0) {
+
+  // If user deleted all added slots, or if only base image remains (or empty),
+  // delete custom entry so getCultureGallery cleanly falls back to [baseImg]
+  if (gallery.length === 0 || (gallery.length === 1 && gallery[0] === baseImg)) {
     delete CUSTOM_CULTURE_GALLERY[cultKey];
     delete CUSTOM_CULTURE_IMAGES[cultKey];
     idbDeleteCultureGallery(cultKey).catch(() => {});
@@ -11882,11 +11927,12 @@ async function deleteCultureAngle(id, angleIdx, event) {
   // Synchronously persist entire dictionary to localStorage
   _syncCultureGalleryToLocalStorage();
 
-  if (activeCultureAngle >= gallery.length) {
-    activeCultureAngle = Math.max(0, gallery.length - 1);
+  const newGallery = getCultureGallery(cultKey);
+  if (activeCultureAngle >= newGallery.length) {
+    activeCultureAngle = Math.max(0, newGallery.length - 1);
   }
-  if (_bestiaryAngles[cultKey] >= gallery.length) {
-    _bestiaryAngles[cultKey] = Math.max(0, gallery.length - 1);
+  if (_bestiaryAngles[cultKey] >= newGallery.length) {
+    _bestiaryAngles[cultKey] = Math.max(0, newGallery.length - 1);
   }
 
   soundClick();
