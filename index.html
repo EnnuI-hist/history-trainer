@@ -3284,7 +3284,7 @@ body.zen-mode .section.active {
     <button class="epoch-btn active" data-epoch="all">✦ Все эпохи</button>
   </div>
 
-  <!-- Sub-periods navigation (shown when currentEpoch === 'empire' || currentEpoch === 'soviet') -->
+  <!-- Sub-periods navigation (shown when SUB_PERIODS[currentEpoch]) -->
   <div class="subperiod-bar-wrap" id="subperiod-bar-wrap" style="display:none">
     <div class="subperiod-bar" id="subperiod-bar"></div>
   </div>
@@ -5994,6 +5994,17 @@ const EPOCH_NAMES = {
 };
 
 const SUB_PERIODS = {
+  moscow: [
+    { id: 'all', label: 'Весь период (XIV — нач. XVI в.)' },
+    { id: 'moscow_early', label: 'Возвышение Москвы и Куликовская битва (1300–1462)' },
+    { id: 'moscow_united', label: 'Иван III и Василий III (1462–1533)' },
+  ],
+  tsardom: [
+    { id: 'all', label: 'Весь период (1533–1696)' },
+    { id: 'ivan4', label: 'Иван IV Грозный (1533–1584)' },
+    { id: 'smuta', label: 'Смутное время и рубеж веков (1584–1613)' },
+    { id: 'romanovs_early', label: 'Первые Романовы (1613–1696)' },
+  ],
   empire: [
     { id: 'all', label: 'Все периоды РИ' },
     { id: 'peter1', label: 'Пётр I (1696–1725)' },
@@ -6022,7 +6033,7 @@ function parseItemYearRange(item) {
   }
   const str = String(item.period || item.years || item.year || '');
   if (!str) return null;
-  const mYears = str.match(/\b(1[6-9]\d\d|20[0-2]\d)\b/g);
+  const mYears = str.match(/\b(1[2-9]\d\d|20[0-2]\d)\b/g);
   if (mYears && mYears.length >= 2) {
     const y1 = parseInt(mYears[0], 10);
     const y2 = parseInt(mYears[1], 10);
@@ -6032,11 +6043,55 @@ function parseItemYearRange(item) {
     const y = parseInt(mYears[0], 10);
     return { start: y, end: y };
   }
+  if (/XIII\s*в/i.test(str)) return { start: 1200, end: 1299 };
+  if (/XIV\s*в/i.test(str))  return { start: 1300, end: 1399 };
+  if (/XV\s*в/i.test(str))   return { start: 1400, end: 1499 };
+  if (/XVI\s*в/i.test(str))  return { start: 1500, end: 1599 };
+  if (/XVII\s*в/i.test(str)) return { start: 1600, end: 1699 };
   if (/XVIII\s*в/i.test(str)) return { start: 1700, end: 1799 };
   if (/XIX\s*в/i.test(str))   return { start: 1800, end: 1899 };
   if (/XX\s*в/i.test(str))    return { start: 1900, end: 1999 };
   if (/XXI\s*в/i.test(str))   return { start: 2000, end: 2029 };
   return null;
+}
+
+function getMoscowSubPeriod(item) {
+  const sy = item.sortYear || 0;
+  const ev = ((item.event || item.title || item.name || '') + ' ' + (item.detail || item.role || item.facts || '')).toLowerCase().replace(/\u0308/g, '');
+
+  // 1. Moscow early (1300–1462)
+  if (sy < 1462) return 'moscow_early';
+  if (sy <= 1462.5) {
+    if (/василий ii|василий темный|василия темного|смерть василия/.test(ev)) return 'moscow_early';
+    return 'moscow_united';
+  }
+
+  // 2. Moscow united (1462–1533)
+  return 'moscow_united';
+}
+
+function getTsardomSubPeriod(item) {
+  const sy = item.sortYear || 0;
+  const ev = ((item.event || item.title || item.name || '') + ' ' + (item.detail || item.role || item.facts || '')).toLowerCase().replace(/\u0308/g, '');
+
+  // 1. Ivan IV the Terrible (1533–1584)
+  if (sy < 1584) return 'ivan4';
+  if (sy <= 1584.5) {
+    if (/иван iv|иван грозн|смерть ивана|опричнин/.test(ev)) return 'ivan4';
+    if (/федор|фёдор|воцарение федора|иоаннович|годунов/.test(ev)) return 'smuta';
+    return 'ivan4';
+  }
+
+  // 2. Smuta and turn of centuries (1584–1613)
+  if (sy < 1613) return 'smuta';
+  if (sy <= 1613.5) {
+    if (/земский собор|михаил романов|романов|воцарение михаила/.test(ev)) return 'romanovs_early';
+    if (/семибоярщин|ополчени|пожарск|минин|интервенци|тушинск|болотников|хлопк|голод/.test(ev)) return 'smuta';
+    return 'romanovs_early';
+  }
+
+  // 3. Early Romanovs (1613–1696)
+  return 'romanovs_early';
 }
 
 function getEmpireSubPeriod(item) {
@@ -6129,10 +6184,14 @@ function getSovietSubPeriod(item) {
 
 function itemMatchesSubPeriod(item, epoch, subPeriod) {
   if (!subPeriod || subPeriod === 'all') return true;
-  if (epoch !== 'empire' && epoch !== 'soviet') return true;
+  if (!SUB_PERIODS[epoch]) return true;
 
   if (typeof item.sortYear === 'number' && item.sortYear > 0) {
-    const sp = epoch === 'empire' ? getEmpireSubPeriod(item) : getSovietSubPeriod(item);
+    let sp;
+    if (epoch === 'moscow') sp = getMoscowSubPeriod(item);
+    else if (epoch === 'tsardom') sp = getTsardomSubPeriod(item);
+    else if (epoch === 'empire') sp = getEmpireSubPeriod(item);
+    else if (epoch === 'soviet') sp = getSovietSubPeriod(item);
     return sp === subPeriod;
   }
 
@@ -6140,6 +6199,15 @@ function itemMatchesSubPeriod(item, epoch, subPeriod) {
   if (!rng) return true;
 
   const subRanges = {
+    moscow: {
+      moscow_early:   [1276, 1461],
+      moscow_united:  [1462, 1533]
+    },
+    tsardom: {
+      ivan4:          [1533, 1583],
+      smuta:          [1584, 1612],
+      romanovs_early: [1613, 1696]
+    },
     empire: {
       peter1:      [1695, 1725],
       palace:      [1725, 1762],
@@ -6168,7 +6236,7 @@ function renderSubPeriodBar() {
   const bar = document.getElementById('subperiod-bar');
   if (!wrap || !bar) return;
 
-  if (currentEpoch !== 'empire' && currentEpoch !== 'soviet') {
+  if (!SUB_PERIODS[currentEpoch]) {
     wrap.style.display = 'none';
     currentSubPeriod = 'all';
     return;
@@ -6200,7 +6268,7 @@ function applySubPeriod(subPeriod) {
 
 function getEpochContextLabel() {
   let spLabel = '';
-  if (currentSubPeriod !== 'all' && (currentEpoch === 'empire' || currentEpoch === 'soviet')) {
+  if (currentSubPeriod !== 'all' && Boolean(SUB_PERIODS[currentEpoch])) {
     const spObj = SUB_PERIODS[currentEpoch]?.find(s => s.id === currentSubPeriod);
     if (spObj) spLabel = ` · ${spObj.label}`;
   }
@@ -6282,7 +6350,7 @@ function getEpochSource(modeOverride) {
     items = currentEpoch === 'all' ? ALL_EVENTS : (DATA_DATES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
   }
 
-  if (currentSubPeriod && currentSubPeriod !== 'all' && (currentEpoch === 'empire' || currentEpoch === 'soviet')) {
+  if (currentSubPeriod && currentSubPeriod !== 'all' && Boolean(SUB_PERIODS[currentEpoch])) {
     items = items.filter(it => itemMatchesSubPeriod(it, currentEpoch, currentSubPeriod));
   }
   return items;
@@ -6327,7 +6395,7 @@ function syncWorkspaceVisibility(epochItems) {
   }
   const subperiodWrap = document.getElementById('subperiod-bar-wrap');
   if (subperiodWrap) {
-    subperiodWrap.style.display = (currentEpoch === 'empire' || currentEpoch === 'soviet') ? 'flex' : 'none';
+    subperiodWrap.style.display = Boolean(SUB_PERIODS[currentEpoch]) ? 'flex' : 'none';
   }
 
   if (currentMode === 'bestiary') {
@@ -6358,7 +6426,7 @@ function syncWorkspaceVisibility(epochItems) {
     });
     const subLabel = isCultMode ? ` · ${CULTURE_CATEGORIES[currentCultCategory]?.name || ''}` : '';
     let spLabel = '';
-    if (currentSubPeriod !== 'all' && (currentEpoch === 'empire' || currentEpoch === 'soviet')) {
+    if (currentSubPeriod !== 'all' && Boolean(SUB_PERIODS[currentEpoch])) {
       const spObj = SUB_PERIODS[currentEpoch]?.find(s => s.id === currentSubPeriod);
       if (spObj) spLabel = ` · ${spObj.label}`;
     }
@@ -6531,7 +6599,7 @@ function updateEventCount() {
     themeLabel = CULTURE_CATEGORIES[currentCultCategory]?.name || 'Архитектура';
   }
   let spPrefix = '';
-  if (currentSubPeriod !== 'all' && (currentEpoch === 'empire' || currentEpoch === 'soviet')) {
+  if (currentSubPeriod !== 'all' && Boolean(SUB_PERIODS[currentEpoch])) {
     const spObj = SUB_PERIODS[currentEpoch]?.find(s => s.id === currentSubPeriod);
     if (spObj) spPrefix = ` · ${spObj.label}`;
   }
@@ -8735,7 +8803,7 @@ function renderBestiary() {
     catPrefix = ` · ${getCultureCategoryName(currentCultCategory)}`;
   }
   let spPrefix = '';
-  if (currentSubPeriod !== 'all' && (currentEpoch === 'empire' || currentEpoch === 'soviet')) {
+  if (currentSubPeriod !== 'all' && Boolean(SUB_PERIODS[currentEpoch])) {
     const spObj = SUB_PERIODS[currentEpoch]?.find(s => s.id === currentSubPeriod);
     if (spObj) spPrefix = ` · ${spObj.label}`;
   }
