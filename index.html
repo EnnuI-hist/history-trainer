@@ -1830,6 +1830,7 @@ body.zen-mode .mode-bar-wrap,
 body.zen-mode .tabs,
 body.zen-mode .theme-bar,
 body.zen-mode .culture-subnav-wrap,
+body.zen-mode .subperiod-bar-wrap,
 body.zen-mode #event-count,
 body.zen-mode #empty-placeholder,
 body.zen-mode #sound-toggle-btn,
@@ -2020,6 +2021,70 @@ body.zen-mode .section.active {
   font-weight: 700;
   box-shadow: 0 0 16px var(--gold-glow);
   transform: translateY(-1px);
+}
+
+/* Sub-periods Navigation (Glassmorphism + Gold highlight) */
+.subperiod-bar-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: -6px;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 5;
+}
+.subperiod-bar {
+  display: flex;
+  gap: 6px;
+  padding: 5px 8px;
+  background: rgba(18, 26, 48, 0.75);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid rgba(212, 163, 89, 0.3);
+  border-radius: 99px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1050px;
+}
+.subperiod-btn {
+  padding: 6px 14px;
+  border-radius: 99px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  color: #ded7c8;
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .80rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  transition: all .2s ease;
+  white-space: nowrap;
+}
+.subperiod-btn:hover {
+  color: #fff;
+  border-color: rgba(212, 163, 89, 0.45);
+  background: rgba(212, 163, 89, 0.12);
+  transform: translateY(-1px);
+}
+.subperiod-btn.active {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border-color: var(--gold2);
+  color: #121829 !important;
+  font-weight: 700;
+  box-shadow: 0 0 16px var(--gold-glow);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .subperiod-bar {
+    border-radius: 16px;
+    padding: 6px;
+    gap: 4px;
+  }
+  .subperiod-btn {
+    padding: 5px 9px;
+    font-size: .72rem;
+  }
 }
 
 /* Bestiary Culture Subsections Filter Buttons */
@@ -3212,10 +3277,15 @@ body.zen-mode .section.active {
     <button class="epoch-btn" data-epoch="ancient">Древняя Русь</button>
     <button class="epoch-btn" data-epoch="razdro">Раздробленность</button>
     <button class="epoch-btn" data-epoch="moscow">Московское княжество</button>
-    <button class="epoch-btn is-empty" data-epoch="tsardom">Русское царство</button>
-    <button class="epoch-btn is-empty" data-epoch="empire">Российская империя</button>
-    <button class="epoch-btn is-empty" data-epoch="soviet">Советский период</button>
+    <button class="epoch-btn" data-epoch="tsardom">Русское царство</button>
+    <button class="epoch-btn" data-epoch="empire">Российская империя</button>
+    <button class="epoch-btn" data-epoch="soviet">Советский период</button>
     <button class="epoch-btn active" data-epoch="all">✦ Все эпохи</button>
+  </div>
+
+  <!-- Sub-periods navigation (shown when currentEpoch === 'empire' || currentEpoch === 'soviet') -->
+  <div class="subperiod-bar-wrap" id="subperiod-bar-wrap" style="display:none">
+    <div class="subperiod-bar" id="subperiod-bar"></div>
   </div>
 
   <!-- Second-level navigation: Dates / Terms / Culture / Figures / Bestiary -->
@@ -5914,6 +5984,227 @@ const EPOCH_NAMES = {
   soviet:  'Советский период',
 };
 
+const SUB_PERIODS = {
+  empire: [
+    { id: 'all', label: 'Все периоды РИ' },
+    { id: 'peter1', label: 'Пётр I (1696–1725)' },
+    { id: 'palace', label: 'Дворцовые перевороты (1725–1762)' },
+    { id: 'catherine2', label: 'Екатерина II и Павел I (1762–1801)' },
+    { id: 'alex1_nic1', label: 'Александр I и Николай I (1801–1855)' },
+    { id: 'alex2_alex3', label: 'Александр II и Александр III (1855–1894)' },
+    { id: 'nic2', label: 'Николай II (1894–1917)' },
+  ],
+  soviet: [
+    { id: 'all', label: 'Все периоды СССР/РФ' },
+    { id: 'lenin', label: 'Ленин и Гражданская война (1917–1924)' },
+    { id: 'stalin_pre', label: 'Сталин (1924–1941)' },
+    { id: 'ww2', label: 'Великая Отечественная война (1941–1945)' },
+    { id: 'thaw', label: 'Послевоенный СССР и Оттепель (1945–1964)' },
+    { id: 'stagnation', label: 'Эпоха застоя (1964–1985)' },
+    { id: 'perestroika', label: 'Перестройка (1985–1991)' },
+    { id: 'rf', label: 'Российская Федерация (1991–2022)' },
+  ]
+};
+
+let currentSubPeriod = 'all';
+
+function parseItemYearRange(item) {
+  if (typeof item.sortYear === 'number' && item.sortYear > 0) {
+    return { start: item.sortYear, end: item.sortYear };
+  }
+  const str = String(item.period || item.years || item.year || '');
+  if (!str) return null;
+  const mYears = str.match(/\b(1[6-9]\d\d|20[0-2]\d)\b/g);
+  if (mYears && mYears.length >= 2) {
+    const y1 = parseInt(mYears[0], 10);
+    const y2 = parseInt(mYears[1], 10);
+    return { start: Math.min(y1, y2), end: Math.max(y1, y2) };
+  }
+  if (mYears && mYears.length === 1) {
+    const y = parseInt(mYears[0], 10);
+    return { start: y, end: y };
+  }
+  if (/XVIII\s*в/i.test(str)) return { start: 1700, end: 1799 };
+  if (/XIX\s*в/i.test(str))   return { start: 1800, end: 1899 };
+  if (/XX\s*в/i.test(str))    return { start: 1900, end: 1999 };
+  if (/XXI\s*в/i.test(str))   return { start: 2000, end: 2029 };
+  return null;
+}
+
+function getEmpireSubPeriod(item) {
+  const sy = item.sortYear || 0;
+  const ev = ((item.event || item.title || item.name || '') + ' ' + (item.detail || item.role || item.facts || '')).toLowerCase();
+
+  if (sy < 1725) return 'peter1';
+  if (sy <= 1725.2) {
+    if (/екатерин|дворцов|меншиков|верховный/.test(ev)) return 'palace';
+    return 'peter1';
+  }
+  if (sy < 1762) return 'palace';
+  if (sy <= 1762.2) {
+    if (/екатерин|переворот|уложенн/.test(ev)) return 'catherine2';
+    return 'palace';
+  }
+  if (sy < 1801) return 'catherine2';
+  if (sy <= 1801.2) {
+    if (/павел|убийство павла/.test(ev)) return 'catherine2';
+    return 'alex1_nic1';
+  }
+  if (sy < 1855) return 'alex1_nic1';
+  if (sy <= 1855.2) {
+    if (/николай i|смерть николая/.test(ev)) return 'alex1_nic1';
+    if (/александр ii|воцарение/.test(ev)) return 'alex2_alex3';
+    return 'alex1_nic1';
+  }
+  if (sy < 1894) return 'alex2_alex3';
+  if (sy <= 1894.2) {
+    if (/александр iii|смерть александра/.test(ev)) return 'alex2_alex3';
+    return 'nic2';
+  }
+  return 'nic2';
+}
+
+function getSovietSubPeriod(item) {
+  const sy = item.sortYear || 0;
+  const dStr = String(item.year || item.period || item.years || '').toLowerCase();
+  const ev = ((item.event || item.title || item.name || '') + ' ' + (item.detail || item.role || item.facts || '')).toLowerCase();
+
+  // 1. Lenin (1917–1924)
+  if (sy < 1924) return 'lenin';
+  if (sy <= 1924.15) {
+    if (/ленин|смерть ленина|конституция ссср 1924|ii съезд советов/.test(ev)) return 'lenin';
+    return 'stalin_pre';
+  }
+
+  // WW2 campaigns starting late 1941 / Moscow
+  if (/битва за москву|контрнаступление|великая отечественная|нападение германии|оборона брестской/.test(ev)) {
+    return 'ww2';
+  }
+
+  // 2. Stalin pre-war (1924–1941 до 22 июня)
+  if (sy < 1941.0) return 'stalin_pre';
+  if (sy < 1941.0655) {
+    let isWw2Day = false;
+    if (dStr.includes('июн')) {
+      for (let day = 22; day <= 31; day++) {
+        if (dStr.includes(String(day))) { isWw2Day = true; break; }
+      }
+    }
+    if (isWw2Day || /гко|ставка|эвакуаци|совинформбюро/.test(ev)) return 'ww2';
+    return 'stalin_pre';
+  }
+
+  // 3. WW2 (22 июня 1941 – 2 сентября 1945)
+  if (sy <= 1945.091) {
+    return 'ww2';
+  }
+
+  // 4. Thaw (осень 1945 – 1964)
+  if (sy < 1964) return 'thaw';
+  if (sy <= 1964.9) {
+    if (/хрущев|отставка хрущева/.test(ev)) return 'thaw';
+    if (/брежнев|приход брежнева/.test(ev)) return 'stagnation';
+    return 'thaw';
+  }
+
+  // 5. Stagnation (1964–1985)
+  if (sy < 1985) return 'stagnation';
+  if (sy <= 1985.25) {
+    if (/черненко|смерть черненко/.test(ev)) return 'stagnation';
+    if (/горбачев|перестройк|апрельск/.test(ev)) return 'perestroika';
+    return 'stagnation';
+  }
+
+  // 6. Perestroika (1985–1991)
+  if (sy < 1992.0) return 'perestroika';
+
+  // 7. Russian Federation (1991/1992–2022)
+  return 'rf';
+}
+
+function itemMatchesSubPeriod(item, epoch, subPeriod) {
+  if (!subPeriod || subPeriod === 'all') return true;
+  if (epoch !== 'empire' && epoch !== 'soviet') return true;
+
+  if (typeof item.sortYear === 'number' && item.sortYear > 0) {
+    const sp = epoch === 'empire' ? getEmpireSubPeriod(item) : getSovietSubPeriod(item);
+    return sp === subPeriod;
+  }
+
+  const rng = parseItemYearRange(item);
+  if (!rng) return true;
+
+  const subRanges = {
+    empire: {
+      peter1:      [1695, 1725],
+      palace:      [1725, 1762],
+      catherine2:  [1762, 1801],
+      alex1_nic1:  [1801, 1855],
+      alex2_alex3: [1855, 1894],
+      nic2:        [1894, 1917]
+    },
+    soviet: {
+      lenin:       [1917, 1924],
+      stalin_pre:  [1924, 1941],
+      ww2:         [1941, 1945],
+      thaw:        [1945, 1964],
+      stagnation:  [1964, 1985],
+      perestroika: [1985, 1991],
+      rf:          [1991, 2024]
+    }
+  };
+
+  const b = subRanges[epoch]?.[subPeriod];
+  if (!b) return true;
+  return rng.start <= b[1] && rng.end >= b[0];
+}
+
+function renderSubPeriodBar() {
+  const wrap = document.getElementById('subperiod-bar-wrap');
+  const bar = document.getElementById('subperiod-bar');
+  if (!wrap || !bar) return;
+
+  if (currentEpoch !== 'empire' && currentEpoch !== 'soviet') {
+    wrap.style.display = 'none';
+    currentSubPeriod = 'all';
+    return;
+  }
+
+  const periods = SUB_PERIODS[currentEpoch] || [];
+  if (!periods.find(p => p.id === currentSubPeriod)) {
+    currentSubPeriod = 'all';
+  }
+
+  wrap.style.display = 'flex';
+  bar.innerHTML = periods.map(p => `
+    <button class="subperiod-btn ${p.id === currentSubPeriod ? 'active' : ''}" 
+            data-subperiod="${p.id}" 
+            onclick="applySubPeriod('${p.id}')">
+      ${escHtml(p.label)}
+    </button>
+  `).join('');
+}
+
+function applySubPeriod(subPeriod) {
+  soundClick();
+  currentSubPeriod = subPeriod;
+  document.querySelectorAll('.subperiod-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.subperiod === subPeriod);
+  });
+  refreshFilterState();
+}
+
+function getEpochContextLabel() {
+  let spLabel = '';
+  if (currentSubPeriod !== 'all' && (currentEpoch === 'empire' || currentEpoch === 'soviet')) {
+    const spObj = SUB_PERIODS[currentEpoch]?.find(s => s.id === currentSubPeriod);
+    if (spObj) spLabel = ` · ${spObj.label}`;
+  }
+  const thLabel = THEME_NAMES[currentTheme] || 'Все темы';
+  if (currentEpoch === 'all') return thLabel;
+  return `${EPOCH_NAMES[currentEpoch]}${spLabel} · ${thLabel}`;
+}
+
 const DATE_THEMES = new Set(['rurik', 'razdro', 'mongol', 'moscow', 'culture', 'cult', 'soc', 'gov', 'econ', 'mil']);
 const TERM_THEMES = new Set(['soc', 'gov', 'econ', 'cult', 'mil', 'slavs']);
 const CULTURE_THEMES = new Set(['culture', 'cult', 'rurik', 'razdro', 'moscow']);
@@ -5971,23 +6262,26 @@ function addWrong(question, yourAnswer, correctAnswer){
 
 function getEpochSource(modeOverride) {
   const m = modeOverride || (currentMode === 'bestiary' ? bestiarySubTab : currentMode);
+  let items;
   if (m === 'maps') {
-    return currentEpoch === 'all' ? ALL_MAPS : (DATA_MAPS[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
-  }
-  if (m === 'figures') {
-    return currentEpoch === 'all' ? ALL_FIGURES : (DATA_FIGURES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
-  }
-  if (m === 'terms') {
-    return currentEpoch === 'all' ? ALL_TERMS : (DATA_TERMS[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
-  }
-  if (m === 'culture') {
-    let items = currentEpoch === 'all' ? ALL_CULTURE : ALL_CULTURE.filter(item => item.epoch === currentEpoch);
+    items = currentEpoch === 'all' ? ALL_MAPS : (DATA_MAPS[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+  } else if (m === 'figures') {
+    items = currentEpoch === 'all' ? ALL_FIGURES : (DATA_FIGURES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+  } else if (m === 'terms') {
+    items = currentEpoch === 'all' ? ALL_TERMS : (DATA_TERMS[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+  } else if (m === 'culture') {
+    items = currentEpoch === 'all' ? ALL_CULTURE : ALL_CULTURE.filter(item => item.epoch === currentEpoch);
     if (currentCultCategory && currentCultCategory !== 'all') {
       items = items.filter(item => getCultureCategory(item) === currentCultCategory);
     }
-    return items;
+  } else {
+    items = currentEpoch === 'all' ? ALL_EVENTS : (DATA_DATES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
   }
-  return currentEpoch === 'all' ? ALL_EVENTS : (DATA_DATES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+
+  if (currentSubPeriod && currentSubPeriod !== 'all' && (currentEpoch === 'empire' || currentEpoch === 'soviet')) {
+    items = items.filter(it => itemMatchesSubPeriod(it, currentEpoch, currentSubPeriod));
+  }
+  return items;
 }
 
 function updateThemeButtonsVisibility(epochItems) {
@@ -6027,6 +6321,10 @@ function syncWorkspaceVisibility(epochItems) {
   if (subnavWrap) {
     subnavWrap.style.display = (currentMode === 'culture') ? 'flex' : 'none';
   }
+  const subperiodWrap = document.getElementById('subperiod-bar-wrap');
+  if (subperiodWrap) {
+    subperiodWrap.style.display = (currentEpoch === 'empire' || currentEpoch === 'soviet') ? 'flex' : 'none';
+  }
 
   if (currentMode === 'bestiary') {
     if (tabsEl) tabsEl.style.display = 'none';
@@ -6055,9 +6353,14 @@ function syncWorkspaceVisibility(epochItems) {
       if (s.id !== 'sec-review') s.style.display = 'none';
     });
     const subLabel = isCultMode ? ` · ${CULTURE_CATEGORIES[currentCultCategory]?.name || ''}` : '';
+    let spLabel = '';
+    if (currentSubPeriod !== 'all' && (currentEpoch === 'empire' || currentEpoch === 'soviet')) {
+      const spObj = SUB_PERIODS[currentEpoch]?.find(s => s.id === currentSubPeriod);
+      if (spObj) spLabel = ` · ${spObj.label}`;
+    }
     const modeLabel = currentMode === 'maps' ? 'Карты' : (currentMode === 'figures' ? 'Деятели' : (currentMode === 'terms' ? 'Термины' : (currentMode === 'culture' ? `Культура${subLabel}` : 'Даты')));
     document.getElementById('ep-sub').textContent =
-      `Раздел «${EPOCH_NAMES[currentEpoch]}» (${modeLabel}) пока пуст и готов к наполнению.`;
+      `Раздел «${EPOCH_NAMES[currentEpoch]}${spLabel}» (${modeLabel}) пока пуст и готов к наполнению.`;
     placeholder.classList.add('show');
     setProgress(0);
     return false;
@@ -6082,6 +6385,7 @@ function applyEpoch(epoch) {
   document.querySelectorAll('.epoch-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.epoch === epoch);
   });
+  renderSubPeriodBar();
   refreshFilterState();
 }
 
@@ -6222,7 +6526,12 @@ function updateEventCount() {
   if (currentMode === 'culture') {
     themeLabel = CULTURE_CATEGORIES[currentCultCategory]?.name || 'Архитектура';
   }
-  const prefix = currentEpoch === 'all' ? themeLabel : `${EPOCH_NAMES[currentEpoch]} · ${themeLabel}`;
+  let spPrefix = '';
+  if (currentSubPeriod !== 'all' && (currentEpoch === 'empire' || currentEpoch === 'soviet')) {
+    const spObj = SUB_PERIODS[currentEpoch]?.find(s => s.id === currentSubPeriod);
+    if (spObj) spPrefix = ` · ${spObj.label}`;
+  }
+  const prefix = currentEpoch === 'all' ? themeLabel : `${EPOCH_NAMES[currentEpoch]}${spPrefix} · ${themeLabel}`;
   document.getElementById('event-count').textContent =
     `${prefix} — ${showing} карточек` +
     (hidden > 0 ? ` (скрыто выученных: ${hidden})` : '') +
@@ -6696,7 +7005,7 @@ function generateQuiz(){
   setProgress(0);
 
   const target = pool[Math.floor(Math.random()*pool.length)];
-  const qContext = currentEpoch === 'all' ? (THEME_NAMES[currentTheme] || 'Все темы') : `${EPOCH_NAMES[currentEpoch]} · ${THEME_NAMES[currentTheme] || 'Все темы'}`;
+  const qContext = getEpochContextLabel();
   let options = [];
   let isDefOpts = false;
 
@@ -7250,7 +7559,7 @@ function generateInputQuestion() {
   }
   lastInputTarget = target;
 
-  const qContext = currentEpoch === 'all' ? THEME_NAMES[currentTheme] : `${EPOCH_NAMES[currentEpoch]} · ${THEME_NAMES[currentTheme]}`;
+  const qContext = getEpochContextLabel();
   const badgeEl = document.getElementById('inp-badge');
   badgeEl.className = 'theme-badge ' + target.theme;
   badgeEl.textContent = THEME_NAMES[target.theme];
@@ -8421,7 +8730,12 @@ function renderBestiary() {
   if (bestiarySubTab === 'culture' && currentCultCategory !== 'all') {
     catPrefix = ` · ${getCultureCategoryName(currentCultCategory)}`;
   }
-  const prefix = currentEpoch === 'all' ? (THEME_NAMES[currentTheme] || 'Все темы') : `${EPOCH_NAMES[currentEpoch]} · ${THEME_NAMES[currentTheme] || 'Все темы'}`;
+  let spPrefix = '';
+  if (currentSubPeriod !== 'all' && (currentEpoch === 'empire' || currentEpoch === 'soviet')) {
+    const spObj = SUB_PERIODS[currentEpoch]?.find(s => s.id === currentSubPeriod);
+    if (spObj) spPrefix = ` · ${spObj.label}`;
+  }
+  const prefix = currentEpoch === 'all' ? (THEME_NAMES[currentTheme] || 'Все темы') : `${EPOCH_NAMES[currentEpoch]}${spPrefix} · ${THEME_NAMES[currentTheme] || 'Все темы'}`;
   document.getElementById('event-count').textContent = `Бестиарий · ${prefix}${catPrefix} — найдено: ${list.length}`;
 
   if (!list.length) {
