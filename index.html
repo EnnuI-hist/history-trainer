@@ -3279,7 +3279,8 @@ body.zen-mode .section.active {
     <button class="epoch-btn" data-epoch="moscow">Московское княжество</button>
     <button class="epoch-btn" data-epoch="tsardom">Русское царство</button>
     <button class="epoch-btn" data-epoch="empire">Российская империя</button>
-    <button class="epoch-btn" data-epoch="soviet">Советский период</button>
+    <button class="epoch-btn" data-epoch="soviet">Советский период (1917–1991)</button>
+    <button class="epoch-btn" data-epoch="rf">🇷🇺 Российская Федерация</button>
     <button class="epoch-btn active" data-epoch="all">✦ Все эпохи</button>
   </div>
 
@@ -4588,7 +4589,10 @@ const DATA_DATES = {
     { year: "1991 г., 19–21 августа", sortYear: 1991.0849, event: "Путч ГКЧП. Подписание нового союзного договора отменено", detail: "", theme: "gov" },
     { year: "1991 г., 22–29 августа", sortYear: 1991.0857, event: "Арест членов ГКЧП", detail: "", theme: "gov" },
     { year: "1991 г., 24 августа", sortYear: 1991.0862, event: "Горбачев сложил с себя полномочия Генсека ЦК КПСС", detail: "", theme: "gov" },
-    { year: "1991 г., сентябрь", sortYear: 1991.09, event: "Возвращение Ленинграду исторического названия — Санкт-Петербург", detail: "", theme: "gov" },
+    { year: "1991 г., сентябрь", sortYear: 1991.09, event: "Возвращение Ленинграду исторического названия — Санкт-Петербург", detail: "", theme: "gov" }
+  ],
+  // ── 7. РОССИЙСКАЯ ФЕДЕРАЦИЯ ──
+  rf: [
     { year: "1991 г., 7–8 декабря", sortYear: 1991.1218, event: "Беловежские соглашения", detail: "", theme: "gov" },
     { year: "1991 г., 25 декабря", sortYear: 1991.1265, event: "Горбачев сложил полномочия президента СССР", detail: "", theme: "gov" },
     { year: "1992 г.", sortYear: 1992.0, event: "Указ Президента РФ о введении ваучеров, начало приватизации госимущества", detail: "", theme: "econ" },
@@ -4725,6 +4729,7 @@ const DATA_TERMS = {
   tsardom: [],
   empire:  [],
   soviet:  [],
+  rf:      [],
 };
 
 const DATA_CULTURE = [
@@ -4982,7 +4987,9 @@ const DATA_FIGURES = {
   // ── 5. РОССИЙСКАЯ ИМПЕРИЯ ──
   empire: [],
   // ── 6. СОВЕТСКИЙ ПЕРИОД ──
-  soviet: []
+  soviet: [],
+  // ── 7. РОССИЙСКАЯ ФЕДЕРАЦИЯ ──
+  rf: []
 };
 
 const ALL_EVENTS = Object.entries(DATA_DATES).flatMap(([epoch, arr]) =>
@@ -5677,7 +5684,8 @@ const DATA_MAPS = {
       "period": "30 ноября 1939 — 12 марта 1940 г.",
       "markers": "Наступление 7-й и 13-й армий Красной армии (К.А. Мерецков, С.К. Тимошенко) на Карельском перешейке; мощная полоса долговременных финских укреплений — «Линия Маннергейма» (2: ДОТы «миллионники», гранитные надолбы, проволочные заграждения в районах Хотинен, Лейпясуо, Сумма); тяжелые позиционные бои декабря 1939 — января 1940 г.; генеральный прорыв линии Маннергейма в феврале 1940 г. и штурм Выборга (Виипури); территория Карельского перешейка с Выборгом и северным Приладожьем, отошедшая к СССР по Московскому мирному договору от 12 марта 1940 г. (темно-серая заливка); цифры на схеме: 1 — Кронштадт / остров Котлин в Финском заливе, 2 — Линия Маннергейма."
     }
-  ]
+  ],
+  "rf": []
 };
 
 const ALL_MAPS = Object.entries(DATA_MAPS).flatMap(([epoch, arr]) =>
@@ -5981,7 +5989,8 @@ const EPOCH_NAMES = {
   moscow:  'Московское княжество',
   tsardom: 'Русское царство',
   empire:  'Российская империя',
-  soviet:  'Советский период',
+  soviet:  'Советский период (1917–1991)',
+  rf:      'Российская Федерация',
 };
 
 const SUB_PERIODS = {
@@ -5995,14 +6004,13 @@ const SUB_PERIODS = {
     { id: 'nic2', label: 'Николай II (1894–1917)' },
   ],
   soviet: [
-    { id: 'all', label: 'Все периоды СССР/РФ' },
+    { id: 'all', label: 'Все периоды СССР (1917–1991)' },
     { id: 'lenin', label: 'Ленин и Гражданская война (1917–1924)' },
     { id: 'stalin_pre', label: 'Сталин (1924–1941)' },
     { id: 'ww2', label: 'Великая Отечественная война (1941–1945)' },
     { id: 'thaw', label: 'Послевоенный СССР и Оттепель (1945–1964)' },
     { id: 'stagnation', label: 'Эпоха застоя (1964–1985)' },
     { id: 'perestroika', label: 'Перестройка (1985–1991)' },
-    { id: 'rf', label: 'Российская Федерация (1991–2022)' },
   ]
 };
 
@@ -6116,10 +6124,7 @@ function getSovietSubPeriod(item) {
   }
 
   // 6. Perestroika (1985–1991)
-  if (sy < 1992.0) return 'perestroika';
-
-  // 7. Russian Federation (1991/1992–2022)
-  return 'rf';
+  return 'perestroika';
 }
 
 function itemMatchesSubPeriod(item, epoch, subPeriod) {
@@ -6149,8 +6154,7 @@ function itemMatchesSubPeriod(item, epoch, subPeriod) {
       ww2:         [1941, 1945],
       thaw:        [1945, 1964],
       stagnation:  [1964, 1985],
-      perestroika: [1985, 1991],
-      rf:          [1991, 2024]
+      perestroika: [1985, 1991]
     }
   };
 
@@ -10137,16 +10141,16 @@ async function handleCultAngleSlotDrop(event, monumentId, slotIdx) {
   }
 }
 
-let CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
-let CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
-let CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
-let CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+let CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+let CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+let CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+let CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
 let CUSTOM_CULTURE = [];
 
 function loadCustomCards() {
   try {
     const saved = JSON.parse(localStorage.getItem(LS_CUSTOM_KEY) || '{}');
-    const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
+    const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet','rf'];
     epochs.forEach(ep => {
       CUSTOM_DATES[ep] = (saved.dates && saved.dates[ep]) ? saved.dates[ep] : [];
       CUSTOM_TERMS[ep] = (saved.terms && saved.terms[ep]) ? saved.terms[ep] : [];
@@ -10155,17 +10159,17 @@ function loadCustomCards() {
     });
     CUSTOM_CULTURE = Array.isArray(saved.culture) ? saved.culture : [];
   } catch(e) {
-    CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
-    CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
-    CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
-    CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+    CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+    CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+    CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+    CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
     CUSTOM_CULTURE = [];
   }
   _mergeCustomIntoData();
 }
 
 function _mergeCustomIntoData() {
-  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
+  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet','rf'];
   epochs.forEach(ep => {
     DATA_DATES[ep] = DATA_DATES[ep].filter(x => !x._custom);
     DATA_TERMS[ep] = DATA_TERMS[ep].filter(x => !x._custom);
@@ -10206,7 +10210,7 @@ function _rebuildAllArrays() {
 
 function saveCustomCards() {
   const data = { dates: {}, terms: {}, culture: CUSTOM_CULTURE, figures: {}, maps: {} };
-  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
+  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet','rf'];
   epochs.forEach(ep => {
     data.dates[ep] = CUSTOM_DATES[ep];
     data.terms[ep] = CUSTOM_TERMS[ep];
@@ -10550,7 +10554,7 @@ function cancelEditCard() {
 function renderMyCards() {
   const listEl = document.getElementById('ed-mycards-list');
   const countEl = document.getElementById('ed-mycards-count');
-  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet'];
+  const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet','rf'];
   let items = [];
   epochs.forEach(ep => {
     CUSTOM_DATES[ep].forEach((c, i) => items.push({ type:'dates', epoch:ep, idx:i, ...c }));
@@ -10726,10 +10730,10 @@ function startEditCard(keyEncoded) {
 
 function clearAllCustomCards() {
   if (!confirm('Удалить все пользовательские карточки?')) return;
-  CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
-  CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
-  CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
-  CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[] };
+  CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+  CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+  CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+  CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
   CUSTOM_CULTURE = [];
   saveCustomCards();
   rebuildAndRefresh();
@@ -10938,7 +10942,8 @@ initMapsStorage();
             <option value="moscow">Московское княжество</option>
             <option value="tsardom">Русское царство</option>
             <option value="empire">Российская империя</option>
-            <option value="soviet">Советский период</option>
+            <option value="soviet">Советский период (1917–1991)</option>
+            <option value="rf">🇷🇺 Российская Федерация</option>
           </select>
         </div>
         <div class="ed-field">
