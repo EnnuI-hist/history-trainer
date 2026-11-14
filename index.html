@@ -3206,6 +3206,216 @@ body.zen-mode .section.active {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* --- Track Bar (EGE / Olympiad / All) --- */
+.track-bar-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.track-bar {
+  display: inline-flex;
+  gap: 4px;
+  background: rgba(14, 20, 38, 0.85);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border2);
+  border-radius: 99px;
+  padding: 4px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+}
+.track-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #9aa8c2;
+  padding: 6px 18px;
+  border-radius: 99px;
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .84rem;
+  font-weight: 600;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.track-btn:hover {
+  color: #e2e8f0;
+}
+.track-btn.active {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.25), rgba(212, 168, 83, 0.1));
+  border-color: var(--gold);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(212, 168, 83, 0.35);
+}
+
+/* --- Olympiad Badge --- */
+.olymp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.28), rgba(245, 208, 122, 0.16));
+  border: 1px solid var(--gold);
+  color: var(--gold2);
+  font-size: .72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  box-shadow: 0 0 8px rgba(212, 168, 83, 0.25);
+  vertical-align: middle;
+}
+
+/* --- Bestiary Track Filter --- */
+.bst-track-filter {
+  display: inline-flex;
+  gap: 4px;
+  background: rgba(14, 20, 38, 0.75);
+  border: 1px solid var(--border2);
+  border-radius: 99px;
+  padding: 3px;
+}
+.bst-track-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #9aa8c2;
+  padding: 4px 12px;
+  border-radius: 99px;
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .78rem;
+  font-weight: 600;
+  transition: all .2s;
+}
+.bst-track-btn:hover {
+  color: #e2e8f0;
+}
+.bst-track-btn.active {
+  background: rgba(212, 168, 83, 0.2);
+  border-color: var(--gold);
+  color: #fff;
+}
+
+/* --- Historiography & Sources Card Faces --- */
+.fc-hist-front, .fc-source-front, .fc-hist-back, .fc-source-back {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 6px 14px;
+  gap: 12px;
+}
+.fc-hist-name {
+  font-family: var(--ff-serif);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--gold2);
+  line-height: 1.25;
+}
+.fc-hist-work {
+  font-family: var(--ff-serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  color: #e2e8f0;
+}
+.fc-hist-thesis {
+  font-family: var(--ff-sans);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: #cbd5e1;
+  background: rgba(255,255,255,0.03);
+  border-left: 3px solid var(--gold);
+  padding: 10px 14px;
+  border-radius: 6px;
+  text-align: left;
+  max-width: 580px;
+  width: 100%;
+}
+.fc-hist-quote {
+  font-family: var(--ff-serif);
+  font-size: 1.02rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: #f1f5f9;
+  background: rgba(212, 168, 83, 0.08);
+  border: 1px solid rgba(212, 168, 83, 0.2);
+  padding: 10px 14px;
+  border-radius: 8px;
+  max-width: 580px;
+  width: 100%;
+  text-align: left;
+}
+.fc-source-title {
+  font-family: var(--ff-serif);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--gold2);
+  line-height: 1.3;
+}
+.fc-source-dating {
+  font-family: var(--ff-sans);
+  font-size: .95rem;
+  color: #94a3b8;
+  background: rgba(255,255,255,0.06);
+  padding: 3px 12px;
+  border-radius: 99px;
+  display: inline-block;
+}
+.fc-source-excerpt {
+  font-family: var(--ff-serif);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #f1f5f9;
+  background: rgba(20, 28, 52, 0.6);
+  border: 1px solid var(--border2);
+  padding: 14px 18px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
+  text-align: justify;
+}
+.fc-source-markers {
+  font-family: var(--ff-sans);
+  font-size: .88rem;
+  color: #cbd5e1;
+  background: rgba(212, 168, 83, 0.08);
+  border-left: 3px solid var(--gold);
+  padding: 8px 12px;
+  border-radius: 4px;
+  max-width: 600px;
+  width: 100%;
+  text-align: left;
+}
+
+/* --- Editor Level Toggle --- */
+.ed-level-toggle {
+  display: inline-flex;
+  gap: 4px;
+  background: rgba(14, 20, 38, 0.7);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 3px;
+}
+.ed-level-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #9aa8c2;
+  padding: 5px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .82rem;
+  font-weight: 600;
+  transition: all .2s;
+}
+.ed-level-btn:hover {
+  color: #e2e8f0;
+}
+.ed-level-btn.active {
+  background: rgba(212, 168, 83, 0.2);
+  border-color: var(--gold);
+  color: #fff;
+}
 </style>
 </head>
 <body>
@@ -3273,6 +3483,15 @@ body.zen-mode .section.active {
     <div class="score-pill"><span class="dot dot-total"></span>Очки:&nbsp;<strong id="s-total">0</strong></div>
   </div>
 
+  <!-- Track Selector: EGE / Olympiad / All -->
+  <div class="track-bar-wrap" id="track-bar-wrap">
+    <div class="track-bar" id="track-bar">
+      <button class="track-btn active" data-track="ege" onclick="applyTrack('ege')">🎓 ЕГЭ</button>
+      <button class="track-btn" data-track="olymp" onclick="applyTrack('olymp')">🏆 Олимпиада</button>
+      <button class="track-btn" data-track="all" onclick="applyTrack('all')">🔥 Всё вместе</button>
+    </div>
+  </div>
+
   <!-- Top-level navigation: Epochs -->
   <div class="epoch-bar" id="epoch-bar">
     <button class="epoch-btn" data-epoch="ancient">Древняя Русь</button>
@@ -3298,6 +3517,8 @@ body.zen-mode .section.active {
       <button class="mode-btn" data-mode="culture">🏛 Культура</button>
       <button class="mode-btn" data-mode="figures">👑 Деятели</button>
       <button class="mode-btn" data-mode="maps">🗺 Карты</button>
+      <button class="mode-btn" id="btn-mode-historiography" data-mode="historiography" style="display:none">🎓 Историография</button>
+      <button class="mode-btn" id="btn-mode-sources" data-mode="sources" style="display:none">📜 Источники</button>
       <button class="mode-btn" data-mode="bestiary">📚 Бестиарий</button>
     </div>
   </div>
@@ -3372,6 +3593,7 @@ body.zen-mode .section.active {
         <div class="card-face card-front">
           <div class="card-known-stamp" id="fc-stamp">✓ ЗНАЮ</div>
           <div class="theme-badge" id="fc-badge"></div>
+          <div class="olymp-badge" id="fc-olymp-badge" style="display:none">🏆 Олимп</div>
           <div class="fc-title" id="fc-front-title">Событие</div>
           <div class="event" id="fc-event"></div>
           <div class="fc-culture-front" id="fc-culture-front">
@@ -3412,9 +3634,21 @@ body.zen-mode .section.active {
               </div>
             </div>
           </div>
+          <div class="fc-hist-front" id="fc-hist-front" style="display:none">
+            <div class="fc-hist-name" id="fc-hist-name-front"></div>
+            <div class="fc-hist-work" id="fc-hist-work-front"></div>
+            <div class="fc-hist-thesis" id="fc-hist-thesis-front" style="display:none"></div>
+            <div class="fc-hist-quote" id="fc-hist-quote-front" style="display:none"></div>
+          </div>
+          <div class="fc-source-front" id="fc-source-front" style="display:none">
+            <div class="fc-source-title" id="fc-source-title-front" style="display:none"></div>
+            <div class="fc-source-dating" id="fc-source-dating-front" style="display:none"></div>
+            <div class="fc-source-excerpt" id="fc-source-excerpt-front"></div>
+          </div>
         </div>
         <div class="card-face card-back">
           <div class="theme-badge" id="fc-badge2"></div>
+          <div class="olymp-badge" id="fc-olymp-badge2" style="display:none">🏆 Олимп</div>
           <div class="fc-title" id="fc-back-title">Дата</div>
           <div class="year" id="fc-year"></div>
           <div class="detail" id="fc-detail"></div>
@@ -3452,6 +3686,18 @@ body.zen-mode .section.active {
               <button class="fc-replace-btn" id="fc-map-replace-back" onclick="triggerMapPhotoUpload(null, event)" title="Загрузить другое фото карты">📷 Заменить карту</button>
               <span class="fc-zoom-hint" id="fc-map-zoom-back" onclick="openMapLightbox(null, event)">🔍 Во весь экран</span>
             </div>
+          </div>
+          <div class="fc-hist-back" id="fc-hist-back" style="display:none">
+            <div class="fc-hist-name" id="fc-hist-name-back" style="display:none"></div>
+            <div class="fc-hist-work" id="fc-hist-work-back" style="display:none"></div>
+            <div class="fc-hist-thesis" id="fc-hist-thesis-back"></div>
+            <div class="fc-hist-quote" id="fc-hist-quote-back"></div>
+          </div>
+          <div class="fc-source-back" id="fc-source-back" style="display:none">
+            <div class="fc-source-title" id="fc-source-title-back"></div>
+            <div class="fc-source-dating" id="fc-source-dating-back"></div>
+            <div class="fc-source-excerpt" id="fc-source-excerpt-back" style="display:none"></div>
+            <div class="fc-source-markers" id="fc-source-markers-back"></div>
           </div>
         </div>
       </div>
@@ -3579,6 +3825,8 @@ body.zen-mode .section.active {
         <button class="bst-subtab-btn" data-bst="culture" onclick="setBestiaryTab('culture')">🏛 Культура</button>
         <button class="bst-subtab-btn" data-bst="figures" onclick="setBestiaryTab('figures')">👑 Деятели</button>
         <button class="bst-subtab-btn" data-bst="maps" onclick="setBestiaryTab('maps')">🗺 Исторические карты</button>
+        <button class="bst-subtab-btn" data-bst="historiography" onclick="setBestiaryTab('historiography')">🎓 Историография</button>
+        <button class="bst-subtab-btn" data-bst="sources" onclick="setBestiaryTab('sources')">📜 Источники</button>
       </div>
       <!-- Bestiary Culture Subsections (shown only when bestiarySubTab === 'culture') -->
       <div class="theme-bar bst-cult-cats" id="bst-cult-cats" style="display:none;margin-top:10px;margin-bottom:14px">
@@ -3594,6 +3842,11 @@ body.zen-mode .section.active {
           <span class="bst-search-icon">🔎</span>
           <input type="text" id="bst-search-input" class="bst-search-input" placeholder="Быстрый поиск по датам, терминам, правителям и лору..." oninput="renderBestiary()" autocomplete="off">
           <span class="bst-kbd-hint">Ctrl + K</span>
+        </div>
+        <div class="bst-track-filter" id="bst-track-filter">
+          <button class="bst-track-btn active" data-btrack="all" onclick="setBestiaryTrackFilter('all')">Все уровни</button>
+          <button class="bst-track-btn" data-btrack="ege" onclick="setBestiaryTrackFilter('ege')">🎓 ЕГЭ</button>
+          <button class="bst-track-btn" data-btrack="olymp" onclick="setBestiaryTrackFilter('olymp')">🏆 Олимпиада</button>
         </div>
         <label class="ctrl-label" title="Показывать только ещё не изученные карточки">
           <input type="checkbox" id="bst-only-unlearned" onchange="renderBestiary()">
@@ -4642,6 +4895,8 @@ const DATA_DATES = {
 const DATA_TERMS = {
   // ── 1. ДРЕВНЯЯ РУСЬ ──
   ancient: [
+    { term:"Вира и головничество", def:"Денежные штрафы по Русской Правде: вира — штраф за убийство свободного человека в пользу князя; головничество — денежная компенсация семье или родственникам убитого.", theme:"law", level:"olymp" },
+    { term:"Закуп и рядович", def:"Категории зависимого населения Древней Руси: закуп — разорившийся общинник, взявший купу (ссуду) и отрабатывающий её; рядович — человек, заключивший «ряд» (договор) и попавший в личную зависимость по его условиям.", theme:"soc", level:"olymp" },
     { term:"Бортничество", def:"Промысловое занятие восточных славян, связанное со сбором мёда", theme:"econ" },
     { term:"Варяги", def:"Выходцы из Скандинавии (викинги, норманны) на Руси, наёмные дружинники в IX–XI вв. и купцы, занимавшиеся торговлей на пути «из варяг в греки»", theme:"soc" },
     { term:"Вервь", def:"Название территориальной (соседской) общины в Древней Руси", theme:"soc" },
@@ -4698,6 +4953,7 @@ const DATA_TERMS = {
 
   // ── 2. РАЗДРОБЛЕННОСТЬ ──
   razdro: [
+    { term:"Покрута", def:"В Новгородской земле и на Русском Севере форма займа или долговой кабалы, при которой хозяин-промышленник снабжал работника (покрученика) инвентарём и припасами за долю в промысловой добыче.", theme:"econ", level:"olymp" },
     { term:"Удел", def:"Территория, выделенная во владение одному из младших членов княжеского рода", theme:"gov" },
     { term:"Раздробленность", def:"Период в истории Руси, в ходе которого она распадается на ряд самостоятельных княжеств и земель, при этом великокняжеская власть сохраняется, но имеет лишь номинальное значение", theme:"gov" },
     { term:"Берестяные грамоты", def:"Письма и документы XI–XV вв., процарапанные на берёзовой коре (бересте)", theme:"cult" },
@@ -4717,6 +4973,15 @@ const DATA_TERMS = {
 
   // ── 3. МОСКОВСКОЕ КНЯЖЕСТВО ──
   moscow: [
+    {
+      id: "fig_epiphanius",
+      epoch: "moscow",
+      name: "Епифаний Премудрый",
+      years: "кон. XIV — нач. XV в. (ум. ок. 1420 г.)",
+      role: "Монах Троице-Сергиева монастыря, агиограф и книжник",
+      facts: "Создатель и мастер изысканного экспрессивно-эмоционального литературного стиля «плетения словес». Автор классических житий преподобного Сергия Радонежского и Стефана Пермского, ставших вершиной древнерусской агиографии.",
+      level: "olymp"
+    },
     { term:"Ордынский выход", def:"Дань, регулярно выплачиваемая русским населением Орде в период зависимости в XIII–XV вв.", theme:"econ" },
     { term:"Баскак", def:"Представитель хана Золотой Орды, ведавший сбором дани, учётом населения и контролем над действиями местных властей на Руси в XIII — первой трети XIV в.", theme:"mil" },
     { term:"Ярлык", def:"Грамота, выдававшаяся великим ханом Золотой Орды подвластным русским князьям на великое или удельное княжение", theme:"gov" },
@@ -6831,6 +7096,15 @@ const DATA_FIGURES = {
   // ── 1. ДРЕВНЯЯ РУСЬ ──
   ancient: [
     {
+      id: "fig_ilarion",
+      epoch: "ancient",
+      name: "Митрополит Иларион",
+      years: "XI в. (митрополит с 1051 г.)",
+      role: "Первый русский митрополит Киевский, мыслитель и оратор",
+      facts: "Поставлен на киевскую митрополию собором русских епископов по воле Ярослава Мудрого в 1051 г. без согласования с Константинополем. Автор «Слова о законе и благодати» — выдающегося богословско-политического трактата, обосновавшего равноправие Руси среди христианских народов.",
+      level: "olymp"
+    },
+    {
       id: "fig_oleg",
       epoch: "ancient",
       name: "Князь Олег Вещий",
@@ -7637,12 +7911,123 @@ const ALL_MAPS = Object.entries(DATA_MAPS).flatMap(([epoch, arr]) =>
   arr.map(item => ({ ...item, epoch }))
 );
 
+// Историография по эпохам
+const DATA_HISTORIOGRAPHY = {
+  ancient: [
+    {
+      id: "hist_solovyov_ancient",
+      epoch: "ancient",
+      level: "olymp",
+      historian: "С. М. Соловьёв",
+      work: "«История России с древнейших времён»",
+      thesis: "Концепция органического развития государства и перехода от родовых отношений к государственным; определяющее влияние географического фактора (борьба леса и степи, открытость равнинных границ).",
+      quote: "«Природа для России была мачехой... Не деление, не раздробление видим мы в начале нашей истории, но постоянное стремление к единству через преодоление родового быта бытом государственным»."
+    },
+    {
+      id: "hist_shakhmatov_ancient",
+      epoch: "ancient",
+      level: "olymp",
+      historian: "А. А. Шахматов",
+      work: "«Разыскания о древнейших русских летописных сводах»",
+      thesis: "Текстологический метод восстановления этапов летописания: реконструкция Древнейшего свода (1039 г.), Начального свода (1095 г.) и выделение трёх редакций «Повести временных лет» (Нестор, Сильвестр, редакция 1118 г.).",
+      quote: "«Рукою летописца управляли политические страсти и мирские интересы... Повесть временных лет не есть первоначальный труд одного автора, а сложный свод предшествующих летописных слоёв»."
+    }
+  ],
+  razdro: [],
+  moscow: [],
+  tsardom: [
+    {
+      id: "hist_karamzin_tsardom",
+      epoch: "tsardom",
+      level: "olymp",
+      historian: "Н. М. Карамзин",
+      work: "«История государства Российского»",
+      thesis: "Самодержавие как основа величия, спасения и единства России («самодержавие основало и воскресило Россию»); деление правления Ивана Грозного на эпоху добродетели (первая половина) и тиранию опричнины, осуждённую как пагубное безумие.",
+      quote: "«Россия основалась победами и единоначалием, гибла от разномыслия, а спаслась мудрым самодержавием... Опричнина была ужасным порождением свирепого духа царя, помрачившего блеск его ранних побед»."
+    }
+  ],
+  empire: [
+    {
+      id: "hist_klyuchevsky_empire",
+      epoch: "empire",
+      level: "olymp",
+      historian: "В. О. Ключевский",
+      work: "«Курс русской истории»",
+      thesis: "История России — это история страны, которая колонизуется; ведущая роль социально-экономических процессов; закрепощение сословий ради обеспечения служилого государства; оценка петровских реформ как вызванных военной необходимостью.",
+      quote: "«Колонизация — основной факт русской истории; государство ширилось, а народ хирел... Война указала порядок реформы, сообщила ей темп и самые приемы; преобразование Петра было порождено потребностями войны»."
+    }
+  ],
+  soviet: [],
+  rf: []
+};
+
+// Исторические источники по эпохам
+const DATA_SOURCES = {
+  ancient: [
+    {
+      id: "src_pvl",
+      epoch: "ancient",
+      level: "olymp",
+      title: "«Повесть временных лет»",
+      dating: "нач. XII в. (ок. 1113 г.)",
+      excerpt: "«Се повести времяньных лет, откуду есть пошла Руская земля, кто в Киеве нача первее княжити, и откуду Руская земля стала есть... Быша бо 3 брата: Кий, Щек, Хорив, и сестра их Лыбедь... И рекоша сами себе: поищем собе князя, иже бы володел нами и судил по праву...»",
+      markers: "руская земля, нестор, поляне, древляне, путь из варяг в греки, призвание варягов, рюрик, олег"
+    },
+    {
+      id: "src_rus_pravda",
+      epoch: "ancient",
+      level: "olymp",
+      title: "«Русская Правда» (Правда Ярославичей)",
+      dating: "XI в. (1072 г.)",
+      excerpt: "«Правда уставлена руськой земли, егда ся съкупиша Изяслав, Всеволод, Святослав, Коснячко переяславьскый... Аще убьют огнищанина у клети, или у коня, или у говяда, то убити в то же место... А за княжа тиуна 80 гривен, а за конюха старого у стада 80 гривен...»",
+      markers: "правда ярославичей, огнищанин, тиун, гривна, вира, клеть, говядо, 80 гривен"
+    },
+    {
+      id: "src_monomakh_pouchenie",
+      epoch: "ancient",
+      level: "olymp",
+      title: "«Поучение Владимира Мономаха»",
+      dating: "нач. XII в. (ок. 1117 г.)",
+      excerpt: "«Прежде всего, бога ради и души своей, страх имейте божий в сердце своем и милостыню подавайте нескудную, это ведь начало всякого добра... На войну выйдя, не ленитесь, не полагайтесь на воевод; ни питью, ни еде не потворствуйте, ни сну... Лжи остерегайтеся, и пьянства, и блуда, от того ведь душа погибает и тело... Всего же более убогих не забывайте...»",
+      markers: "дети мои, поучение, страх божий, не ленитесь, лжи остерегайтесь, убогих не забывайте, крестное целование"
+    }
+  ],
+  razdro: [],
+  moscow: [
+    {
+      id: "src_sudebnik_1497",
+      epoch: "moscow",
+      level: "olymp",
+      title: "«Судебник Ивана III»",
+      dating: "1497 г.",
+      excerpt: "«А христианом отказыватися из волости, ис села в село, один срок в году, за неделю до Юрьева дни осеннего и неделю после Юрьева дни осеннего. Пожилое за покой: в полех рубль, а в лесех полтина... А бояром и диаком посулов от суда не имати...»",
+      markers: "юрьев день осенний, христианом отказыватися, пожилое, рубль и полтина, посулов не имати, судебник"
+    }
+  ],
+  tsardom: [],
+  empire: [],
+  soviet: [],
+  rf: []
+};
+
+const ALL_HISTORIOGRAPHY = Object.entries(DATA_HISTORIOGRAPHY).flatMap(([epoch, arr]) =>
+  arr.map(item => ({ ...item, epoch }))
+);
+
+const ALL_SOURCES = Object.entries(DATA_SOURCES).flatMap(([epoch, arr]) =>
+  arr.map(item => ({ ...item, epoch }))
+);
+
 // =====================================================================
 //  STATE
 // =====================================================================
 let currentEpoch = 'all';
 let currentMode  = 'dates';   // 'dates' | 'terms' | 'culture' | 'figures' | 'bestiary'
 let currentTheme = 'all';
+const LS_TRACK_KEY = 'rus-trainer-track-v1';
+let currentTrack = localStorage.getItem(LS_TRACK_KEY) || 'ege';
+let bstTrackFilter = 'all';
+let edCurrentLevel = 'ege';
 let currentCultCategory = 'arch'; // 'arch' | 'paint' | 'sculp' | 'lit' | 'music'
 
 const CULTURE_CATEGORIES = {
@@ -7704,6 +8089,8 @@ function saveLearnedLS() {
   localStorage.setItem(LS_KEY, JSON.stringify([...learnedKeys]));
 }
 function getEventKey(e) {
+  if (e.markers !== undefined && e.dating !== undefined) return `src::${e.id || e.title}`;
+  if (e.historian !== undefined) return `hist::${e.id || (e.historian + '::' + (e.work || ''))}`;
   if (e.markers !== undefined) return `map::${e.id || e.title}`;
   if (e.role !== undefined || e.facts !== undefined) return `fig::${e.id || e.name}`;
   if (e.lore !== undefined || e.title !== undefined) return `cult::${e.id || e.title}`;
@@ -8277,10 +8664,15 @@ function addWrong(question, yourAnswer, correctAnswer){
   errors.push({question, yourAnswer, correctAnswer});
 }
 
-function getEpochSource(modeOverride) {
+function getEpochSource(modeOverride, trackOverride) {
   const m = modeOverride || (currentMode === 'bestiary' ? bestiarySubTab : currentMode);
+  const track = trackOverride !== undefined ? trackOverride : (currentMode === 'bestiary' ? bstTrackFilter : currentTrack);
   let items;
-  if (m === 'maps') {
+  if (m === 'historiography') {
+    items = currentEpoch === 'all' ? ALL_HISTORIOGRAPHY : (DATA_HISTORIOGRAPHY[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+  } else if (m === 'sources') {
+    items = currentEpoch === 'all' ? ALL_SOURCES : (DATA_SOURCES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
+  } else if (m === 'maps') {
     items = currentEpoch === 'all' ? ALL_MAPS : (DATA_MAPS[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
   } else if (m === 'figures') {
     items = currentEpoch === 'all' ? ALL_FIGURES : (DATA_FIGURES[currentEpoch] || []).map(item => ({ ...item, epoch: currentEpoch }));
@@ -8298,12 +8690,20 @@ function getEpochSource(modeOverride) {
   if (currentSubPeriod && currentSubPeriod !== 'all' && Boolean(SUB_PERIODS[currentEpoch])) {
     items = items.filter(it => itemMatchesSubPeriod(it, currentEpoch, currentSubPeriod));
   }
+
+  // Filter by track (ege / olymp / all)
+  if (track === 'ege') {
+    items = items.filter(it => !it.level || it.level === 'ege');
+  } else if (track === 'olymp') {
+    items = items.filter(it => it.level === 'olymp');
+  }
+
   return items;
 }
 
 function updateThemeButtonsVisibility(epochItems) {
   const effMode = currentMode === 'bestiary' ? bestiarySubTab : currentMode;
-  if (effMode === 'maps') {
+  if (effMode === 'maps' || effMode === 'historiography' || effMode === 'sources') {
     document.querySelectorAll('.theme-btn').forEach(btn => {
       btn.style.display = btn.dataset.theme === 'all' ? (epochItems.length > 0 ? '' : 'none') : 'none';
     });
@@ -8375,7 +8775,7 @@ function syncWorkspaceVisibility(epochItems) {
       const spObj = SUB_PERIODS[currentEpoch]?.find(s => s.id === currentSubPeriod);
       if (spObj) spLabel = ` · ${spObj.label}`;
     }
-    const modeLabel = currentMode === 'maps' ? 'Карты' : (currentMode === 'figures' ? 'Деятели' : (currentMode === 'terms' ? 'Термины' : (currentMode === 'culture' ? `Культура${subLabel}` : 'Даты')));
+    const modeLabel = currentMode === 'maps' ? 'Карты' : (currentMode === 'figures' ? 'Деятели' : (currentMode === 'terms' ? 'Термины' : (currentMode === 'culture' ? `Культура${subLabel}` : (currentMode === 'historiography' ? 'Историография' : (currentMode === 'sources' ? 'Источники' : 'Даты')))));
     document.getElementById('ep-sub').textContent =
       `Раздел «${EPOCH_NAMES[currentEpoch]}${spLabel}» (${modeLabel}) пока пуст и готов к наполнению.`;
     placeholder.classList.add('show');
@@ -8397,6 +8797,42 @@ function syncWorkspaceVisibility(epochItems) {
   return !isEmpty;
 }
 
+function applyTrack(track) {
+  currentTrack = track;
+  try { localStorage.setItem(LS_TRACK_KEY, track); } catch(e){}
+  document.querySelectorAll('.track-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.track === track);
+  });
+  updateModeBarVisibility();
+  refreshFilterState();
+}
+
+function updateModeBarVisibility() {
+  const showOlympSections = (currentTrack === 'olymp' || currentTrack === 'all');
+  const btnHist = document.getElementById('btn-mode-historiography');
+  const btnSrc  = document.getElementById('btn-mode-sources');
+  if (btnHist) btnHist.style.display = showOlympSections ? '' : 'none';
+  if (btnSrc)  btnSrc.style.display  = showOlympSections ? '' : 'none';
+  if (!showOlympSections && (currentMode === 'historiography' || currentMode === 'sources')) {
+    applyMode('dates');
+  }
+}
+
+function setBestiaryTrackFilter(filter) {
+  bstTrackFilter = filter;
+  document.querySelectorAll('.bst-track-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.btrack === filter);
+  });
+  renderBestiary();
+}
+
+function setEdLevel(lvl) {
+  edCurrentLevel = lvl;
+  document.querySelectorAll('.ed-level-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.edlevel === lvl);
+  });
+}
+
 function applyEpoch(epoch) {
   currentEpoch = epoch;
   document.querySelectorAll('.epoch-btn').forEach(b => {
@@ -8415,10 +8851,72 @@ function updateFlipModeBtn() {
   btn.style.display = '';
   if (currentMode === 'maps') {
     btn.textContent = flipMode ? '📍 Описание → Карта' : '🗺 Карта → Описание';
+  } else if (currentMode === 'historiography') {
+    document.getElementById('qz-label').textContent = `Вопрос ${quizCount} · ${qContext} · Историография`;
+    const quotePart = target.quote ? `\nЦитата: «${target.quote}»` : '';
+    document.getElementById('qz-text').textContent = `Кому из историков принадлежит концепция:\n«${target.thesis}»?${quotePart}`;
+    const fallbackHistorians = ['Н. М. Карамзин', 'С. М. Соловьёв', 'В. О. Ключевский', 'А. А. Шахматов', 'Т. Н. Грановский', 'Б. А. Рыбаков'];
+    const wrong = [...new Set([...ALL_HISTORIOGRAPHY.map(x => x.historian), ...fallbackHistorians].filter(h => h && h !== target.historian))];
+    options = shuffle([...shuffle(wrong).slice(0, 3), target.historian]);
+    quizQuestion = {
+      correct: target.historian,
+      target: target,
+      questionText: `Историк: ${target.historian}`,
+      detail: `<strong>${target.historian}</strong> — ${target.work}<br><strong>Тезис:</strong> ${target.thesis}`
+    };
+  } else if (currentMode === 'sources') {
+    document.getElementById('qz-label').textContent = `Вопрос ${quizCount} · ${qContext} · Исторический источник`;
+    document.getElementById('qz-text').textContent = `Определите источник по отрывку:\n«${target.excerpt}»`;
+    const fallbackSources = ['«Повесть временных лет»', '«Русская Правда»', '«Поучение Владимира Мономаха»', '«Судебник Ивана III»', '«Слово о полку Игореве»', '«Судебник 1550 г.»'];
+    const wrong = [...new Set([...ALL_SOURCES.map(x => x.title), ...fallbackSources].filter(t => t && t !== target.title))];
+    options = shuffle([...shuffle(wrong).slice(0, 3), target.title]);
+    quizQuestion = {
+      correct: target.title,
+      target: target,
+      questionText: `Источник: ${target.title}`,
+      detail: `<strong>${target.title}</strong> (${target.dating})<br>📍 <em>Маркеры:</em> ${target.markers}`
+    };
+  } else if (currentMode === 'historiography') {
+    promptLabel.textContent = 'Определите историка по концепции и труду:';
+    const quotePart = target.quote ? `\n\n«${target.quote}»` : '';
+    promptText.textContent = `${target.work}\n\n${target.thesis}${quotePart}`;
+    promptText.style.fontFamily = 'var(--ff-sans)';
+    promptText.style.fontSize = '1.05rem';
+    promptText.style.fontWeight = '500';
+    promptText.style.lineHeight = '1.55';
+    promptText.style.whiteSpace = 'pre-line';
+    inputEl.placeholder = 'Введите фамилию историка (напр.: Карамзин, Ключевский)...';
+    inputQuestion = {
+      type: 'historiography',
+      target,
+      canonical: target.historian,
+      questionText: `Историк: ${target.historian} (${target.work})`,
+      detail: `<strong>${target.historian}</strong> — ${target.work}<br>${target.thesis}`
+    };
+  } else if (currentMode === 'sources') {
+    promptLabel.textContent = 'Определите исторический источник по отрывку:';
+    promptText.textContent = `${target.dating}\n\n«${target.excerpt}»\n\n📍 Маркеры: ${target.markers}`;
+    promptText.style.fontFamily = 'var(--ff-serif)';
+    promptText.style.fontSize = '1.08rem';
+    promptText.style.fontWeight = '500';
+    promptText.style.lineHeight = '1.6';
+    promptText.style.whiteSpace = 'pre-line';
+    inputEl.placeholder = 'Введите название источника (напр.: Повесть временных лет, Русская правда)...';
+    inputQuestion = {
+      type: 'sources',
+      target,
+      canonical: target.title,
+      questionText: `Источник: ${target.title} (${target.dating})`,
+      detail: `<strong>${target.title}</strong> (${target.dating})<br>📍 <em>Маркеры:</em> ${target.markers}`
+    };
   } else if (currentMode === 'figures') {
     btn.textContent = flipMode ? '📜 Факты → Деятель' : '👑 Деятель → Факты';
   } else if (currentMode === 'terms') {
     btn.textContent = flipMode ? '📝 Определение → Термин' : '📖 Термин → Определение';
+  } else if (currentMode === 'historiography') {
+    btn.textContent = flipMode ? '📜 Концепция → Историк' : '🎓 Историк → Концепция';
+  } else if (currentMode === 'sources') {
+    btn.textContent = flipMode ? '📖 Название → Отрывок' : '📜 Отрывок → Название';
   } else {
     btn.textContent = flipMode ? '📅 Дата → Событие' : '📖 Событие → Дата';
   }
@@ -8436,7 +8934,7 @@ function applyMode(mode) {
   const cardsTabBtn = document.querySelector('.tab-btn[data-tab="cards"]');
 
   if (sortTabBtn && matchTabBtn) {
-    if (mode === 'culture' || mode === 'figures' || mode === 'maps') {
+    if (mode === 'culture' || mode === 'figures' || mode === 'maps' || mode === 'historiography' || mode === 'sources') {
       sortTabBtn.style.display = 'none';
       matchTabBtn.style.display = 'none';
       if (sortTabBtn.classList.contains('active') || matchTabBtn.classList.contains('active')) {
@@ -8499,6 +8997,10 @@ function applyTheme(theme){
     filteredEvents.sort((a,b) => a.term.localeCompare(b.term, 'ru'));
   } else if (effMode === 'culture') {
     filteredEvents.sort((a,b) => a.title.localeCompare(b.title, 'ru'));
+  } else if (effMode === 'historiography') {
+    filteredEvents.sort((a,b) => (a.historian || '').localeCompare(b.historian || '', 'ru'));
+  } else if (effMode === 'sources') {
+    filteredEvents.sort((a,b) => (a.title || '').localeCompare(b.title || '', 'ru'));
   } else {
     filteredEvents.sort((a,b) => a.sortYear - b.sortYear);
   }
@@ -8622,6 +9124,8 @@ function renderCard(){
   const isCulture = currentMode === 'culture';
   const isFigures = currentMode === 'figures';
   const isMaps    = currentMode === 'maps';
+  const isHist    = currentMode === 'historiography';
+  const isSrc     = currentMode === 'sources';
 
   fcContainer.classList.toggle('culture-card', isCulture);
   fcContainer.classList.toggle('figure-card', isFigures);
@@ -8632,11 +9136,20 @@ function renderCard(){
   if (figBack)   figBack.style.display   = isFigures ? 'flex' : 'none';
   if (mapFront)  mapFront.style.display  = isMaps ? 'flex' : 'none';
   if (mapBack)   mapBack.style.display   = isMaps ? 'flex' : 'none';
-  document.getElementById('fc-event').style.display       = (isCulture || isFigures || isMaps) ? 'none' : '';
-  document.getElementById('fc-back-title').style.display  = (isCulture || isFigures) ? 'none' : '';
-  document.getElementById('fc-year').style.display        = (isCulture || isFigures || isMaps) ? 'none' : '';
-  document.getElementById('fc-detail').style.display      = (isCulture || isFigures || isMaps) ? 'none' : '';
-  document.getElementById('fc-front-title').style.display = (isCulture || isFigures) ? 'none' : '';
+  const histFront = document.getElementById('fc-hist-front');
+  const histBack  = document.getElementById('fc-hist-back');
+  const srcFront  = document.getElementById('fc-source-front');
+  const srcBack   = document.getElementById('fc-source-back');
+  if (histFront) histFront.style.display = isHist ? 'flex' : 'none';
+  if (histBack)  histBack.style.display  = isHist ? 'flex' : 'none';
+  if (srcFront)  srcFront.style.display  = isSrc ? 'flex' : 'none';
+  if (srcBack)   srcBack.style.display   = isSrc ? 'flex' : 'none';
+
+  document.getElementById('fc-event').style.display       = (isCulture || isFigures || isMaps || isHist || isSrc) ? 'none' : '';
+  document.getElementById('fc-back-title').style.display  = (isCulture || isFigures || isHist || isSrc) ? 'none' : '';
+  document.getElementById('fc-year').style.display        = (isCulture || isFigures || isMaps || isHist || isSrc) ? 'none' : '';
+  document.getElementById('fc-detail').style.display      = (isCulture || isFigures || isMaps || isHist || isSrc) ? 'none' : '';
+  document.getElementById('fc-front-title').style.display = (isCulture || isFigures || isHist || isSrc) ? 'none' : '';
 
   // Flip mode determines which face shows what
   if (isMaps) {
@@ -8787,6 +9300,64 @@ function renderCard(){
     document.getElementById('fc-cult-author').textContent = e.author || 'Неизвестен';
     document.getElementById('fc-cult-ruler').textContent = e.ruler || '—';
     document.getElementById('fc-cult-lore').textContent = e.lore || '';
+  } else if (isHist) {
+    if (flipMode) {
+      document.getElementById('fc-hist-name-front').style.display = 'none';
+      document.getElementById('fc-hist-work-front').style.display = 'none';
+      document.getElementById('fc-hist-thesis-front').style.display = '';
+      document.getElementById('fc-hist-thesis-front').textContent = e.thesis || '';
+      document.getElementById('fc-hist-quote-front').style.display = e.quote ? '' : 'none';
+      document.getElementById('fc-hist-quote-front').textContent = e.quote ? `«${e.quote}»` : '';
+
+      document.getElementById('fc-hist-name-back').style.display = '';
+      document.getElementById('fc-hist-name-back').textContent = e.historian || '';
+      document.getElementById('fc-hist-work-back').style.display = '';
+      document.getElementById('fc-hist-work-back').textContent = e.work || '';
+      document.getElementById('fc-hist-thesis-back').style.display = 'none';
+      document.getElementById('fc-hist-quote-back').style.display = 'none';
+    } else {
+      document.getElementById('fc-hist-name-front').style.display = '';
+      document.getElementById('fc-hist-name-front').textContent = e.historian || '';
+      document.getElementById('fc-hist-work-front').style.display = '';
+      document.getElementById('fc-hist-work-front').textContent = e.work || '';
+      document.getElementById('fc-hist-thesis-front').style.display = 'none';
+      document.getElementById('fc-hist-quote-front').style.display = 'none';
+
+      document.getElementById('fc-hist-name-back').style.display = 'none';
+      document.getElementById('fc-hist-work-back').style.display = 'none';
+      document.getElementById('fc-hist-thesis-back').style.display = '';
+      document.getElementById('fc-hist-thesis-back').textContent = e.thesis || '';
+      document.getElementById('fc-hist-quote-back').style.display = e.quote ? '' : 'none';
+      document.getElementById('fc-hist-quote-back').textContent = e.quote ? `«${e.quote}»` : '';
+    }
+  } else if (isSrc) {
+    if (flipMode) {
+      document.getElementById('fc-source-title-front').style.display = '';
+      document.getElementById('fc-source-title-front').textContent = e.title || '';
+      document.getElementById('fc-source-dating-front').style.display = '';
+      document.getElementById('fc-source-dating-front').textContent = e.dating || '';
+      document.getElementById('fc-source-excerpt-front').style.display = 'none';
+
+      document.getElementById('fc-source-title-back').style.display = 'none';
+      document.getElementById('fc-source-dating-back').style.display = 'none';
+      document.getElementById('fc-source-excerpt-back').style.display = '';
+      document.getElementById('fc-source-excerpt-back').textContent = e.excerpt || '';
+      document.getElementById('fc-source-markers-back').style.display = '';
+      document.getElementById('fc-source-markers-back').textContent = `📍 Маркеры: ${e.markers || ''}`;
+    } else {
+      document.getElementById('fc-source-title-front').style.display = 'none';
+      document.getElementById('fc-source-dating-front').style.display = 'none';
+      document.getElementById('fc-source-excerpt-front').style.display = '';
+      document.getElementById('fc-source-excerpt-front').textContent = e.excerpt || '';
+
+      document.getElementById('fc-source-title-back').style.display = '';
+      document.getElementById('fc-source-title-back').textContent = e.title || '';
+      document.getElementById('fc-source-dating-back').style.display = '';
+      document.getElementById('fc-source-dating-back').textContent = e.dating || '';
+      document.getElementById('fc-source-excerpt-back').style.display = 'none';
+      document.getElementById('fc-source-markers-back').style.display = '';
+      document.getElementById('fc-source-markers-back').textContent = `📍 Маркеры: ${e.markers || ''}`;
+    }
   } else if(currentMode === 'terms') {
     if(flipMode) {
       // Front: DEF, Back: TERM
@@ -8842,22 +9413,34 @@ function renderCard(){
     const b = document.getElementById(id);
     if (isCulture) {
       if (id === 'fc-badge') {
-        // Hide badge on front so card front is completely clean
         b.style.display = 'none';
         b.textContent = '';
       } else {
-        // Show badge on back
         b.style.display = '';
         const cat = getCultureCategory(e);
         b.className = 'theme-badge culture';
         b.textContent = getCultureCategoryLabel(cat);
       }
+    } else if (isHist) {
+      b.style.display = '';
+      b.className = 'theme-badge culture';
+      b.textContent = 'Историография';
+    } else if (isSrc) {
+      b.style.display = '';
+      b.className = 'theme-badge law';
+      b.textContent = 'Источники';
     } else {
       b.style.display = '';
       b.className = 'theme-badge ' + (e.theme || 'maps');
       b.textContent = THEME_NAMES[e.theme] || (currentMode === 'maps' ? 'Исторические карты' : 'Все темы');
     }
   });
+
+  const isOlympCard = e.level === 'olymp';
+  const ob1 = document.getElementById('fc-olymp-badge');
+  const ob2 = document.getElementById('fc-olymp-badge2');
+  if (ob1) ob1.style.display = isOlympCard ? '' : 'none';
+  if (ob2) ob2.style.display = isOlympCard ? '' : 'none';
 
   // Known stamp
   const stamp = document.getElementById('fc-stamp');
@@ -9562,6 +10145,42 @@ function initInputQuestion(forceNew = false) {
   }
 }
 
+function getAcceptableHistorianVariants(target) {
+  const variants = new Set();
+  const name = typeof target === 'string' ? target : (target?.historian || '');
+  const norm = normalizeInputTerm(name);
+  if (norm) variants.add(norm);
+  const parts = norm.split(/\s+/);
+  parts.forEach(p => {
+    const clean = p.replace(/[^а-яё]/gi, '');
+    if (clean.length >= 4) variants.add(clean);
+  });
+  return variants;
+}
+
+function getAcceptableSourceVariants(target) {
+  const variants = new Set();
+  const title = typeof target === 'string' ? target : (target?.title || '');
+  const norm = normalizeInputTerm(title);
+  if (norm) variants.add(norm);
+  const withoutQuotes = norm.replace(/[«»"']/g, '').trim();
+  if (withoutQuotes) variants.add(withoutQuotes);
+
+  if (withoutQuotes.includes('повесть временных лет') || withoutQuotes.includes('пвл')) {
+    ['повесть временных лет', 'пвл', 'повесть временных'].forEach(v => variants.add(v));
+  }
+  if (withoutQuotes.includes('русская правда') || withoutQuotes.includes('правда ярославичей')) {
+    ['русская правда', 'правда ярославичей', 'краткая правда'].forEach(v => variants.add(v));
+  }
+  if (withoutQuotes.includes('поучение') || withoutQuotes.includes('мономаха')) {
+    ['поучение владимира мономаха', 'поучение мономаха', 'поучение'].forEach(v => variants.add(v));
+  }
+  if (withoutQuotes.includes('судебник')) {
+    ['судебник ивана 3', 'судебник ивана iii', 'судебник ивана третьего', 'судебник 1497', 'судебник 1497 года', 'судебник'].forEach(v => variants.add(v));
+  }
+  return variants;
+}
+
 function generateInputQuestion() {
   const pool = filteredEvents.length > 0 ? filteredEvents : getEpochSource();
   if (pool.length === 0) return;
@@ -9771,9 +10390,19 @@ function checkInputAnswer() {
   const isCulture = inputQuestion.type === 'culture';
   const isFigure = inputQuestion.type === 'figure';
   const isMap = inputQuestion.type === 'map';
+  const isHist = inputQuestion.type === 'historiography';
+  const isSrc = inputQuestion.type === 'sources';
   let isCorrect = false;
 
-  if (isMap) {
+  if (isHist) {
+    const userNorm = normalizeInputTerm(rawValue);
+    const variants = getAcceptableHistorianVariants(inputQuestion.target);
+    isCorrect = variants.has(userNorm);
+  } else if (isSrc) {
+    const userNorm = normalizeInputTerm(rawValue);
+    const variants = getAcceptableSourceVariants(inputQuestion.target);
+    isCorrect = variants.has(userNorm);
+  } else if (isMap) {
     const userNorm = normalizeInputTerm(rawValue);
     const variants = getAcceptableMapVariants(inputQuestion.target);
     isCorrect = variants.has(userNorm);
@@ -10720,6 +11349,16 @@ function renderBestiary() {
       } else if (bestiarySubTab === 'terms') {
         return (e.term && e.term.toLowerCase().includes(query)) ||
                (e.def && e.def.toLowerCase().includes(query));
+      } else if (bestiarySubTab === 'historiography') {
+        return (e.historian && e.historian.toLowerCase().includes(query)) ||
+               (e.work && e.work.toLowerCase().includes(query)) ||
+               (e.thesis && e.thesis.toLowerCase().includes(query)) ||
+               (e.quote && e.quote.toLowerCase().includes(query));
+      } else if (bestiarySubTab === 'sources') {
+        return (e.title && e.title.toLowerCase().includes(query)) ||
+               (e.dating && e.dating.toLowerCase().includes(query)) ||
+               (e.excerpt && e.excerpt.toLowerCase().includes(query)) ||
+               (e.markers && e.markers.toLowerCase().includes(query));
       } else {
         return (e.title && e.title.toLowerCase().includes(query)) ||
                (e.year && e.year.toLowerCase().includes(query)) ||
@@ -10739,6 +11378,10 @@ function renderBestiary() {
     list.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ru'));
   } else if (bestiarySubTab === 'terms') {
     list.sort((a, b) => a.term.localeCompare(b.term, 'ru'));
+  } else if (bestiarySubTab === 'historiography') {
+    list.sort((a, b) => (a.historian || '').localeCompare(b.historian || '', 'ru'));
+  } else if (bestiarySubTab === 'sources') {
+    list.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ru'));
   } else {
     list.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
   }
@@ -10760,16 +11403,65 @@ function renderBestiary() {
     return;
   }
 
-  if (bestiarySubTab === 'figures') {
+  if (bestiarySubTab === 'historiography') {
+    container.innerHTML = `<div class="bst-glossary-grid">${list.map(e => {
+      const key = getEventKey(e);
+      const known = learnedKeys.has(key);
+      const keyEnc = encodeURIComponent(key);
+      return `<div class="bst-term-card">
+        <div>
+          <div class="bst-tl-top">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="theme-badge culture" style="margin-bottom:4px">Историография</span>
+              <span class="olymp-badge">🏆 Олимп</span>
+            </div>
+            <button class="bst-known-btn ${known ? 'is-known' : ''}" onclick="toggleBestiaryKnown('${keyEnc}')">✓ Знаю</button>
+          </div>
+          <div class="bst-term-title" style="margin-top:4px">🎓 ${escHtml(e.historian)}</div>
+          <div style="font-family:var(--ff-serif);font-size:1.05rem;font-style:italic;color:#e2e8f0;margin-bottom:8px">${escHtml(e.work)}</div>
+          <div class="bst-term-def" style="background:rgba(255,255,255,0.03);padding:8px 12px;border-left:3px solid var(--gold);border-radius:4px;margin-bottom:8px">
+            <strong>Концепт:</strong> ${escHtml(e.thesis)}
+          </div>
+          ${e.quote ? `<div style="font-family:var(--ff-serif);font-size:.88rem;font-style:italic;color:#f1f5f9;background:rgba(212,168,83,0.08);padding:8px 12px;border-radius:6px;border:1px solid rgba(212,168,83,0.2)">«${escHtml(e.quote)}»</div>` : ''}
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } else if (bestiarySubTab === 'sources') {
+    container.innerHTML = `<div class="bst-glossary-grid">${list.map(e => {
+      const key = getEventKey(e);
+      const known = learnedKeys.has(key);
+      const keyEnc = encodeURIComponent(key);
+      return `<div class="bst-term-card">
+        <div>
+          <div class="bst-tl-top">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+              <span class="theme-badge law" style="margin-bottom:4px">Источники</span>
+              <span class="olymp-badge">🏆 Олимп</span>
+            </div>
+            <button class="bst-known-btn ${known ? 'is-known' : ''}" onclick="toggleBestiaryKnown('${keyEnc}')">✓ Знаю</button>
+          </div>
+          <div class="bst-term-title" style="margin-top:4px">📜 ${escHtml(e.title)}</div>
+          <div style="font-size:.84rem;color:#94a3b8;margin-bottom:8px"><span style="background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:99px">${escHtml(e.dating)}</span></div>
+          <div style="font-family:var(--ff-serif);font-size:.92rem;line-height:1.55;color:#f1f5f9;background:rgba(20,28,52,0.6);padding:10px 12px;border-radius:6px;border:1px solid var(--border2);margin-bottom:8px;text-align:justify">
+            ${escHtml(e.excerpt)}
+          </div>
+          <div class="bst-term-def" style="background:rgba(212,168,83,0.08);padding:6px 10px;border-left:3px solid var(--gold);border-radius:4px">
+            📍 <strong>Маркеры:</strong> ${escHtml(e.markers)}
+          </div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } else if (bestiarySubTab === 'figures') {
     container.innerHTML = `<div class="bst-figures-grid">${list.map(e => {
       const key = getEventKey(e);
       const known = learnedKeys.has(key);
       const keyEnc = encodeURIComponent(key);
+      const isOlymp = e.level === 'olymp';
       return `<div class="bst-fig-card">
         <div class="bst-fig-header">
           <div>
             <span class="theme-badge ${escHtml(e.theme)}" style="margin-bottom:6px">${escHtml(THEME_NAMES[e.theme] || e.theme)}</span>
-            <div class="bst-fig-name">👑 ${escHtml(e.name)}</div>
+            <div class="bst-fig-name">👑 ${escHtml(e.name)}${isOlymp ? ' <span class="olymp-badge">🏆 Олимп</span>' : ''}</div>
           </div>
           <button class="bst-known-btn ${known ? 'is-known' : ''}" onclick="toggleBestiaryKnown('${keyEnc}')">✓ Знаю</button>
         </div>
@@ -10793,7 +11485,7 @@ function renderBestiary() {
         <div class="bst-tl-top">
           <div>
             <span class="theme-badge ${escHtml(e.theme)}" style="margin-bottom:4px">${escHtml(THEME_NAMES[e.theme] || e.theme)}</span>
-            <div class="bst-tl-year">${escHtml(e.year)}</div>
+            <div class="bst-tl-year">${escHtml(e.year)}${e.level === 'olymp' ? ' <span class="olymp-badge">🏆 Олимп</span>' : ''}</div>
           </div>
           <button class="bst-known-btn ${known ? 'is-known' : ''}" onclick="toggleBestiaryKnown('${keyEnc}')">✓ Знаю</button>
         </div>
@@ -10812,7 +11504,7 @@ function renderBestiary() {
             <span class="theme-badge ${escHtml(e.theme)}" style="margin-bottom:4px">${escHtml(THEME_NAMES[e.theme] || e.theme)}</span>
             <button class="bst-known-btn ${known ? 'is-known' : ''}" onclick="toggleBestiaryKnown('${keyEnc}')">✓ Знаю</button>
           </div>
-          <div class="bst-term-title">${escHtml(e.term)}</div>
+          <div class="bst-term-title">${escHtml(e.term)}${e.level === 'olymp' ? ' <span class="olymp-badge">🏆 Олимп</span>' : ''}</div>
           <div class="bst-term-def">${escHtml(e.def)}</div>
         </div>
       </div>`;
@@ -12203,6 +12895,8 @@ let CUSTOM_DATES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], so
 let CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
 let CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
 let CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+let CUSTOM_HISTORIOGRAPHY = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+let CUSTOM_SOURCES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
 let CUSTOM_CULTURE = [];
 
 function loadCustomCards() {
@@ -12214,6 +12908,8 @@ function loadCustomCards() {
       CUSTOM_TERMS[ep] = (saved.terms && saved.terms[ep]) ? saved.terms[ep] : [];
       CUSTOM_FIGURES[ep] = (saved.figures && saved.figures[ep]) ? saved.figures[ep] : [];
       CUSTOM_MAPS[ep] = (saved.maps && saved.maps[ep]) ? saved.maps[ep] : [];
+      CUSTOM_HISTORIOGRAPHY[ep] = (saved.historiography && saved.historiography[ep]) ? saved.historiography[ep] : [];
+      CUSTOM_SOURCES[ep] = (saved.sources && saved.sources[ep]) ? saved.sources[ep] : [];
     });
     CUSTOM_CULTURE = Array.isArray(saved.culture) ? saved.culture : [];
   } catch(e) {
@@ -12221,6 +12917,8 @@ function loadCustomCards() {
     CUSTOM_TERMS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
     CUSTOM_FIGURES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
     CUSTOM_MAPS = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+    CUSTOM_HISTORIOGRAPHY = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
+    CUSTOM_SOURCES = { ancient:[], razdro:[], moscow:[], tsardom:[], empire:[], soviet:[], rf:[] };
     CUSTOM_CULTURE = [];
   }
   _mergeCustomIntoData();
@@ -12233,10 +12931,14 @@ function _mergeCustomIntoData() {
     DATA_TERMS[ep] = DATA_TERMS[ep].filter(x => !x._custom);
     DATA_FIGURES[ep] = (DATA_FIGURES[ep] || []).filter(x => !x._custom);
     DATA_MAPS[ep] = (DATA_MAPS[ep] || []).filter(x => !x._custom);
+    DATA_HISTORIOGRAPHY[ep] = (DATA_HISTORIOGRAPHY[ep] || []).filter(x => !x._custom);
+    DATA_SOURCES[ep] = (DATA_SOURCES[ep] || []).filter(x => !x._custom);
     CUSTOM_DATES[ep].forEach(c => DATA_DATES[ep].push({ ...c, _custom: true }));
     CUSTOM_TERMS[ep].forEach(c => DATA_TERMS[ep].push({ ...c, _custom: true }));
     (CUSTOM_FIGURES[ep] || []).forEach(c => DATA_FIGURES[ep].push({ ...c, _custom: true }));
     (CUSTOM_MAPS[ep] || []).forEach(c => DATA_MAPS[ep].push({ ...c, _custom: true }));
+    (CUSTOM_HISTORIOGRAPHY[ep] || []).forEach(c => DATA_HISTORIOGRAPHY[ep].push({ ...c, _custom: true }));
+    (CUSTOM_SOURCES[ep] || []).forEach(c => DATA_SOURCES[ep].push({ ...c, _custom: true }));
   });
   for (let i = DATA_CULTURE.length - 1; i >= 0; i--) {
     if (DATA_CULTURE[i]._custom) DATA_CULTURE.splice(i, 1);
@@ -12264,16 +12966,26 @@ function _rebuildAllArrays() {
   Object.entries(DATA_MAPS).forEach(([epoch, arr]) =>
     arr.forEach(item => ALL_MAPS.push({ ...item, epoch }))
   );
+  ALL_HISTORIOGRAPHY.length = 0;
+  Object.entries(DATA_HISTORIOGRAPHY).forEach(([epoch, arr]) =>
+    arr.forEach(item => ALL_HISTORIOGRAPHY.push({ ...item, epoch }))
+  );
+  ALL_SOURCES.length = 0;
+  Object.entries(DATA_SOURCES).forEach(([epoch, arr]) =>
+    arr.forEach(item => ALL_SOURCES.push({ ...item, epoch }))
+  );
 }
 
 function saveCustomCards() {
-  const data = { dates: {}, terms: {}, culture: CUSTOM_CULTURE, figures: {}, maps: {} };
+  const data = { dates: {}, terms: {}, culture: CUSTOM_CULTURE, figures: {}, maps: {}, historiography: {}, sources: {} };
   const epochs = ['ancient','razdro','moscow','tsardom','empire','soviet','rf'];
   epochs.forEach(ep => {
     data.dates[ep] = CUSTOM_DATES[ep];
     data.terms[ep] = CUSTOM_TERMS[ep];
     data.figures[ep] = CUSTOM_FIGURES[ep];
     data.maps[ep] = CUSTOM_MAPS[ep];
+    data.historiography[ep] = CUSTOM_HISTORIOGRAPHY[ep];
+    data.sources[ep] = CUSTOM_SOURCES[ep];
   });
   localStorage.setItem(LS_CUSTOM_KEY, JSON.stringify(data));
 }
@@ -12317,10 +13029,14 @@ function setEdMode(mode) {
   const cultFields = document.getElementById('ed-culture-fields');
   const figFields = document.getElementById('ed-figures-fields');
   const mapFields = document.getElementById('ed-maps-fields');
-  if (bulkWrap) bulkWrap.style.display = (mode === 'culture' || mode === 'figures' || mode === 'maps') ? 'none' : 'flex';
+  const histFields = document.getElementById('ed-historiography-fields');
+  const srcFields = document.getElementById('ed-sources-fields');
+  if (bulkWrap) bulkWrap.style.display = (mode === 'culture' || mode === 'figures' || mode === 'maps' || mode === 'historiography' || mode === 'sources') ? 'none' : 'flex';
   if (cultFields) cultFields.style.display = mode === 'culture' ? 'flex' : 'none';
   if (figFields) figFields.style.display = mode === 'figures' ? 'flex' : 'none';
   if (mapFields) mapFields.style.display = mode === 'maps' ? 'flex' : 'none';
+  if (histFields) histFields.style.display = mode === 'historiography' ? 'flex' : 'none';
+  if (srcFields) srcFields.style.display = mode === 'sources' ? 'flex' : 'none';
 
   if (mode === 'dates' || mode === 'terms') {
     const label = document.getElementById('ed-textarea-label');
@@ -12479,6 +13195,60 @@ function parseAndAddCards() {
     return;
   }
 
+  if (edMode === 'historiography') {
+    const historian = document.getElementById('ed-hist-historian').value.trim();
+    const work = document.getElementById('ed-hist-work').value.trim();
+    const thesis = document.getElementById('ed-hist-thesis').value.trim();
+    const quote = document.getElementById('ed-hist-quote').value.trim();
+    if (!historian || !work || !thesis) {
+      showEdStatus(statusEl, 'err', 'Укажите имя историка, название труда и главный тезис.');
+      return;
+    }
+    if (editKey) _removeCustomByKey(editKey);
+    CUSTOM_HISTORIOGRAPHY[epoch].push({
+      id: `hist_custom_${Date.now()}`,
+      epoch,
+      theme,
+      level: edCurrentLevel,
+      historian,
+      work,
+      thesis,
+      quote
+    });
+    saveCustomCards();
+    rebuildAndRefresh();
+    cancelEditCard();
+    showEdStatus(statusEl, 'ok', editKey ? 'Историография обновлена!' : 'Историография сохранена в базу!');
+    return;
+  }
+
+  if (edMode === 'sources') {
+    const title = document.getElementById('ed-src-title').value.trim();
+    const dating = document.getElementById('ed-src-dating').value.trim();
+    const excerpt = document.getElementById('ed-src-excerpt').value.trim();
+    const markers = document.getElementById('ed-src-markers').value.trim();
+    if (!title || !dating || !excerpt || !markers) {
+      showEdStatus(statusEl, 'err', 'Укажите название источника, датировку, выдержку и маркеры.');
+      return;
+    }
+    if (editKey) _removeCustomByKey(editKey);
+    CUSTOM_SOURCES[epoch].push({
+      id: `src_custom_${Date.now()}`,
+      epoch,
+      theme,
+      level: edCurrentLevel,
+      title,
+      dating,
+      excerpt,
+      markers
+    });
+    saveCustomCards();
+    rebuildAndRefresh();
+    cancelEditCard();
+    showEdStatus(statusEl, 'ok', editKey ? 'Источник обновлен!' : 'Источник сохранен в базу!');
+    return;
+  }
+
   if (edMode === 'figures') {
     const name = document.getElementById('ed-fig-name').value.trim();
     const years = document.getElementById('ed-fig-years').value.trim();
@@ -12493,6 +13263,7 @@ function parseAndAddCards() {
       id: `fig_custom_${Date.now()}`,
       epoch,
       theme,
+      level: edCurrentLevel,
       name,
       years,
       role,
@@ -12553,9 +13324,9 @@ function parseAndAddCards() {
     _removeCustomByKey(editKey);
 
     if (edMode === 'dates') {
-      CUSTOM_DATES[epoch].push({ year: left, sortYear: parseSortYear(left), event: right, theme });
+      CUSTOM_DATES[epoch].push({ year: left, sortYear: parseSortYear(left), event: right, theme, level: edCurrentLevel });
     } else {
-      CUSTOM_TERMS[epoch].push({ term: left, def: right, theme });
+      CUSTOM_TERMS[epoch].push({ term: left, def: right, theme, level: edCurrentLevel });
     }
     saveCustomCards();
     rebuildAndRefresh();
@@ -12574,9 +13345,9 @@ function parseAndAddCards() {
     const right = line.substring(idx + sep[0].length).trim();
     if (!left || !right) { skipped++; return; }
     if (edMode === 'dates') {
-      CUSTOM_DATES[epoch].push({ year: left, sortYear: parseSortYear(left), event: right, theme });
+      CUSTOM_DATES[epoch].push({ year: left, sortYear: parseSortYear(left), event: right, theme, level: edCurrentLevel });
     } else {
-      CUSTOM_TERMS[epoch].push({ term: left, def: right, theme });
+      CUSTOM_TERMS[epoch].push({ term: left, def: right, theme, level: edCurrentLevel });
     }
     added++;
   });
@@ -12593,7 +13364,9 @@ function cancelEditCard() {
   document.getElementById('ed-bulk').value = '';
   ['ed-cult-title','ed-cult-year','ed-cult-author','ed-cult-ruler','ed-cult-lore',
    'ed-fig-name','ed-fig-years','ed-fig-role','ed-fig-facts',
-   'ed-map-title','ed-map-period','ed-map-markers'].forEach(id => {
+   'ed-map-title','ed-map-period','ed-map-markers',
+   'ed-hist-historian','ed-hist-work','ed-hist-thesis','ed-hist-quote',
+   'ed-src-title','ed-src-dating','ed-src-excerpt','ed-src-markers'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -12607,6 +13380,7 @@ function cancelEditCard() {
   const prevMap = document.getElementById('ed-map-preview');
   if (prevMap) { prevMap.src = ''; prevMap.classList.remove('show'); }
   document.getElementById('ed-cancel-edit-btn').style.display = 'none';
+  setEdLevel('ege');
 }
 
 function renderMyCards() {
@@ -12619,6 +13393,8 @@ function renderMyCards() {
     CUSTOM_TERMS[ep].forEach((c, i) => items.push({ type:'terms', epoch:ep, idx:i, ...c }));
     (CUSTOM_FIGURES[ep] || []).forEach((c, i) => items.push({ type:'figures', epoch:ep, idx:i, ...c }));
     (CUSTOM_MAPS[ep] || []).forEach((c, i) => items.push({ type:'maps', epoch:ep, idx:i, ...c }));
+    (CUSTOM_HISTORIOGRAPHY[ep] || []).forEach((c, i) => items.push({ type:'historiography', epoch:ep, idx:i, ...c }));
+    (CUSTOM_SOURCES[ep] || []).forEach((c, i) => items.push({ type:'sources', epoch:ep, idx:i, ...c }));
   });
   CUSTOM_CULTURE.forEach((c, i) => items.push({ type:'culture', idx:i, ...c }));
 
@@ -12636,18 +13412,22 @@ function renderMyCards() {
               ? `fig::${item.id || item.name}::${item.epoch}`
               : (item.type === 'maps'
                   ? `map::${item.id || item.title}::${item.epoch}`
-                  : `cult::${item.id}`)));
+                  : (item.type === 'historiography'
+                      ? `hist::${item.id || item.historian}::${item.epoch}`
+                      : (item.type === 'sources'
+                          ? `src::${item.id || item.title}::${item.epoch}`
+                          : `cult::${item.id}`)))));
     const keyEnc = encodeURIComponent(keyStr);
     const left  = item.type === 'dates'
       ? item.year
       : (item.type === 'terms'
           ? item.term
-          : (item.type === 'figures' ? `👑 ${item.name}` : (item.type === 'maps' ? `🗺 ${item.title}` : `${getCultureCategoryIcon(item.category)} ${item.title}`)));
+          : (item.type === 'figures' ? `👑 ${item.name}` : (item.type === 'maps' ? `🗺 ${item.title}` : (item.type === 'historiography' ? `🎓 ${item.historian}` : (item.type === 'sources' ? `📜 ${item.title}` : `${getCultureCategoryIcon(item.category)} ${item.title}`)))));
     const right = item.type === 'dates'
       ? item.event
       : (item.type === 'terms'
           ? item.def
-          : (item.type === 'figures' ? `${item.years} — ${item.facts}` : (item.type === 'maps' ? `${item.period} · ${item.markers}` : `${item.year} · ${item.ruler}`)));
+          : (item.type === 'figures' ? `${item.years} — ${item.facts}` : (item.type === 'maps' ? `${item.period} · ${item.markers}` : (item.type === 'historiography' ? `${item.work} — ${item.thesis}` : (item.type === 'sources' ? `${item.dating} — ${item.markers}` : `${item.year} · ${item.ruler}`)))));
     const meta = item.type === 'culture'
       ? `${EPOCH_NAMES[item.epoch] || item.epoch} · ${getCultureCategoryLabel(item.category)}`
       : `${EPOCH_NAMES[item.epoch] || item.epoch} · ${THEME_NAMES[item.theme] || item.theme}`;
@@ -12682,6 +13462,16 @@ function _removeCustomByKey(keyEncoded) {
     if (CUSTOM_FIGURES[epoch]) {
       CUSTOM_FIGURES[epoch] = CUSTOM_FIGURES[epoch].filter(c => (c.id || c.name) !== idOrName);
     }
+  } else if (key.startsWith('hist::')) {
+    const [, idOrHistorian, epoch] = key.split('::');
+    if (CUSTOM_HISTORIOGRAPHY[epoch]) {
+      CUSTOM_HISTORIOGRAPHY[epoch] = CUSTOM_HISTORIOGRAPHY[epoch].filter(c => (c.id || c.historian) !== idOrHistorian);
+    }
+  } else if (key.startsWith('src::')) {
+    const [, idOrTitle, epoch] = key.split('::');
+    if (CUSTOM_SOURCES[epoch]) {
+      CUSTOM_SOURCES[epoch] = CUSTOM_SOURCES[epoch].filter(c => (c.id || c.title) !== idOrTitle);
+    }
   } else if (key.startsWith('map::')) {
     const [, idOrTitle, epoch] = key.split('::');
     if (CUSTOM_MAPS[epoch]) {
@@ -12702,6 +13492,40 @@ function deleteCustomCard(keyEncoded) {
 
 function startEditCard(keyEncoded) {
   const key = decodeURIComponent(keyEncoded);
+  if (key.startsWith('hist::')) {
+    const [, idOrHistorian, epoch] = key.split('::');
+    const item = (CUSTOM_HISTORIOGRAPHY[epoch] || []).find(c => (c.id || c.historian) === idOrHistorian);
+    if (!item) return;
+    switchEditorTab('add');
+    setEdMode('historiography');
+    document.getElementById('ed-epoch').value = item.epoch || epoch;
+    document.getElementById('ed-theme').value = item.theme || 'culture';
+    document.getElementById('ed-hist-historian').value = item.historian || '';
+    document.getElementById('ed-hist-work').value = item.work || '';
+    document.getElementById('ed-hist-thesis').value = item.thesis || '';
+    document.getElementById('ed-hist-quote').value = item.quote || '';
+    if (item.level) setEdLevel(item.level);
+    document.getElementById('ed-edit-key').value = keyEncoded;
+    document.getElementById('ed-cancel-edit-btn').style.display = '';
+    return;
+  }
+  if (key.startsWith('src::')) {
+    const [, idOrTitle, epoch] = key.split('::');
+    const item = (CUSTOM_SOURCES[epoch] || []).find(c => (c.id || c.title) === idOrTitle);
+    if (!item) return;
+    switchEditorTab('add');
+    setEdMode('sources');
+    document.getElementById('ed-epoch').value = item.epoch || epoch;
+    document.getElementById('ed-theme').value = item.theme || 'culture';
+    document.getElementById('ed-src-title').value = item.title || '';
+    document.getElementById('ed-src-dating').value = item.dating || '';
+    document.getElementById('ed-src-excerpt').value = item.excerpt || '';
+    document.getElementById('ed-src-markers').value = item.markers || '';
+    if (item.level) setEdLevel(item.level);
+    document.getElementById('ed-edit-key').value = keyEncoded;
+    document.getElementById('ed-cancel-edit-btn').style.display = '';
+    return;
+  }
   if (key.startsWith('map::')) {
     const [, idOrTitle, epoch] = key.split('::');
     const item = (CUSTOM_MAPS[epoch] || []).find(c => (c.id || c.title) === idOrTitle);
@@ -12959,6 +13783,7 @@ loadCustomCards();
 updateEdThemeAutocomplete();
 initCultureGalleryFromStorage();
 initMapsStorage();
+applyTrack(currentTrack);
 </script>
 
 <!-- ============================================================
@@ -12978,6 +13803,15 @@ initMapsStorage();
 
     <!-- === ADD PANE === -->
     <div class="ed-pane active" id="ed-pane-add">
+      <!-- Level selector -->
+      <div class="ed-field">
+        <div class="ed-label">Уровень подготовки</div>
+        <div class="ed-level-toggle">
+          <button type="button" class="ed-level-btn active" data-edlevel="ege" onclick="setEdLevel('ege')">🎓 База ЕГЭ</button>
+          <button type="button" class="ed-level-btn" data-edlevel="olymp" onclick="setEdLevel('olymp')">🏆 Олимпиада</button>
+        </div>
+      </div>
+
       <!-- Mode selector -->
       <div class="ed-field">
         <div class="ed-label">Раздел</div>
@@ -12987,6 +13821,8 @@ initMapsStorage();
           <button class="ed-seg-btn"        data-edmode="culture" onclick="setEdMode('culture')">🏛 Культура</button>
           <button class="ed-seg-btn"        data-edmode="figures" onclick="setEdMode('figures')">👑 Деятели</button>
           <button class="ed-seg-btn"        data-edmode="maps"    onclick="setEdMode('maps')">🗺 Карты</button>
+          <button class="ed-seg-btn"        data-edmode="historiography" onclick="setEdMode('historiography')">🎓 Историография</button>
+          <button class="ed-seg-btn"        data-edmode="sources" onclick="setEdMode('sources')">📜 Источники</button>
         </div>
       </div>
 
@@ -13113,6 +13949,50 @@ initMapsStorage();
         <div class="ed-field">
           <div class="ed-label">Ключевые маркеры и ориентиры *</div>
           <textarea id="ed-map-markers" class="ed-textarea" style="min-height:80px" placeholder="Стрелки походов, осажденные города, реки, места сражений..."></textarea>
+        </div>
+      </div>
+
+      <!-- Historiography dedicated fields -->
+      <div id="ed-historiography-fields" style="display:none;flex-direction:column;gap:10px">
+        <div class="ed-row">
+          <div class="ed-field">
+            <div class="ed-label">Имя историка *</div>
+            <input id="ed-hist-historian" class="ed-input" placeholder="напр. Н. М. Карамзин">
+          </div>
+          <div class="ed-field">
+            <div class="ed-label">Название труда *</div>
+            <input id="ed-hist-work" class="ed-input" placeholder="напр. «История государства Российского»">
+          </div>
+        </div>
+        <div class="ed-field">
+          <div class="ed-label">Главная концепция / тезис *</div>
+          <textarea id="ed-hist-thesis" class="ed-textarea" style="min-height:76px" placeholder="Основная идея, концептуальный взгляд на эпоху или процесс..."></textarea>
+        </div>
+        <div class="ed-field">
+          <div class="ed-label">Ключевая цитата / формулировка</div>
+          <textarea id="ed-hist-quote" class="ed-textarea" style="min-height:60px" placeholder="Цитата историка, раскрывающая суть концепции..."></textarea>
+        </div>
+      </div>
+
+      <!-- Sources dedicated fields -->
+      <div id="ed-sources-fields" style="display:none;flex-direction:column;gap:10px">
+        <div class="ed-row">
+          <div class="ed-field">
+            <div class="ed-label">Название источника *</div>
+            <input id="ed-src-title" class="ed-input" placeholder="напр. «Повесть временных лет»">
+          </div>
+          <div class="ed-field">
+            <div class="ed-label">Датировка / век *</div>
+            <input id="ed-src-dating" class="ed-input" placeholder="напр. нач. XII в. (ок. 1113 г.)">
+          </div>
+        </div>
+        <div class="ed-field">
+          <div class="ed-label">Ключевая выдержка для атрибуции *</div>
+          <textarea id="ed-src-excerpt" class="ed-textarea" style="min-height:90px" placeholder="Характерный фрагмент текста источника..."></textarea>
+        </div>
+        <div class="ed-field">
+          <div class="ed-label">Опорные маркеры и слова-триггеры *</div>
+          <input id="ed-src-markers" class="ed-input" placeholder="напр. руская земля, нестор, поляне, древляне...">
         </div>
       </div>
 
