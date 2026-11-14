@@ -5773,10 +5773,9 @@ function renderBestiary() {
 const LS_CUSTOM_KEY = 'rus-trainer-custom-v1';
 const LS_CULT_GALLERY_KEY = 'rus-trainer-cult-gallery-v1';
 const LS_CULT_IMGS_KEY = 'rus-trainer-cult-imgs-v1';
-const IDB_NAME = 'RusHistoryTrainerDB';
-const IDB_STORE = 'cultureGallery';
-const IDB_STORE_OLD = 'cultureImages';
-const IDB_VERSION = 3;
+const IDB_NAME = 'EnnuiCultureGalleryDB';
+const IDB_STORE = 'galleries';
+const IDB_VERSION = 1;
 
 let _toastTimer = null;
 function showToast(msg, isError = false) {
@@ -5796,72 +5795,138 @@ function showToast(msg, isError = false) {
 }
 
 function openCultureDB() {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     if (!window.indexedDB) {
-      console.warn('IndexedDB не поддерживается браузером');
-      return resolve(null);
+      const err = new Error('IndexedDB не поддерживается вашим браузером');
+      console.error(err);
+      return reject(err);
     }
     const req = indexedDB.open(IDB_NAME, IDB_VERSION);
     req.onupgradeneeded = (e) => {
       const db = e.target.result;
       if (!db.objectStoreNames.contains(IDB_STORE)) {
-        db.createObjectStore(IDB_STORE);
+        db.createObjectStore(IDB_STORE, { keyPath: 'id' });
       }
     };
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = (e) => {
+      resolve(e.target.result);
+    };
     req.onerror = (e) => {
-      console.error('Ошибка открытия IndexedDB:', e);
-      resolve(null);
+      const err = e.target?.error || new Error('Ошибка открытия базы EnnuiCultureGalleryDB');
+      console.error('IndexedDB open error:', err);
+      reject(err);
     };
   });
 }
 
-async function idbSaveCultureGallery(id, urlsArray) {
-  try {
-    const db = await openCultureDB();
-    if (!db) return false;
-    const cleanArray = (Array.isArray(urlsArray) ? urlsArray : [urlsArray]).filter(Boolean).slice(0, 3);
-    return new Promise((resolve) => {
+function idbSaveCultureGallery(cultId, urlsArray) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const cleanArray = (Array.isArray(urlsArray) ? urlsArray : [urlsArray]).filter(Boolean).slice(0, 3);
+      if (cleanArray.length === 0) {
+        await idbDeleteCultureGallery(cultId);
+        return resolve(true);
+      }
+      const db = await openCultureDB();
+      const record = { id: String(cultId), images: cleanArray };
       const tx = db.transaction(IDB_STORE, 'readwrite');
-      tx.oncomplete = () => resolve(true);
-      tx.onerror = () => resolve(false);
-      tx.onabort = () => resolve(false);
-      tx.objectStore(IDB_STORE).put(cleanArray, id);
-    });
-  } catch(e) {
-    console.error('idbSaveCultureGallery error:', e);
-    return false;
-  }
+      const store = tx.objectStore(IDB_STORE);
+
+      tx.oncomplete = () => {
+        resolve(true);
+      };
+      tx.onerror = (e) => {
+        const err = e.target?.error || new Error('Ошибка транзакции IndexedDB');
+        console.error('idbSaveCultureGallery error:', err);
+        alert('Ошибка сохранения фото в IndexedDB: ' + (err.message || err));
+        reject(err);
+      };
+      tx.onabort = (e) => {
+        const err = e.target?.error || new Error('Транзакция прервана');
+        console.error('idbSaveCultureGallery abort:', err);
+        alert('Транзакция записи фото была прервана: ' + (err.message || err));
+        reject(err);
+      };
+
+      store.put(record);
+    } catch(err) {
+      console.error('idbSaveCultureGallery catch error:', err);
+      alert('Ошибка при сохранении фото в базу: ' + (err.message || err));
+      reject(err);
+    }
+  });
 }
 
-async function idbGetAllCultureGallery() {
-  try {
-    const db = await openCultureDB();
-    if (!db) return {};
-    return new Promise((resolve) => {
-      const tx = db.transaction(IDB_STORE, 'readonly');
-      const req = tx.objectStore(IDB_STORE).openCursor();
-      const res = {};
-      req.onsuccess = (e) => {
-        const cursor = e.target.result;
-        if (cursor) {
-          const val = cursor.value;
-          res[cursor.key] = (Array.isArray(val) ? val : [val]).filter(Boolean).slice(0, 3);
-          cursor.continue();
-        } else {
-          resolve(res);
-        }
+function idbDeleteCultureGallery(cultId) {
+  return new Promise(async (resolve) => {
+    try {
+      const db = await openCultureDB();
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      const store = tx.objectStore(IDB_STORE);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = (e) => {
+        console.error('idbDeleteCultureGallery error:', e.target?.error);
+        resolve(false);
       };
-      req.onerror = () => resolve({});
-    });
-  } catch(e) {
-    console.error('idbGetAllCultureGallery error:', e);
-    return {};
-  }
+      store.delete(String(cultId));
+    } catch(err) {
+      console.error('idbDeleteCultureGallery catch error:', err);
+      resolve(false);
+    }
+  });
+}
+
+function idbGetAllCultureGallery() {
+  return new Promise(async (resolve) => {
+    try {
+      const db = await openCultureDB();
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const store = tx.objectStore(IDB_STORE);
+      const req = store.getAll ? store.getAll() : null;
+
+      if (req) {
+        req.onsuccess = () => {
+          const res = {};
+          (req.result || []).forEach(item => {
+            if (item && item.id && Array.isArray(item.images)) {
+              res[String(item.id)] = item.images.filter(Boolean).slice(0, 3);
+            }
+          });
+          resolve(res);
+        };
+        req.onerror = (e) => {
+          console.error('idbGetAllCultureGallery getAll error:', e.target?.error);
+          resolve({});
+        };
+      } else {
+        const cursorReq = store.openCursor();
+        const res = {};
+        cursorReq.onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (cursor) {
+            const item = cursor.value;
+            if (item && item.id && Array.isArray(item.images)) {
+              res[String(item.id)] = item.images.filter(Boolean).slice(0, 3);
+            }
+            cursor.continue();
+          } else {
+            resolve(res);
+          }
+        };
+        cursorReq.onerror = (e) => {
+          console.error('idbGetAllCultureGallery cursor error:', e.target?.error);
+          resolve({});
+        };
+      }
+    } catch(err) {
+      console.error('idbGetAllCultureGallery catch error:', err);
+      resolve({});
+    }
+  });
 }
 
 async function initCultureGalleryFromStorage() {
-  // 1. Fast synchronous cache & legacy localStorage migration
+  // 1. Fast cache from localStorage (if any)
   try {
     const saved = JSON.parse(localStorage.getItem(LS_CULT_GALLERY_KEY) || '{}');
     if (saved && typeof saved === 'object') {
@@ -5884,86 +5949,45 @@ async function initCultureGalleryFromStorage() {
     }
   } catch(e) {}
 
-  // 2. Read from IndexedDB ('RusHistoryTrainerDB', version 3, store 'cultureGallery')
+  // 2. Read from clean IndexedDB 'EnnuiCultureGalleryDB' (store 'galleries')
   try {
-    const db = await openCultureDB();
-    if (db) {
-      // Migrate from old store 'cultureImages' if present
-      if (db.objectStoreNames.contains(IDB_STORE_OLD)) {
-        const oldRecords = await new Promise((res) => {
-          try {
-            const tx = db.transaction(IDB_STORE_OLD, 'readonly');
-            const store = tx.objectStore(IDB_STORE_OLD);
-            const req = store.openCursor();
-            const items = {};
-            req.onsuccess = (ev) => {
-              const cur = ev.target.result;
-              if (cur) {
-                if (cur.value) items[cur.key] = cur.value;
-                cur.continue();
-              } else res(items);
-            };
-            req.onerror = () => res({});
-          } catch(err) { res({}); }
-        });
-
-        for (const [k, val] of Object.entries(oldRecords)) {
-          const norm = (Array.isArray(val) ? val : [val]).filter(Boolean).slice(0, 3);
-          if (norm.length && (!CUSTOM_CULTURE_GALLERY[k] || !CUSTOM_CULTURE_GALLERY[k].length)) {
-            CUSTOM_CULTURE_GALLERY[k] = norm;
-            CUSTOM_CULTURE_IMAGES[k] = norm[0] || '';
-            await idbSaveCultureGallery(k, norm);
-          }
+    const idbRecords = await idbGetAllCultureGallery();
+    let idbCount = 0;
+    if (idbRecords && typeof idbRecords === 'object') {
+      for (const [cultId, images] of Object.entries(idbRecords)) {
+        if (Array.isArray(images) && images.length > 0) {
+          CUSTOM_CULTURE_GALLERY[cultId] = images.slice(0, 3);
+          CUSTOM_CULTURE_IMAGES[cultId] = images[0] || '';
+          idbCount++;
         }
       }
+    }
 
-      // Read all records from 'cultureGallery'
-      const galleryRecords = await new Promise((res) => {
-        try {
-          const tx = db.transaction(IDB_STORE, 'readonly');
-          const store = tx.objectStore(IDB_STORE);
-          const req = store.openCursor();
-          const items = {};
-          req.onsuccess = (ev) => {
-            const cur = ev.target.result;
-            if (cur) {
-              const val = cur.value;
-              items[cur.key] = (Array.isArray(val) ? val : [val]).filter(Boolean).slice(0, 3);
-              cur.continue();
-            } else res(items);
-          };
-          req.onerror = () => res({});
-        } catch(err) { res({}); }
-      });
-
-      for (const [k, arr] of Object.entries(galleryRecords)) {
-        if (arr && arr.length) {
-          CUSTOM_CULTURE_GALLERY[k] = arr;
-          CUSTOM_CULTURE_IMAGES[k] = arr[0] || '';
-        }
-      }
-
+    // Auto-migrate from localStorage if EnnuiCultureGalleryDB is fresh
+    if (idbCount === 0 && Object.keys(CUSTOM_CULTURE_GALLERY).length > 0) {
       for (const [k, arr] of Object.entries(CUSTOM_CULTURE_GALLERY)) {
-        if (!galleryRecords[k] && arr && arr.length) {
-          await idbSaveCultureGallery(k, arr);
+        if (arr && arr.length) {
+          idbSaveCultureGallery(k, arr).catch(() => {});
         }
       }
     }
   } catch(e) {
-    console.warn('IDB init error:', e);
+    console.error('initCultureGalleryFromStorage IDB error:', e);
   }
 
-  // 3. Immediately re-render active view after reading
+  // 3. Immediately re-render active screen after reading
   renderCard();
   renderBestiary();
 
-  const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
-  if (activeTab === 'quiz') {
-    const qId = quizQuestion?.target?.id;
-    if (qId) updateQuizCultureImage(qId);
-  } else if (activeTab === 'input') {
-    const iId = inputQuestion?.target?.id;
-    if (iId) updateInputCultureImage(iId);
+  if (currentMode === 'culture') {
+    const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab;
+    if (activeTab === 'quiz') {
+      const qId = quizQuestion?.target?.id;
+      if (qId) updateQuizCultureImage(qId);
+    } else if (activeTab === 'input') {
+      const iId = inputQuestion?.target?.id;
+      if (iId) updateInputCultureImage(iId);
+    }
   }
 }
 
@@ -6127,17 +6151,21 @@ async function addCultureAngle(id, dataUrl, slotIdx = null) {
     gallery[activeCultureAngle] = dataUrl;
   }
   gallery = gallery.slice(0, 3);
-  CUSTOM_CULTURE_GALLERY[id] = gallery;
-  CUSTOM_CULTURE_IMAGES[id] = gallery[0] || '';
 
-  await idbSaveCultureGallery(id, gallery);
   try {
-    localStorage.setItem(LS_CULT_GALLERY_KEY, JSON.stringify(CUSTOM_CULTURE_GALLERY));
-  } catch(e) {}
+    await idbSaveCultureGallery(id, gallery);
+    CUSTOM_CULTURE_GALLERY[id] = gallery;
+    CUSTOM_CULTURE_IMAGES[id] = gallery[0] || '';
+    try {
+      localStorage.setItem(LS_CULT_GALLERY_KEY, JSON.stringify(CUSTOM_CULTURE_GALLERY));
+    } catch(e) {}
 
-  soundCorrect();
-  showToast(`✓ Ракурс сохранён (${gallery.length}/3)`);
-  refreshCurrentCultureView(id);
+    soundCorrect();
+    showToast(`✓ Ракурс сохранён (${gallery.length}/3)`);
+    refreshCurrentCultureView(id);
+  } catch(err) {
+    console.error('Не удалось сохранить ракурс в IndexedDB:', err);
+  }
 }
 
 async function deleteCultureAngle(id, angleIdx, event) {
@@ -6146,28 +6174,37 @@ async function deleteCultureAngle(id, angleIdx, event) {
     event.preventDefault();
   }
   if (!id) return;
-  const gallery = getCultureGallery(id);
+  const gallery = [...getCultureGallery(id)];
   if (!gallery.length || angleIdx < 0 || angleIdx >= gallery.length) return;
 
   gallery.splice(angleIdx, 1);
-  CUSTOM_CULTURE_GALLERY[id] = gallery;
-  CUSTOM_CULTURE_IMAGES[id] = gallery[0] || '';
-
-  await idbSaveCultureGallery(id, gallery);
   try {
-    localStorage.setItem(LS_CULT_GALLERY_KEY, JSON.stringify(CUSTOM_CULTURE_GALLERY));
-  } catch(e) {}
+    if (gallery.length === 0) {
+      await idbDeleteCultureGallery(id);
+      delete CUSTOM_CULTURE_GALLERY[id];
+      delete CUSTOM_CULTURE_IMAGES[id];
+    } else {
+      await idbSaveCultureGallery(id, gallery);
+      CUSTOM_CULTURE_GALLERY[id] = gallery;
+      CUSTOM_CULTURE_IMAGES[id] = gallery[0] || '';
+    }
+    try {
+      localStorage.setItem(LS_CULT_GALLERY_KEY, JSON.stringify(CUSTOM_CULTURE_GALLERY));
+    } catch(e) {}
 
-  if (activeCultureAngle >= gallery.length) {
-    activeCultureAngle = Math.max(0, gallery.length - 1);
-  }
-  if (_bestiaryAngles[id] >= gallery.length) {
-    _bestiaryAngles[id] = Math.max(0, gallery.length - 1);
-  }
+    if (activeCultureAngle >= gallery.length) {
+      activeCultureAngle = Math.max(0, gallery.length - 1);
+    }
+    if (_bestiaryAngles[id] >= gallery.length) {
+      _bestiaryAngles[id] = Math.max(0, gallery.length - 1);
+    }
 
-  soundClick();
-  showToast('✕ Ракурс удалён');
-  refreshCurrentCultureView(id);
+    soundClick();
+    showToast('✕ Ракурс удалён');
+    refreshCurrentCultureView(id);
+  } catch(err) {
+    console.error('Не удалось удалить ракурс из IndexedDB:', err);
+  }
 }
 
 function triggerCulturePhotoUploadSlot(cultId, slotIdx = null, event = null) {
