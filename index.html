@@ -3522,8 +3522,76 @@ function getEventKey(e) {
 let cultureTarget = 'title'; // 'title' | 'author' | 'ruler'
 let bestiarySubTab = 'dates'; // 'dates' | 'terms' | 'culture'
 let edTempCultureImage = '';
-let CUSTOM_CULTURE_GALLERY = {};
+
+const LS_CULT_SYNC_KEY = 'rus-trainer-cult-gallery-sync-v1';
+const LS_CULT_GALLERY_KEY = 'rus-trainer-cult-gallery-v1';
+const LS_CULT_IMGS_KEY = 'rus-trainer-cult-imgs-v1';
+
+function _readCultureGallerySync() {
+  const result = {};
+  // 1. Try sync key
+  try {
+    const raw = localStorage.getItem(LS_CULT_SYNC_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        for (const [k, v] of Object.entries(parsed)) {
+          const arr = (Array.isArray(v) ? v : [v]).filter(Boolean).slice(0, 3);
+          if (arr.length) result[String(k)] = arr;
+        }
+      }
+    }
+  } catch(e) {}
+
+  // 2. Fallback to legacy gallery key
+  if (Object.keys(result).length === 0) {
+    try {
+      const raw = localStorage.getItem(LS_CULT_GALLERY_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          for (const [k, v] of Object.entries(parsed)) {
+            const arr = (Array.isArray(v) ? v : [v]).filter(Boolean).slice(0, 3);
+            if (arr.length) result[String(k)] = arr;
+          }
+        }
+      }
+    } catch(e) {}
+  }
+
+  // 3. Fallback to old single images key
+  if (Object.keys(result).length === 0) {
+    try {
+      const raw = localStorage.getItem(LS_CULT_IMGS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          for (const [k, v] of Object.entries(parsed)) {
+            if (v) result[String(k)] = [v];
+          }
+        }
+      }
+    } catch(e) {}
+  }
+
+  return result;
+}
+
+function _syncCultureGalleryToLocalStorage() {
+  try {
+    const json = JSON.stringify(CUSTOM_CULTURE_GALLERY);
+    localStorage.setItem(LS_CULT_SYNC_KEY, json);
+    localStorage.setItem(LS_CULT_GALLERY_KEY, json);
+  } catch(e) {
+    console.warn('localStorage sync warning:', e);
+  }
+}
+
+let CUSTOM_CULTURE_GALLERY = _readCultureGallerySync();
 let CUSTOM_CULTURE_IMAGES = {};
+for (const [k, arr] of Object.entries(CUSTOM_CULTURE_GALLERY)) {
+  CUSTOM_CULTURE_IMAGES[k] = arr[0] || '';
+}
 let activeCultureAngle = 0;
 let _bestiaryAngles = {};
 window._activeCultureId = null;
@@ -5770,8 +5838,6 @@ function renderBestiary() {
 //  CUSTOM CARDS — EDITOR (DATES, TERMS, CULTURE)
 // =====================================================================
 const LS_CUSTOM_KEY = 'rus-trainer-custom-v1';
-const LS_CULT_GALLERY_KEY = 'rus-trainer-cult-gallery-v1';
-const LS_CULT_IMGS_KEY = 'rus-trainer-cult-imgs-v1';
 const IDB_NAME = 'EnnuiCultureGalleryDB';
 const IDB_STORE = 'galleries';
 const IDB_VERSION = 1;
@@ -5950,16 +6016,15 @@ function getCultureGallery(item) {
   if (typeof item === 'string' || typeof item === 'number') {
     id = String(item);
   } else if (typeof item === 'object') {
-    id = item.id || item.cultId || item.key;
+    id = String(item.id || item.cultId || item.key || '');
   }
   if (id) {
-    const strId = String(id);
-    const customList = CUSTOM_CULTURE_GALLERY[strId] || CUSTOM_CULTURE_GALLERY[id];
+    const customList = CUSTOM_CULTURE_GALLERY[id];
     if (Array.isArray(customList)) {
       const valid = customList.filter(Boolean);
       if (valid.length > 0) return valid;
     }
-    const single = CUSTOM_CULTURE_IMAGES[strId] || CUSTOM_CULTURE_IMAGES[id];
+    const single = CUSTOM_CULTURE_IMAGES[id];
     if (single) return [single];
   }
   if (typeof item === 'object' && item && item.image) {
@@ -6081,28 +6146,16 @@ function updateActiveCultureDom() {
 }
 
 async function initCultureGalleryFromStorage() {
-  // 1. Fast cache from localStorage (if any)
-  try {
-    const saved = JSON.parse(localStorage.getItem(LS_CULT_GALLERY_KEY) || '{}');
-    if (saved && typeof saved === 'object') {
-      for (const [k, v] of Object.entries(saved)) {
-        const arr = (Array.isArray(v) ? v : [v]).filter(Boolean).slice(0, 3);
-        if (arr.length) {
-          CUSTOM_CULTURE_GALLERY[k] = arr;
-          CUSTOM_CULTURE_IMAGES[k] = arr[0] || '';
-        }
+  // 1. Fast sync from localStorage
+  const syncSaved = _readCultureGallerySync();
+  if (syncSaved && typeof syncSaved === 'object') {
+    for (const [k, arr] of Object.entries(syncSaved)) {
+      if (arr && arr.length) {
+        CUSTOM_CULTURE_GALLERY[k] = arr.slice(0, 3);
+        CUSTOM_CULTURE_IMAGES[k] = arr[0] || '';
       }
     }
-    const oldImgs = JSON.parse(localStorage.getItem(LS_CULT_IMGS_KEY) || '{}');
-    if (oldImgs && typeof oldImgs === 'object') {
-      for (const [k, v] of Object.entries(oldImgs)) {
-        if (v && (!CUSTOM_CULTURE_GALLERY[k] || !CUSTOM_CULTURE_GALLERY[k].length)) {
-          CUSTOM_CULTURE_GALLERY[k] = [v];
-          CUSTOM_CULTURE_IMAGES[k] = v;
-        }
-      }
-    }
-  } catch(e) {}
+  }
 
   // 2. Read from clean IndexedDB 'EnnuiCultureGalleryDB' (store 'galleries')
   try {
@@ -6111,14 +6164,19 @@ async function initCultureGalleryFromStorage() {
     if (idbRecords && typeof idbRecords === 'object') {
       for (const [cultId, images] of Object.entries(idbRecords)) {
         if (Array.isArray(images) && images.length > 0) {
-          CUSTOM_CULTURE_GALLERY[cultId] = images.slice(0, 3);
-          CUSTOM_CULTURE_IMAGES[cultId] = images[0] || '';
           idbCount++;
+          if (!CUSTOM_CULTURE_GALLERY[cultId] || !CUSTOM_CULTURE_GALLERY[cultId].length) {
+            CUSTOM_CULTURE_GALLERY[cultId] = images.slice(0, 3);
+            CUSTOM_CULTURE_IMAGES[cultId] = images[0] || '';
+          }
         }
       }
     }
 
-    // Auto-migrate from localStorage if EnnuiCultureGalleryDB is fresh
+    // Synchronize to localStorage
+    _syncCultureGalleryToLocalStorage();
+
+    // Auto-migrate from localStorage if EnnuiCultureGalleryDB was empty
     if (idbCount === 0 && Object.keys(CUSTOM_CULTURE_GALLERY).length > 0) {
       for (const [k, arr] of Object.entries(CUSTOM_CULTURE_GALLERY)) {
         if (arr && arr.length) {
@@ -6159,14 +6217,11 @@ function getCurrentCultureId() {
   return null;
 }
 
-function compressImageFile(file, maxDim = 900, quality = 0.80) {
+function compressImageFile(fileOrDataUrl, maxDim = 700, quality = 0.75) {
   return new Promise((resolve, reject) => {
-    if (!file || !(file instanceof Blob)) {
-      return reject(new Error('Не изображение'));
-    }
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error('Ошибка чтения файла'));
-    reader.onload = function(e) {
+    if (!fileOrDataUrl) return reject(new Error('Нет данных изображения'));
+
+    const processImg = (src) => {
       const img = new Image();
       img.onerror = () => reject(new Error('Не удалось декодировать картинку'));
       img.onload = function() {
@@ -6195,9 +6250,19 @@ function compressImageFile(file, maxDim = 900, quality = 0.80) {
         }
         resolve(dataUrl);
       };
-      img.src = e.target.result;
+      img.src = src;
     };
-    reader.readAsDataURL(file);
+
+    if (typeof fileOrDataUrl === 'string') {
+      processImg(fileOrDataUrl);
+    } else if (fileOrDataUrl instanceof Blob) {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Ошибка чтения файла'));
+      reader.onload = (e) => processImg(e.target.result);
+      reader.readAsDataURL(fileOrDataUrl);
+    } else {
+      reject(new Error('Неподдерживаемый формат'));
+    }
   });
 }
 
@@ -6255,32 +6320,42 @@ function selectBestiaryAngle(monumentId, idx, event) {
 
 async function addCultureAngle(id, dataUrl, slotIdx = null) {
   if (!id || !dataUrl) return;
-  let gallery = [...getCultureGallery(id)];
+  const cultKey = String(id);
+
+  let compressedUrl = dataUrl;
+  try {
+    compressedUrl = await compressImageFile(dataUrl, 700, 0.75);
+  } catch(e) {
+    console.warn('compressImageFile error, using original:', e);
+  }
+
+  let gallery = [...getCultureGallery(cultKey)];
   if (slotIdx !== null && slotIdx !== undefined && slotIdx >= 0 && slotIdx < gallery.length) {
-    gallery[slotIdx] = dataUrl;
+    gallery[slotIdx] = compressedUrl;
     activeCultureAngle = slotIdx;
   } else if (gallery.length < 3) {
-    gallery.push(dataUrl);
+    gallery.push(compressedUrl);
     activeCultureAngle = gallery.length - 1;
   } else {
-    gallery[activeCultureAngle] = dataUrl;
+    gallery[activeCultureAngle] = compressedUrl;
   }
   gallery = gallery.slice(0, 3);
 
-  try {
-    await idbSaveCultureGallery(id, gallery);
-    CUSTOM_CULTURE_GALLERY[id] = gallery;
-    CUSTOM_CULTURE_IMAGES[id] = gallery[0] || '';
-    try {
-      localStorage.setItem(LS_CULT_GALLERY_KEY, JSON.stringify(CUSTOM_CULTURE_GALLERY));
-    } catch(e) {}
+  // Synchronously update in-memory state
+  CUSTOM_CULTURE_GALLERY[cultKey] = gallery;
+  CUSTOM_CULTURE_IMAGES[cultKey] = gallery[0] || '';
 
-    soundCorrect();
-    showToast(`✓ Ракурс сохранён (${gallery.length}/3)`);
-    refreshCurrentCultureView(id);
-  } catch(err) {
-    console.error('Не удалось сохранить ракурс в IndexedDB:', err);
-  }
+  // Synchronously persist entire dictionary to localStorage ('rus-trainer-cult-gallery-sync-v1')
+  _syncCultureGalleryToLocalStorage();
+
+  soundCorrect();
+  showToast(`✓ Ракурс сохранён (${gallery.length}/3)`);
+  refreshCurrentCultureView(cultKey);
+
+  // Duplicate to IndexedDB in background
+  idbSaveCultureGallery(cultKey, gallery).catch(err => {
+    console.error('Ошибка дублирования в IndexedDB:', err);
+  });
 }
 
 async function deleteCultureAngle(id, angleIdx, event) {
@@ -6289,37 +6364,34 @@ async function deleteCultureAngle(id, angleIdx, event) {
     event.preventDefault();
   }
   if (!id) return;
-  const gallery = [...getCultureGallery(id)];
+  const cultKey = String(id);
+  const gallery = [...getCultureGallery(cultKey)];
   if (!gallery.length || angleIdx < 0 || angleIdx >= gallery.length) return;
 
   gallery.splice(angleIdx, 1);
-  try {
-    if (gallery.length === 0) {
-      await idbDeleteCultureGallery(id);
-      delete CUSTOM_CULTURE_GALLERY[id];
-      delete CUSTOM_CULTURE_IMAGES[id];
-    } else {
-      await idbSaveCultureGallery(id, gallery);
-      CUSTOM_CULTURE_GALLERY[id] = gallery;
-      CUSTOM_CULTURE_IMAGES[id] = gallery[0] || '';
-    }
-    try {
-      localStorage.setItem(LS_CULT_GALLERY_KEY, JSON.stringify(CUSTOM_CULTURE_GALLERY));
-    } catch(e) {}
-
-    if (activeCultureAngle >= gallery.length) {
-      activeCultureAngle = Math.max(0, gallery.length - 1);
-    }
-    if (_bestiaryAngles[id] >= gallery.length) {
-      _bestiaryAngles[id] = Math.max(0, gallery.length - 1);
-    }
-
-    soundClick();
-    showToast('✕ Ракурс удалён');
-    refreshCurrentCultureView(id);
-  } catch(err) {
-    console.error('Не удалось удалить ракурс из IndexedDB:', err);
+  if (gallery.length === 0) {
+    delete CUSTOM_CULTURE_GALLERY[cultKey];
+    delete CUSTOM_CULTURE_IMAGES[cultKey];
+    idbDeleteCultureGallery(cultKey).catch(() => {});
+  } else {
+    CUSTOM_CULTURE_GALLERY[cultKey] = gallery;
+    CUSTOM_CULTURE_IMAGES[cultKey] = gallery[0] || '';
+    idbSaveCultureGallery(cultKey, gallery).catch(() => {});
   }
+
+  // Synchronously persist entire dictionary to localStorage
+  _syncCultureGalleryToLocalStorage();
+
+  if (activeCultureAngle >= gallery.length) {
+    activeCultureAngle = Math.max(0, gallery.length - 1);
+  }
+  if (_bestiaryAngles[cultKey] >= gallery.length) {
+    _bestiaryAngles[cultKey] = Math.max(0, gallery.length - 1);
+  }
+
+  soundClick();
+  showToast('✕ Ракурс удалён');
+  refreshCurrentCultureView(cultKey);
 }
 
 function triggerCulturePhotoUploadSlot(cultId, slotIdx = null, event = null) {
@@ -6354,7 +6426,7 @@ async function handleQuickCultUpload(inputEl) {
     return;
   }
   try {
-    const dataUrl = await compressImageFile(file, 900, 0.80);
+    const dataUrl = await compressImageFile(file, 700, 0.75);
     await addCultureAngle(cultId, dataUrl, slotIdx);
   } catch (err) {
     console.error('Ошибка загрузки фото культуры:', err);
@@ -6510,7 +6582,7 @@ async function handleCultDrop(event, cultId) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 900, 0.80);
+    const dataUrl = await compressImageFile(file, 700, 0.75);
     await addCultureAngle(targetId, dataUrl);
   } catch(err) {
     console.error('Ошибка Drag & Drop изображения:', err);
@@ -6540,7 +6612,7 @@ async function handleCultureSlotDrop(event, slotType) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 900, 0.80);
+    const dataUrl = await compressImageFile(file, 700, 0.75);
     const slotIdx = (slotType === 'fc') ? activeCultureAngle : null;
     await addCultureAngle(cultId, dataUrl, slotIdx);
   } catch(err) {
@@ -6561,7 +6633,7 @@ async function handleCultAngleSlotDrop(event, monumentId, slotIdx) {
   if (!file || !file.type.startsWith('image/')) return;
 
   try {
-    const dataUrl = await compressImageFile(file, 900, 0.80);
+    const dataUrl = await compressImageFile(file, 700, 0.75);
     await addCultureAngle(monumentId, dataUrl, slotIdx);
   } catch(err) {
     console.error('Ошибка Drag & Drop изображения:', err);
@@ -7042,9 +7114,7 @@ function importBackup(event) {
             await idbSaveCultureGallery(id, arr);
           }
         }
-        try {
-          localStorage.setItem(LS_CULT_GALLERY_KEY, JSON.stringify(CUSTOM_CULTURE_GALLERY));
-        } catch(e) {}
+        _syncCultureGalleryToLocalStorage();
       } else if (payload.cultImages && typeof payload.cultImages === 'object') {
         for (const [id, url] of Object.entries(payload.cultImages)) {
           if (id && url) {
@@ -7054,6 +7124,7 @@ function importBackup(event) {
             await idbSaveCultureGallery(id, arr);
           }
         }
+        _syncCultureGalleryToLocalStorage();
       }
       loadCustomCards();
       rebuildAndRefresh();
@@ -7102,7 +7173,7 @@ document.addEventListener('paste', async function(e) {
 
   e.preventDefault();
   try {
-    const dataUrl = await compressImageFile(imageFile, 900, 0.80);
+    const dataUrl = await compressImageFile(imageFile, 700, 0.75);
     const slotIdx = window._targetAngleSlot;
     await addCultureAngle(targetId, dataUrl, slotIdx);
   } catch(err) {
