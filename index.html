@@ -1829,6 +1829,7 @@ body.zen-mode .epoch-bar,
 body.zen-mode .mode-bar-wrap,
 body.zen-mode .tabs,
 body.zen-mode .theme-bar,
+body.zen-mode .culture-subnav-wrap,
 body.zen-mode #event-count,
 body.zen-mode #empty-placeholder,
 body.zen-mode #sound-toggle-btn,
@@ -1970,112 +1971,80 @@ body.zen-mode .section.active {
   margin-bottom: 2px;
 }
 
-/* Culture Subcategory Filter Buttons */
-.cult-cat-btn[data-cat="all"], .bst-cat-btn[data-cat="all"] { color: var(--gold2); border-color: rgba(212, 163, 89, 0.5); }
-.cult-cat-btn[data-cat="all"].active, .bst-cat-btn[data-cat="all"].active { background: linear-gradient(135deg, var(--gold), var(--gold2)); border-color: var(--gold2); color: #121829 !important; font-weight: 700; box-shadow: 0 0 16px var(--gold-glow); }
-
-.cult-cat-btn[data-cat="arch"], .bst-cat-btn[data-cat="arch"] { color: #38bdf8; border-color: rgba(56, 189, 248, 0.45); }
-.cult-cat-btn[data-cat="arch"].active, .bst-cat-btn[data-cat="arch"].active { background: linear-gradient(135deg, #0284c7, #0369a1); border-color: #38bdf8; color: #fff !important; font-weight: 700; box-shadow: 0 0 16px rgba(56, 189, 248, 0.5); }
-
-.cult-cat-btn[data-cat="paint"], .bst-cat-btn[data-cat="paint"] { color: #f472b6; border-color: rgba(244, 114, 182, 0.45); }
-.cult-cat-btn[data-cat="paint"].active, .bst-cat-btn[data-cat="paint"].active { background: linear-gradient(135deg, #db2777, #be185d); border-color: #f472b6; color: #fff !important; font-weight: 700; box-shadow: 0 0 16px rgba(244, 114, 182, 0.5); }
-
-.cult-cat-btn[data-cat="sculp"], .bst-cat-btn[data-cat="sculp"] { color: #34d399; border-color: rgba(52, 211, 153, 0.45); }
-.cult-cat-btn[data-cat="sculp"].active, .bst-cat-btn[data-cat="sculp"].active { background: linear-gradient(135deg, #059669, #047857); border-color: #34d399; color: #fff !important; font-weight: 700; box-shadow: 0 0 16px rgba(52, 211, 153, 0.5); }
-
-.cult-cat-btn[data-cat="lit"], .bst-cat-btn[data-cat="lit"] { color: #fbbf24; border-color: rgba(251, 191, 36, 0.45); }
-.cult-cat-btn[data-cat="lit"].active, .bst-cat-btn[data-cat="lit"].active { background: linear-gradient(135deg, #d97706, #b45309); border-color: #fbbf24; color: #fff !important; font-weight: 700; box-shadow: 0 0 16px rgba(251, 191, 36, 0.5); }
-
-.cult-cat-btn[data-cat="art"], .bst-cat-btn[data-cat="art"] { color: #c084fc; border-color: rgba(192, 132, 252, 0.45); }
-.cult-cat-btn[data-cat="art"].active, .bst-cat-btn[data-cat="art"].active { background: linear-gradient(135deg, #9333ea, #7e22ce); border-color: #c084fc; color: #fff !important; font-weight: 700; box-shadow: 0 0 16px rgba(192, 132, 252, 0.5); }
-
-/* Stylized Typographic Plate for cards without photos (Literature, Performing arts, etc.) */
-.cult-typo-plate {
+/* Culture Subsections Navigation (Glassmorphism + Gold highlight) */
+.culture-subnav-wrap {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  padding: 16px 14px;
-  width: 100%;
-  max-width: 480px;
-  min-height: 190px;
-  margin: 0 auto;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, rgba(22, 33, 62, 0.75), rgba(15, 23, 42, 0.9));
-  border: 1px solid rgba(212, 163, 89, 0.35);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  text-align: center;
+  margin-top: -6px;
+  margin-bottom: 20px;
   position: relative;
-  box-sizing: border-box;
+  z-index: 5;
 }
-.cult-typo-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 12px;
-  border-radius: 999px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  background: rgba(212, 163, 89, 0.16);
-  color: var(--gold-light);
-  border: 1px solid rgba(212, 163, 89, 0.35);
-  margin-bottom: 6px;
+.culture-subnav {
+  display: flex;
+  gap: 8px;
+  padding: 5px 8px;
+  background: rgba(18, 26, 48, 0.75);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid rgba(212, 163, 89, 0.3);
+  border-radius: 99px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  flex-wrap: wrap;
+  justify-content: center;
 }
-.cult-typo-icon {
-  font-size: 2.2rem;
-  line-height: 1;
-  margin-bottom: 4px;
-  filter: drop-shadow(0 2px 8px rgba(212, 163, 89, 0.35));
-}
-.cult-typo-title {
-  font-family: var(--ff-serif);
-  font-size: 1.22rem;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.25;
-  margin-bottom: 6px;
-}
-.cult-typo-sub {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--gold2);
-  margin-bottom: 6px;
-}
-.cult-typo-lore-hint {
-  font-family: var(--ff-serif);
-  font-style: italic;
-  font-size: 0.85rem;
-  color: #cbd5e1;
-  line-height: 1.35;
-  margin-bottom: 8px;
-  max-width: 400px;
-}
-.cult-typo-meta {
-  font-size: 0.84rem;
-  color: var(--text-muted);
-  line-height: 1.45;
-  margin-bottom: 8px;
-}
-.cult-typo-upload-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px dashed rgba(212, 163, 89, 0.45);
-  color: var(--gold-light);
-  padding: 4px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 0.76rem;
-  font-weight: 600;
+.cult-subnav-btn {
+  padding: 8px 18px;
+  border-radius: 99px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  color: var(--text2);
   cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  font-family: var(--ff-sans);
+  font-size: .88rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  transition: all .22s ease;
+  white-space: nowrap;
 }
-.cult-typo-upload-btn:hover {
-  background: rgba(212, 163, 89, 0.2);
+.cult-subnav-btn:hover {
+  color: #fff;
+  border-color: rgba(212, 163, 89, 0.45);
+  background: rgba(212, 163, 89, 0.1);
+  transform: translateY(-1px);
+}
+.cult-subnav-btn.active {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border-color: var(--gold2);
+  color: #121829 !important;
+  font-weight: 700;
+  box-shadow: 0 0 16px var(--gold-glow);
+  transform: translateY(-1px);
+}
+
+/* Bestiary Culture Subsections Filter Buttons */
+.bst-cat-btn {
+  padding: 6px 14px;
+  border-radius: 99px;
+  border: 1.5px solid rgba(212, 163, 89, 0.25);
+  background: rgba(18, 26, 48, 0.65);
+  color: var(--text2);
+  cursor: pointer;
+  font-family: var(--ff-sans);
+  font-size: .84rem;
+  font-weight: 600;
+  transition: all .2s ease;
+}
+.bst-cat-btn:hover {
   border-color: var(--gold);
   color: #fff;
+}
+.bst-cat-btn.active {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border-color: var(--gold2);
+  color: #121829 !important;
+  font-weight: 700;
+  box-shadow: 0 0 14px var(--gold-glow);
 }
 .bst-mon-thumb .cult-slot-title {
   font-size: .84rem;
@@ -3261,6 +3230,17 @@ body.zen-mode .section.active {
     </div>
   </div>
 
+  <!-- Culture Subsections Navigation (shown when currentMode === 'culture') -->
+  <div class="culture-subnav-wrap" id="culture-subnav-wrap" style="display:none">
+    <div class="culture-subnav" id="culture-subnav">
+      <button class="cult-subnav-btn active" data-cat="arch" onclick="applyCultCategory('arch')">🏰 Архитектура</button>
+      <button class="cult-subnav-btn" data-cat="paint" onclick="applyCultCategory('paint')">🎨 Живопись</button>
+      <button class="cult-subnav-btn" data-cat="sculp" onclick="applyCultCategory('sculp')">🗿 Скульптура</button>
+      <button class="cult-subnav-btn" data-cat="lit" onclick="applyCultCategory('lit')">📜 Литература</button>
+      <button class="cult-subnav-btn" data-cat="music" onclick="applyCultCategory('music')">🎭 Музыка</button>
+    </div>
+  </div>
+
   <!-- Tabs -->
   <div class="tabs">
     <button class="tab-btn active" data-tab="cards">📇 Карточки</button>
@@ -3287,15 +3267,7 @@ body.zen-mode .section.active {
     <button class="theme-btn" data-theme="slavs" style="display:none">🗺 Расселение славян</button>
   </div>
 
-  <!-- Culture subcategory filter bar (shown when currentMode === 'culture') -->
-  <div class="theme-bar culture-cat-bar" id="culture-cat-bar" style="display:none">
-    <button class="theme-btn cult-cat-btn active" data-cat="all" onclick="applyCultCategory('all')">✦ Все жанры</button>
-    <button class="theme-btn cult-cat-btn" data-cat="arch" onclick="applyCultCategory('arch')">🏰 Архитектура</button>
-    <button class="theme-btn cult-cat-btn" data-cat="paint" onclick="applyCultCategory('paint')">🎨 Живопись и иконопись</button>
-    <button class="theme-btn cult-cat-btn" data-cat="sculp" onclick="applyCultCategory('sculp')">🗿 Скульптура и памятники</button>
-    <button class="theme-btn cult-cat-btn" data-cat="lit" onclick="applyCultCategory('lit')">📜 Литература и летописание</button>
-    <button class="theme-btn cult-cat-btn" data-cat="art" onclick="applyCultCategory('art')">🎭 Музыка, театр и кино</button>
-  </div>
+
   <div class="event-count" id="event-count"></div>
 
   <!-- Empty section placeholder -->
@@ -3536,14 +3508,14 @@ body.zen-mode .section.active {
         <button class="bst-subtab-btn" data-bst="figures" onclick="setBestiaryTab('figures')">👑 Деятели</button>
         <button class="bst-subtab-btn" data-bst="maps" onclick="setBestiaryTab('maps')">🗺 Исторические карты</button>
       </div>
-      <!-- Bestiary Culture Subcategories Bar (shown only when bestiarySubTab === 'culture') -->
+      <!-- Bestiary Culture Subsections (shown only when bestiarySubTab === 'culture') -->
       <div class="theme-bar bst-cult-cats" id="bst-cult-cats" style="display:none;margin-top:10px;margin-bottom:14px">
-        <button class="theme-btn bst-cat-btn active" data-cat="all" onclick="applyCultCategory('all')">✦ Все жанры</button>
-        <button class="theme-btn bst-cat-btn" data-cat="arch" onclick="applyCultCategory('arch')">🏰 Архитектура</button>
-        <button class="theme-btn bst-cat-btn" data-cat="paint" onclick="applyCultCategory('paint')">🎨 Живопись и иконопись</button>
-        <button class="theme-btn bst-cat-btn" data-cat="sculp" onclick="applyCultCategory('sculp')">🗿 Скульптура и памятники</button>
-        <button class="theme-btn bst-cat-btn" data-cat="lit" onclick="applyCultCategory('lit')">📜 Литература и летописание</button>
-        <button class="theme-btn bst-cat-btn" data-cat="art" onclick="applyCultCategory('art')">🎭 Музыка, театр и кино</button>
+        <button class="bst-cat-btn active" data-cat="all" onclick="applyCultCategory('all')">✦ Все</button>
+        <button class="bst-cat-btn" data-cat="arch" onclick="applyCultCategory('arch')">🏰 Архитектура</button>
+        <button class="bst-cat-btn" data-cat="paint" onclick="applyCultCategory('paint')">🎨 Живопись</button>
+        <button class="bst-cat-btn" data-cat="sculp" onclick="applyCultCategory('sculp')">🗿 Скульптура</button>
+        <button class="bst-cat-btn" data-cat="lit" onclick="applyCultCategory('lit')">📜 Литература</button>
+        <button class="bst-cat-btn" data-cat="music" onclick="applyCultCategory('music')">🎭 Музыка</button>
       </div>
       <div class="bst-search-bar">
         <div class="bst-search-wrap">
@@ -4791,82 +4763,45 @@ const ALL_MAPS = Object.entries(DATA_MAPS).flatMap(([epoch, arr]) =>
 let currentEpoch = 'all';
 let currentMode  = 'dates';   // 'dates' | 'terms' | 'culture' | 'figures' | 'bestiary'
 let currentTheme = 'all';
-let currentCultCategory = 'all'; // 'all' | 'arch' | 'paint' | 'sculp' | 'lit' | 'art'
+let currentCultCategory = 'arch'; // 'arch' | 'paint' | 'sculp' | 'lit' | 'music'
 
 const CULTURE_CATEGORIES = {
-  all:   { id: 'all',   name: 'Все жанры',                label: '✦ Все жанры',                icon: '✦' },
-  arch:  { id: 'arch',  name: 'Архитектура',              label: '🏰 Архитектура',              icon: '🏰' },
-  paint: { id: 'paint', name: 'Живопись и иконопись',     label: '🎨 Живопись и иконопись',     icon: '🎨' },
-  sculp: { id: 'sculp', name: 'Скульптура и памятники',   label: '🗿 Скульптура и памятники',   icon: '🗿' },
-  lit:   { id: 'lit',   name: 'Литература и летописание', label: '📜 Литература и летописание', icon: '📜' },
-  art:   { id: 'art',   name: 'Музыка, театр и кино',     label: '🎭 Музыка, театр и кино',     icon: '🎭' }
+  all:   { id: 'all',   name: 'Все',         label: '✦ Все',         icon: '✦' },
+  arch:  { id: 'arch',  name: 'Архитектура', label: '🏰 Архитектура', icon: '🏰' },
+  paint: { id: 'paint', name: 'Живопись',    label: '🎨 Живопись',    icon: '🎨' },
+  sculp: { id: 'sculp', name: 'Скульптура',  label: '🗿 Скульптура',  icon: '🗿' },
+  lit:   { id: 'lit',   name: 'Литература',  label: '📜 Литература',  icon: '📜' },
+  music: { id: 'music', name: 'Музыка',      label: '🎭 Музыка',      icon: '🎭' }
 };
 
 function getCultureCategory(item) {
-  return (item && item.category) || 'arch';
+  const cat = item && (item.category || item.genre);
+  if (cat === 'music' || cat === 'art') return 'music';
+  if (cat === 'paint') return 'paint';
+  if (cat === 'sculp') return 'sculp';
+  if (cat === 'lit') return 'lit';
+  return 'arch';
 }
 function getCultureCategoryLabel(cat) {
-  return CULTURE_CATEGORIES[cat]?.label || CULTURE_CATEGORIES.arch.label;
+  const key = (cat === 'music' || cat === 'art') ? 'music' : (CULTURE_CATEGORIES[cat] ? cat : 'arch');
+  return CULTURE_CATEGORIES[key]?.label || CULTURE_CATEGORIES.arch.label;
 }
 function getCultureCategoryName(cat) {
-  return CULTURE_CATEGORIES[cat]?.name || CULTURE_CATEGORIES.arch.name;
+  const key = (cat === 'music' || cat === 'art') ? 'music' : (CULTURE_CATEGORIES[cat] ? cat : 'arch');
+  return CULTURE_CATEGORIES[key]?.name || CULTURE_CATEGORIES.arch.name;
 }
 function getCultureCategoryIcon(cat) {
-  return CULTURE_CATEGORIES[cat]?.icon || CULTURE_CATEGORIES.arch.icon;
+  const key = (cat === 'music' || cat === 'art') ? 'music' : (CULTURE_CATEGORIES[cat] ? cat : 'arch');
+  return CULTURE_CATEGORIES[key]?.icon || CULTURE_CATEGORIES.arch.icon;
 }
 
 function applyCultCategory(cat) {
-  currentCultCategory = cat || 'all';
+  currentCultCategory = cat || 'arch';
   soundClick();
-  document.querySelectorAll('.cult-cat-btn, .bst-cat-btn').forEach(btn => {
+  document.querySelectorAll('.cult-subnav-btn, .bst-cat-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.cat === currentCultCategory);
   });
   refreshFilterState();
-}
-
-function renderCultTypoCardHtml(item, targetField = null, context = 'card-front') {
-  if (!item) return '';
-  const cat = getCultureCategory(item);
-  const catInfo = CULTURE_CATEGORIES[cat] || CULTURE_CATEGORIES.arch;
-  
-  // Decide whether title can be shown:
-  // In card-front: NEVER show title (front is for user to guess before flip!)
-  // In quiz/input: if targetField === 'title', do NOT show title (it's the answer!)
-  // If targetField === 'author' or 'ruler', show title so user knows which item is tested
-  const showTitle = context !== 'card-front' && targetField !== 'title';
-
-  const titleHtml = showTitle
-    ? `<div class="cult-typo-title">«${escHtml(item.title)}»</div>`
-    : `<div class="cult-typo-sub">${escHtml(catInfo.name)}</div>`;
-
-  const metaItems = [];
-  if (item.year) metaItems.push(`<span>📅 <strong>${escHtml(item.year)}</strong></span>`);
-  if (item.author && targetField !== 'author') {
-    const authorIcon = cat === 'lit' ? '✍️' : (cat === 'paint' ? '🖌' : '🎨');
-    metaItems.push(`<span>${authorIcon} <strong>${escHtml(item.author)}</strong></span>`);
-  }
-  if (item.ruler && targetField !== 'ruler') {
-    metaItems.push(`<span>👑 <strong>${escHtml(item.ruler)}</strong></span>`);
-  }
-
-  const lorePreview = (item.lore && context !== 'card-front' && targetField === 'title' && cat === 'lit')
-    ? `<div class="cult-typo-lore-hint">«${escHtml(item.lore.length > 120 ? item.lore.slice(0, 120) + '…' : item.lore)}»</div>`
-    : '';
-
-  const uploadBtnText = cat === 'lit'
-    ? '📷 Добавить обложку / рукопись'
-    : (cat === 'paint' ? '📷 Загрузить репродукцию' : '📷 Загрузить фото');
-
-  return `
-    <div class="cult-typo-plate">
-      <div class="cult-typo-badge">${catInfo.label}</div>
-      <div class="cult-typo-icon">${catInfo.icon}</div>
-      ${titleHtml}
-      ${lorePreview}
-      <div class="cult-typo-meta">${metaItems.join(' · ')}</div>
-      <button class="cult-typo-upload-btn" onclick="triggerCulturePhotoUpload(null, event)" title="Прикрепить изображение">${uploadBtnText}</button>
-    </div>
-  `;
 }
 let filteredEvents = [...ALL_EVENTS];   // base filtered by epoch + mode + theme
 let displayEvents  = [...ALL_EVENTS];   // what actually shows (may be shuffled / with learned hidden)
@@ -5190,8 +5125,8 @@ function getEpochSource(modeOverride) {
   }
   if (m === 'culture') {
     let items = currentEpoch === 'all' ? ALL_CULTURE : ALL_CULTURE.filter(item => item.epoch === currentEpoch);
-    if (currentCultCategory !== 'all') {
-      items = items.filter(item => (item.category || 'arch') === currentCultCategory);
+    if (currentCultCategory && currentCultCategory !== 'all') {
+      items = items.filter(item => getCultureCategory(item) === currentCultCategory);
     }
     return items;
   }
@@ -5225,15 +5160,15 @@ function updateThemeButtonsVisibility(epochItems) {
 function syncWorkspaceVisibility(epochItems) {
   const placeholder = document.getElementById('empty-placeholder');
   const themeBar = document.getElementById('theme-bar');
-  const cultBar = document.getElementById('culture-cat-bar');
+  const subnavWrap = document.getElementById('culture-subnav-wrap');
   const eventCountEl = document.getElementById('event-count');
   const tabsEl = document.querySelector('.tabs');
 
   const effMode = currentMode === 'bestiary' ? bestiarySubTab : currentMode;
   const isCultMode = effMode === 'culture';
 
-  if (cultBar) {
-    cultBar.style.display = (currentMode === 'culture') ? '' : 'none';
+  if (subnavWrap) {
+    subnavWrap.style.display = (currentMode === 'culture') ? 'flex' : 'none';
   }
 
   if (currentMode === 'bestiary') {
@@ -5241,10 +5176,8 @@ function syncWorkspaceVisibility(epochItems) {
     placeholder.classList.remove('show');
     if (isCultMode) {
       themeBar.style.display = 'none';
-      if (cultBar) cultBar.style.display = 'none';
     } else {
       themeBar.style.display = epochItems.length > 0 ? '' : 'none';
-      if (cultBar) cultBar.style.display = 'none';
     }
     eventCountEl.style.display = '';
     document.querySelectorAll('.section').forEach(s => {
@@ -5260,19 +5193,12 @@ function syncWorkspaceVisibility(epochItems) {
 
   if (isEmpty && activeTab !== 'review') {
     themeBar.style.display = 'none';
-    if (cultBar) {
-      // Keep culture category bar visible if the epoch has culture items overall
-      const epochHasCulture = currentEpoch === 'all'
-        ? ALL_CULTURE.length > 0
-        : ALL_CULTURE.some(c => c.epoch === currentEpoch);
-      cultBar.style.display = (currentMode === 'culture' && epochHasCulture) ? '' : 'none';
-    }
     eventCountEl.style.display = 'none';
     document.querySelectorAll('.section').forEach(s => {
       if (s.id !== 'sec-review') s.style.display = 'none';
     });
-    const catLabel = (isCultMode && currentCultCategory !== 'all') ? ` · ${getCultureCategoryName(currentCultCategory)}` : '';
-    const modeLabel = currentMode === 'maps' ? 'Карты' : (currentMode === 'figures' ? 'Деятели' : (currentMode === 'terms' ? 'Термины' : (currentMode === 'culture' ? `Культура${catLabel}` : 'Даты')));
+    const subLabel = isCultMode ? ` · ${CULTURE_CATEGORIES[currentCultCategory]?.name || ''}` : '';
+    const modeLabel = currentMode === 'maps' ? 'Карты' : (currentMode === 'figures' ? 'Деятели' : (currentMode === 'terms' ? 'Термины' : (currentMode === 'culture' ? `Культура${subLabel}` : 'Даты')));
     document.getElementById('ep-sub').textContent =
       `Раздел «${EPOCH_NAMES[currentEpoch]}» (${modeLabel}) пока пуст и готов к наполнению.`;
     placeholder.classList.add('show');
@@ -5281,13 +5207,7 @@ function syncWorkspaceVisibility(epochItems) {
   }
 
   placeholder.classList.remove('show');
-  if (isCultMode) {
-    themeBar.style.display = 'none';
-    if (cultBar) cultBar.style.display = '';
-  } else {
-    themeBar.style.display = isEmpty ? 'none' : '';
-    if (cultBar) cultBar.style.display = 'none';
-  }
+  themeBar.style.display = isCultMode ? 'none' : (isEmpty ? 'none' : '');
   eventCountEl.style.display = isEmpty ? 'none' : '';
   document.querySelectorAll('.section').forEach(s => {
     if (s.id === 'sec-bestiary') {
@@ -5357,6 +5277,20 @@ function applyMode(mode) {
 
   document.getElementById('qz-culture-bar')?.classList.toggle('show', mode === 'culture');
   document.getElementById('inp-culture-bar')?.classList.toggle('show', mode === 'culture');
+
+  const subnavWrap = document.getElementById('culture-subnav-wrap');
+  if (subnavWrap) {
+    subnavWrap.style.display = (mode === 'culture') ? 'flex' : 'none';
+  }
+
+  if (mode === 'culture') {
+    if (!currentCultCategory || currentCultCategory === 'all') {
+      currentCultCategory = 'arch';
+    }
+    document.querySelectorAll('.cult-subnav-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.cat === currentCultCategory);
+    });
+  }
 
   updateFlipModeBtn();
   refreshFilterState();
@@ -5429,7 +5363,7 @@ function updateEventCount() {
   const lc = learnedKeys.size;
   let themeLabel = THEME_NAMES[currentTheme] || 'Все темы';
   if (currentMode === 'culture') {
-    themeLabel = currentCultCategory === 'all' ? 'Вся культура' : (CULTURE_CATEGORIES[currentCultCategory]?.name || 'Культура');
+    themeLabel = CULTURE_CATEGORIES[currentCultCategory]?.name || 'Архитектура';
   }
   const prefix = currentEpoch === 'all' ? themeLabel : `${EPOCH_NAMES[currentEpoch]} · ${themeLabel}`;
   document.getElementById('event-count').textContent =
@@ -5618,7 +5552,13 @@ function renderCard(){
   } else if (isCulture) {
     window._activeCultureId = e.id;
     window._pendingCultId = e.id;
-    document.getElementById('fc-front-title').textContent = 'Памятник культуры';
+
+    // Clean front: no title or spoilers on front
+    const frontTitleEl = document.getElementById('fc-front-title');
+    if (frontTitleEl) {
+      frontTitleEl.textContent = '';
+      frontTitleEl.style.display = 'none';
+    }
 
     const gallery = getCultureGallery(e);
     if (activeCultureAngle >= gallery.length) {
@@ -5641,19 +5581,24 @@ function renderCard(){
       imgEl.style.display = 'none';
       if (placeholderEl) {
         placeholderEl.style.display = 'flex';
-        placeholderEl.innerHTML = renderCultTypoCardHtml(e, null, 'card-front');
+        placeholderEl.innerHTML = `
+          <div class="cult-slot-icon">📷</div>
+          <div class="cult-slot-title">Загрузить фото</div>
+          <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
+        `;
       }
       if (replaceBtn) replaceBtn.style.display = 'none';
       if (zoomHint) zoomHint.style.display = 'none';
     }
 
-    const showAnglesBar = gallery.length > 0 || (e.category || 'arch') === 'arch' || (e.category || 'arch') === 'sculp' || (e.category || 'arch') === 'paint';
+    // Always show 3 angle slots on front
     const fcAnglesEl = document.getElementById('fc-angles-bar');
     if (fcAnglesEl) {
-      fcAnglesEl.style.display = showAnglesBar ? 'flex' : 'none';
-      if (showAnglesBar) renderCultureAnglesBar(e.id, fcAnglesEl);
+      fcAnglesEl.style.display = 'flex';
+      renderCultureAnglesBar(e.id, fcAnglesEl);
     }
 
+    // Information strictly on back of card
     document.getElementById('fc-cult-title').textContent = e.title || '';
     document.getElementById('fc-cult-year').textContent = e.year || '—';
     document.getElementById('fc-cult-author').textContent = e.author || 'Неизвестен';
@@ -5713,10 +5658,19 @@ function renderCard(){
   ['fc-badge','fc-badge2'].forEach(id => {
     const b = document.getElementById(id);
     if (isCulture) {
-      const cat = getCultureCategory(e);
-      b.className = 'theme-badge culture';
-      b.textContent = getCultureCategoryLabel(cat);
+      if (id === 'fc-badge') {
+        // Hide badge on front so card front is completely clean
+        b.style.display = 'none';
+        b.textContent = '';
+      } else {
+        // Show badge on back
+        b.style.display = '';
+        const cat = getCultureCategory(e);
+        b.className = 'theme-badge culture';
+        b.textContent = getCultureCategoryLabel(cat);
+      }
     } else {
+      b.style.display = '';
       b.className = 'theme-badge ' + (e.theme || 'maps');
       b.textContent = THEME_NAMES[e.theme] || (currentMode === 'maps' ? 'Исторические карты' : 'Все темы');
     }
@@ -5967,24 +5921,29 @@ function generateQuiz(){
         qzImg.style.display = 'none';
         if (qzPlaceholder) {
           qzPlaceholder.style.display = 'flex';
-          qzPlaceholder.innerHTML = renderCultTypoCardHtml(target, cultureTarget, 'quiz');
+          qzPlaceholder.innerHTML = `
+            <div class="cult-slot-icon">📷</div>
+            <div class="cult-slot-title">Загрузить фото</div>
+            <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
+          `;
         }
         if (qzReplace) qzReplace.style.display = 'none';
         if (qzZoom) qzZoom.style.display = 'none';
       }
     }
     const cat = getCultureCategory(target);
+    const authorRole = cat === 'lit' ? 'Автор' : (cat === 'music' ? 'Композитор' : (cat === 'paint' ? 'Художник / иконописец' : 'Автор / зодчий'));
     const fieldMap = {
       title:  {
-        q: (cat === 'lit' ? 'Какое литературное произведение было создано в этот период?' : (cat === 'art' ? 'Какое произведение искусства было создано в этот период?' : (cat === 'paint' ? 'Какое произведение живописи / иконописи создано?' : (cultImg ? 'Какой памятник культуры изображён на иллюстрации?' : 'Какой памятник культуры был создан в этот период?')))),
+        q: (cultImg ? 'Что изображено на иллюстрации?' : (cat === 'lit' ? 'Какое литературное произведение создано в этот период?' : (cat === 'music' ? 'Какое музыкальное произведение создано в этот период?' : (cat === 'paint' ? 'Какое произведение живописи/иконописи создано?' : 'Какой памятник архитектуры был создан в этот период?')))),
         label: 'Название'
       },
       author: {
-        q: `Кто является автором / создателем произведения «${target.title}»?`,
-        label: (cat === 'lit' ? 'Автор' : (cat === 'paint' ? 'Художник / иконописец' : 'Автор / зодчий'))
+        q: `Кто является автором / создателем («${target.title}»)?`,
+        label: authorRole
       },
       ruler:  {
-        q: `При каком правителе было создано произведение «${target.title}»?`,
+        q: `При каком правителе было создано («${target.title}»)?`,
         label: 'Правитель'
       }
     };
@@ -5994,7 +5953,7 @@ function generateQuiz(){
     document.getElementById('qz-label').textContent = `Вопрос ${quizCount} · ${qContext} · ${meta.label}`;
     document.getElementById('qz-text').textContent  = meta.q;
 
-    let poolDistractors = ALL_CULTURE.filter(x => (x.category || 'arch') === cat).map(x => x[cultureTarget]).filter(v => v && v !== correctVal);
+    let poolDistractors = ALL_CULTURE.filter(x => getCultureCategory(x) === cat).map(x => x[cultureTarget]).filter(v => v && v !== correctVal);
     if (poolDistractors.length < 3) {
       poolDistractors = [...poolDistractors, ...ALL_CULTURE.map(x => x[cultureTarget]).filter(v => v && v !== correctVal)];
     }
@@ -6005,7 +5964,7 @@ function generateQuiz(){
       correct: correctVal,
       target: target,
       questionText: `${meta.label}: ${target.title}`,
-      detail: `<strong>${target.title}</strong> (${target.year}) · ${cat === 'lit' ? 'Автор' : (cat === 'paint' ? 'Художник' : 'Зодчий')}: ${target.author} · Правитель: ${target.ruler}<br>${target.lore}`
+      detail: `<strong>${target.title}</strong> (${target.year}) · ${authorRole}: ${target.author} · Правитель: ${target.ruler}<br>${target.lore}`
     };
   } else if (currentMode === 'figures') {
     const type = Math.random() < 0.5 ? 'figure' : 'facts';
@@ -6526,21 +6485,26 @@ function generateInputQuestion() {
         inpImg.style.display = 'none';
         if (inpPlaceholder) {
           inpPlaceholder.style.display = 'flex';
-          inpPlaceholder.innerHTML = renderCultTypoCardHtml(target, cultureTarget, 'input');
+          inpPlaceholder.innerHTML = `
+            <div class="cult-slot-icon">📷</div>
+            <div class="cult-slot-title">Загрузить фото</div>
+            <div class="cult-slot-hint">Кликните, перетащите файл или нажмите Ctrl+V</div>
+          `;
         }
         if (inpReplace) inpReplace.style.display = 'none';
         if (inpZoom) inpZoom.style.display = 'none';
       }
     }
     const cat = getCultureCategory(target);
+    const authorRole = cat === 'lit' ? 'автора' : (cat === 'music' ? 'композитора' : (cat === 'paint' ? 'художника/иконописца' : 'автора/зодчего'));
     const labels = {
-      title: cat === 'lit' ? 'Назовите литературное произведение:' : (cat === 'art' ? 'Назовите произведение искусства:' : (cat === 'paint' ? 'Назовите произведение живописи / икону:' : (cultImg ? 'Назовите памятник по изображению:' : 'Назовите памятник культуры:'))),
-      author: `Укажите автора / создателя («${target.title}»):`,
+      title: cultImg ? 'Назовите объект по изображению:' : (cat === 'lit' ? 'Назовите литературное произведение:' : (cat === 'music' ? 'Назовите музыкальное произведение:' : (cat === 'paint' ? 'Назовите произведение живописи/икону:' : 'Назовите памятник архитектуры:'))),
+      author: `Укажите ${authorRole} («${target.title}»):`,
       ruler: `Укажите правителя, при котором создано («${target.title}»):`
     };
     const placeholders = {
-      title: cat === 'lit' ? 'Введите название произведения (напр.: Слово о полку Игореве)...' : (cat === 'paint' ? 'Введите название (напр.: Троица)...' : 'Введите название памятника...'),
-      author: 'Введите автора или создателя...',
+      title: cat === 'lit' ? 'Введите название произведения (напр.: Слово о полку Игореве)...' : (cat === 'paint' ? 'Введите название (напр.: Троица)...' : (cat === 'music' ? 'Введите название...' : 'Введите название памятника...')),
+      author: `Введите ${authorRole}...`,
       ruler: 'Введите имя правителя (напр.: Ярослав Мудрый)...'
     };
     const canonical = target[cultureTarget] || target.title;
@@ -7733,12 +7697,11 @@ function renderBestiary() {
             <span class="fc-zoom-hint">🔍</span>
           </div>`;
       } else {
-        const uploadTitle = cat === 'lit' ? 'Добавить обложку' : (cat === 'paint' ? 'Добавить икону' : 'Загрузить фото');
         thumbHtml = `
-          <div class="bst-mon-thumb bst-mon-empty" onclick="triggerCulturePhotoUploadSlot('${escHtml(e.id)}', 0, event)" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="${uploadTitle}">
+          <div class="bst-mon-thumb bst-mon-empty" onclick="triggerCulturePhotoUploadSlot('${escHtml(e.id)}', 0, event)" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'" ondragover="handleCultDragOver(event)" ondragleave="handleCultDragLeave(event)" ondrop="handleCultDrop(event, '${escHtml(e.id)}')" title="Загрузить фото">
             <div class="cult-upload-slot">
-              <div class="cult-slot-icon">${catIcon}</div>
-              <div class="cult-slot-title">${uploadTitle}</div>
+              <div class="cult-slot-icon">📷</div>
+              <div class="cult-slot-title">Загрузить фото</div>
               <div class="cult-slot-hint">Клик или Ctrl+V</div>
             </div>
           </div>`;
@@ -7751,7 +7714,7 @@ function renderBestiary() {
            </div>`
         : '';
 
-      const authorRoleLabel = cat === 'lit' ? 'Автор' : (cat === 'paint' ? 'Иконописец/мастер' : (cat === 'sculp' ? 'Скульптор' : 'Зодчий'));
+      const authorRoleLabel = cat === 'lit' ? 'Автор' : (cat === 'music' ? 'Композитор' : (cat === 'paint' ? 'Иконописец/мастер' : (cat === 'sculp' ? 'Скульптор' : 'Зодчий')));
 
       return `<div class="bst-mon-card">
         <div class="bst-mon-media-col" onmouseenter="activeCultureMonumentId='${escHtml(e.id)}'">
@@ -9828,13 +9791,13 @@ initMapsStorage();
       <!-- Culture dedicated fields -->
       <div id="ed-culture-fields" style="display:none;flex-direction:column;gap:10px">
         <div class="ed-field">
-          <div class="ed-label">Подкатегория / Жанр культуры *</div>
+          <div class="ed-label">Подраздел культуры *</div>
           <select id="ed-cult-cat" class="ed-select">
             <option value="arch">🏰 Архитектура</option>
-            <option value="paint">🎨 Живопись и иконопись</option>
-            <option value="sculp">🗿 Скульптура и памятники</option>
-            <option value="lit">📜 Литература и летописание</option>
-            <option value="art">🎭 Музыка, театр и кино</option>
+            <option value="paint">🎨 Живопись</option>
+            <option value="sculp">🗿 Скульптура</option>
+            <option value="lit">📜 Литература</option>
+            <option value="music">🎭 Музыка</option>
           </select>
         </div>
         <div class="ed-field">
